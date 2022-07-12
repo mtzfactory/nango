@@ -1,1 +1,1 @@
-docker run -d --hostname nango-rabbit --name nango-rabbitmq -p8082:15672 rabbitmq:3-management
+docker run -d --hostname nango-rabbit --name nango-rabbitmq -p 5672:5672 -p8082:15672 rabbitmq:3-management
