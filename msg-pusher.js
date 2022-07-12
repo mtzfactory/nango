@@ -8,7 +8,7 @@ async function connectRabbit() {
     const rabbitChannel = await rabbitConnection.createChannel();
     await rabbitChannel.assertQueue(inboundSeverQueue);
 
-    return rabbitChannel;
+    return [rabbitChannel, rabbitConnection];
 }
 
 const jsonFileName = process.argv[2];
@@ -18,5 +18,10 @@ if (typeof jsonFileName !== "string") {
 }
 
 
-const rabbitChannel = await connectRabbit();
+const [rabbitChannel, rabbitConnection] = await connectRabbit();
 rabbitChannel.sendToQueue("server_inbound", Buffer.from(readFileSync(jsonFileName)));
+
+setTimeout(function() {
+    rabbitConnection.close();
+    process.exit(0)
+}, 500);
