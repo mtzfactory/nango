@@ -57,7 +57,7 @@ function handleLoadConfig(configMsg: NangoLoadConfigMessage) {
     nangoConfig = configMsg.config;
 
     // - Copies nango-integrations folder into a server-owned location
-    fs.cpSync(nangoConfig.nango_integrations_dir, serverIntegrationsRootDir, {recursive: true}); // TODO: Rework this, it is an experimental feature of node >16.7
+    fs.cpSync(nangoConfig.nango_integrations_pkg_path, serverIntegrationsRootDir, {recursive: true}); // TODO: Rework this, it is an experimental feature of node >16.7
 
     // - Reads integrations.yaml and stores it for later reference
     loadedIntegrations = yaml.load(fs.readFileSync(path.join(serverNangoIntegrationsDir, 'integrations.yaml')).toString()) as NangoIntegrationsConfig;

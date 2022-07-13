@@ -6,7 +6,7 @@ export interface NangoConfig {
     nango_server_host: string,
     nango_server_port: number,
 
-    nango_integrations_dir: string
+    nango_integrations_pkg_path: string
 }
 
 //////////////////////
