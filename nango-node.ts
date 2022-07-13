@@ -13,6 +13,7 @@ export default class Nango
     private configPath: string;
     private nangoConfig?: NangoConfig;
     private nangoServerHost?: string;
+    private nangoServerPort?: number;
 
     /** -------------------- Public Methods -------------------- */
 
@@ -56,7 +57,7 @@ export default class Nango
     /** -------------------- Private Methods -------------------- */
 
     private async connectRabbit() {
-        this.connection = await connect('amqp://' + this.nangoServerHost);
+        this.connection = await connect('amqp://' + this.nangoServerHost + ":" + this.nangoServerPort);
         this.channel = await this.connection.createChannel();
         await this.channel.assertQueue(this.sendQueueId);    
     }
@@ -64,6 +65,7 @@ export default class Nango
     private parseConfig() {
         this.nangoConfig = yaml.load(readFileSync(this.configPath).toString()) as NangoConfig;
         this.nangoServerHost = this.nangoConfig.nango_server_host;
+        this.nangoServerPort = this.nangoConfig.nango_server_port;
     }
 
     private loadConfig() {
@@ -72,7 +74,7 @@ export default class Nango
         const configMsg: NangoLoadConfigMessage = { 
             config: this.nangoConfig,
             action: NangoMessageAction.LOAD_CONFIG,
-        } as NangoLoadConfigMessage;
+        };
         this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(configMsg)));
     }
 }
