@@ -1,5 +1,7 @@
 import {connect} from 'amqplib'
 import {readFileSync} from 'fs'
+import {dirname} from 'path'
+import { fileURLToPath } from 'url';
 
 async function connectRabbit() {
     const inboundSeverQueue = 'server_inbound';
@@ -10,6 +12,10 @@ async function connectRabbit() {
 
     return [rabbitChannel, rabbitConnection];
 }
+
+// Make sure cwd is always where the JS file resides
+const __filename = fileURLToPath(import.meta.url);
+process.chdir(dirname(__filename));
 
 const jsonFileName = process.argv[2];
 if (typeof jsonFileName !== "string") {

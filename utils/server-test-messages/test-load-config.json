@@ -3,6 +3,6 @@
     "config": {
         "nango_server_host": "localhost",
         "nango_server_port": 5672,
-        "nango_integrations_dir": "/Users/robin/Documents/nango/code/nango/nango-integrations"
+        "nango_integrations_dir": "/Users/robin/Documents/nango/code/nango/nango-integrations-compiled"
     }
 }

@@ -7,3 +7,5 @@ class SlackNotifyAction extends NangoAction {
     }
 
 }
+
+export {SlackNotifyAction};
