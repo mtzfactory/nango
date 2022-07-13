@@ -14,12 +14,16 @@ export interface NangoConfig {
 //////////////////////
 
 export interface NangoIntegrationsConfig {
-    integrations: Array<NangoIntegrationConfig>
+    integrations: Array<NangoIntegrationWrapper>
 }
 
 export enum NangoIntegrationAuthModes {
     BASIC_AUTH,
     OAUTH
+}
+
+export interface NangoIntegrationWrapper {
+    [key: string]: NangoIntegrationConfig
 }
 
 export interface NangoIntegrationConfig {

@@ -4,7 +4,7 @@ const nango: Nango = new Nango("./nango-integrations/nango-config.yaml");
 await nango.connect();
 
 // nango.registerConnection("slack", "1", "xoxb-XXXXXXXXXXXXXXXXXXXXXXXX", {});
-// nango.trigger("slack", "nofify", "1", {});
+nango.trigger("slack", "notify", "1", {"aKey": "aValue"});
 
 setTimeout(function() {
     nango.close();

@@ -1,4 +1,4 @@
-import {NangoAction} from "../../nango-action";
+import {NangoAction} from "../../nango-action.mjs";
 
 class SlackNotifyAction extends NangoAction {
 
@@ -8,4 +8,4 @@ class SlackNotifyAction extends NangoAction {
 
 }
 
-export {SlackNotifyAction};
+export { SlackNotifyAction };
