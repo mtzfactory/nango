@@ -1,5 +1,7 @@
 import {connect, Channel, Connection} from 'amqplib'
 import {readFileSync} from 'fs'
+import * as yaml from 'js-yaml'
+import { NangoConfig, NangoLoadConfigMessage, NangoMessageAction } from './nango-types.js';
 
 export default class Nango
 {
@@ -9,6 +11,8 @@ export default class Nango
     private connection?: Connection;
     private channel?: Channel;
     private configPath: string;
+    private nangoConfig?: NangoConfig;
+    private nangoServerHost?: string;
 
     /** -------------------- Public Methods -------------------- */
 
@@ -18,6 +22,7 @@ export default class Nango
     }
 
     public async connect() {
+        this.parseConfig();
         await this.connectRabbit();
         this.loadConfig(); 
     }
@@ -51,12 +56,23 @@ export default class Nango
     /** -------------------- Private Methods -------------------- */
 
     private async connectRabbit() {
-        this.connection = await connect('amqp://localhost');
+        this.connection = await connect('amqp://' + this.nangoServerHost);
         this.channel = await this.connection.createChannel();
         await this.channel.assertQueue(this.sendQueueId);    
     }
 
+    private parseConfig() {
+        this.nangoConfig = yaml.load(readFileSync(this.configPath).toString()) as NangoConfig;
+        this.nangoServerHost = this.nangoConfig.nango_server_host;
+    }
+
     private loadConfig() {
-        this.channel?.sendToQueue(this.sendQueueId, Buffer.from(readFileSync(this.configPath)));
+        if (this.nangoConfig == null) { return; }
+
+        const configMsg: NangoLoadConfigMessage = { 
+            config: this.nangoConfig,
+            action: NangoMessageAction.LOAD_CONFIG,
+        } as NangoLoadConfigMessage;
+        this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(configMsg)));
     }
 }
