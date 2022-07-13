@@ -61,3 +61,10 @@ export interface NangoTriggerActionMessage extends NangoMessage {
     userId: string,
     input: object
 }
+
+export interface NangoRegisterConnectionMessage extends NangoMessage {
+    integration: string,
+    userId: string,
+    oAuthAccessToken: string,
+    additionalConfig: object,
+}

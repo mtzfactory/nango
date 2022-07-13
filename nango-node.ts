@@ -1,7 +1,7 @@
 import {connect, Channel, Connection} from 'amqplib'
 import {readFileSync} from 'fs'
 import * as yaml from 'js-yaml'
-import { NangoConfig, NangoLoadConfigMessage, NangoMessageAction } from './nango-types.js';
+import { NangoConfig, NangoLoadConfigMessage, NangoMessageAction, NangoTriggerActionMessage, NangoRegisterConnectionMessage } from './nango-types.js';
 
 export default class Nango
 {
@@ -28,26 +28,28 @@ export default class Nango
         this.loadConfig(); 
     }
 
-    public registerConnection(integrationId: string, userId: string, params: {}) {
-        const json: string = JSON.stringify({
-            messageType: "Register connection",
-            actionId: integrationId,
+    public registerConnection(integration: string, userId: string, oAuthAccessToken: string, additionalConfig: {}) {
+        const msg: NangoRegisterConnectionMessage = {
+            integration: integration,
             userId: userId,
-            params: params
-        });
+            oAuthAccessToken: oAuthAccessToken,
+            additionalConfig: additionalConfig,
+            action: NangoMessageAction.REGISTER_CONNECTION,
+        };
 
-        this.channel?.sendToQueue(this.sendQueueId, Buffer.from(json, 'utf8'))
+        this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(msg), 'utf8'))
     }
 
-    public trigger(actionId: string, userId: string, params: {}) {
-        const json: string = JSON.stringify({
-            messageType: "Trigger action",
-            actionId: actionId,
+    public trigger(integration: string, triggerAction: string, userId: string, input: {}) {
+        const msg: NangoTriggerActionMessage = {
+            integration: integration,
+            triggeredAction: triggerAction,
             userId: userId,
-            params: params
-        });
+            input: input,
+            action: NangoMessageAction.TRIGGER_ACTION,
+        };
 
-        this.channel?.sendToQueue(this.sendQueueId, Buffer.from(json, 'utf8'))
+        this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(msg), 'utf8'))
     }
 
     public close() {
@@ -71,10 +73,11 @@ export default class Nango
     private loadConfig() {
         if (this.nangoConfig == null) { return; }
 
-        const configMsg: NangoLoadConfigMessage = { 
+        const msg: NangoLoadConfigMessage = { 
             config: this.nangoConfig,
             action: NangoMessageAction.LOAD_CONFIG,
         };
-        this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(configMsg)));
+
+        this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(msg)));
     }
 }
