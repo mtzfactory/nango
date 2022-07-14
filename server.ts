@@ -25,14 +25,11 @@ fs.cpSync('node_modules', path.join(serverIntegrationsRootDir, 'node_modules'), 
 
 // Setup logger
 let logger: winston.Logger;
-const nangoServerLogFormat = winston.format.printf((info) => {
-    return `${info['timestamp']} ${info['level']} [SERVER-MAIN] ${info['message']}`;
-});
-const nangoActionLogFormat = winston.format.printf((info) => {
-    return `${info['timestamp']} ${info['level']} [${info['integration']}] [${info['action']}] [user: ${info['userId']}] [Execution id #${info['actionExecutionId']}] ${info['message']}`;
-});
-
 function setupMainServerLogger() {
+    const nangoServerLogFormat = winston.format.printf((info) => {
+        return `${info['timestamp']} ${info['level']} [SERVER-MAIN] ${info['message']}`;
+    });
+
     logger = winston.createLogger({
         level: nangoConfig.main_server_log_level,
         format: winston.format.combine(
@@ -79,17 +76,6 @@ BEGIN
     UPDATE nango_connections SET lastmodiefied = STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW') WHERE uuid = NEW.uuid;
 END;
 `);
-
-// A helper function to generate IDs that are unique but still humanly readable
-function makeid(length: number) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-}
 
 /** -------------------- Inbound message handling -------------------- */
 
@@ -195,40 +181,15 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
         throw new Error(`Tried to trigger action '${nangoMsg.triggeredAction}' for integration '${nangoMsg.integration}' but the action file at '${actionFilePath}' does not exist`);
     }
 
-    // Setup the action logger
-    const actionLogger = winston.createLogger({
-        level: (integrationConfig?.log_level) ? integrationConfig.log_level : nangoConfig.default_action_log_level,
-        defaultMeta: {
-            integration: nangoMsg.integration,
-            action: nangoMsg.triggeredAction,
-            userId: connectionObject.userId,
-            actionExecutionId: makeid(8)
-        },
-        format: winston.format.combine(
-            winston.format.timestamp(),
-            nangoActionLogFormat
-        ),
-        transports: [
-            new winston.transports.File({ filename: path.join(serverIntegrationsRootDir, 'nango-server.log') })
-        ]
-    });
-
-    if (process.env['NODE_ENV'] !== 'production') {
-        actionLogger.add(new winston.transports.Console({
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.timestamp(),
-                nangoActionLogFormat
-            )
-        }));
-    }
+    const actionLogPath = path.join(serverIntegrationsRootDir, 'nango-server.log');
 
     // Load the JS file and execute the action
     const actionModule = await import(actionFilePath);
     const key = Object.keys(actionModule)[0] as string;
-    const actionInstance = new actionModule[key](nangoConfig, integrationConfig, connectionObject, actionLogger);
+    const actionInstance = new actionModule[key](nangoConfig, integrationConfig, connectionObject, actionLogPath, nangoMsg.triggeredAction);
     let result = await actionInstance.executeAction(nangoMsg.input);
-    console.log(`Result from action: ${JSON.stringify(result)}`);
+    actionInstance.markExecutionComplete();
+    logger.debug(`Result from action: ${JSON.stringify(result)}`);
 
     return result;
 }
