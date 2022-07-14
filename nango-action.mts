@@ -1,19 +1,21 @@
-import type { HttpHeader, HttpParams, NangoConnection, NangoIntegrationConfig } from "./nango-types.mjs";
+import type { HttpHeader, HttpParams, NangoConfig, NangoConnection, NangoIntegrationConfig } from "./nango-types.mjs";
 import { NangoCallAuthModes } from './nango-types.mjs';
 import type { Axios, Method } from 'axios';
 import axios from 'axios';
 
 class NangoAction {
 
+    private nangoConfig: NangoConfig;
     private integrationConfig: NangoIntegrationConfig;
     private userConnection: NangoConnection;
     private axiosInstance: Axios;
 
-    public constructor(integrationConfig: NangoIntegrationConfig, userConnection: NangoConnection) {
+    public constructor(nangoConfig: NangoConfig, integrationConfig: NangoIntegrationConfig, userConnection: NangoConnection) {
+        this.nangoConfig = nangoConfig;
         this.integrationConfig = integrationConfig;
         this.userConnection = userConnection;
         this.axiosInstance = new axios.Axios({
-            timeout: 100000 // Default timeout: 100 seconds
+            timeout: (this.integrationConfig.http_request_timeout_seconds) ? this.integrationConfig.http_request_timeout_seconds * 1000 : this.nangoConfig.default_http_request_timeout_seconds * 1000
         });
     }
 

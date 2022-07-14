@@ -1,5 +1,9 @@
 {
   "type": "module",
+  "scripts": {
+    "server": "env $(cat .env | xargs) node js/server.js",
+    "compile-integrations": "node utils/cli.js compile-integrations"
+  },
   "devDependencies": {
     "@tsconfig/node18-strictest-esm": "^1.0.0",
     "@types/amqplib": "^0.8.2",

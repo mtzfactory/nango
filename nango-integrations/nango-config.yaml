@@ -1,4 +1,1 @@
-nango_server_host: localhost
-nango_server_port: 5672
-
-nango_integrations_pkg_path: "./nango-integrations-compiled"
+default_http_request_timeout_seconds: 100

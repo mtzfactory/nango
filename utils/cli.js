@@ -17,4 +17,5 @@ switch (action) {
         fs.rmSync('../nango-integrations-compiled', {recursive: true, force: true});
         child_process.execSync(`../node_modules/typescript/bin/tsc ../nango-integrations/**/*.mts --outDir ../nango-integrations-compiled -t es2022 --moduleResolution node `);
         fs.cpSync('../nango-integrations/integrations.yaml', '../nango-integrations-compiled/nango-integrations/integrations.yaml');
+        fs.cpSync('../nango-integrations/nango-config.yaml', '../nango-integrations-compiled/nango-integrations/nango-config.yaml');
 }

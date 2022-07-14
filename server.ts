@@ -1,4 +1,4 @@
-import { NangoConfig, NangoConnection, NangoIntegrationsConfig, NangoLoadConfigMessage, NangoMessage, NangoMessageAction, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from './nango-types.mjs'; 
+import { NangoConfig, NangoConnection, NangoIntegrationsConfig, NangoMessage, NangoMessageAction, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from './nango-types.mjs'; 
 import * as fs from 'fs'
 import * as path from 'path'
 import { Channel, connect, ConsumeMessage } from 'amqplib'
@@ -20,7 +20,7 @@ const serverIntegrationsRootDir = '/tmp/nango-integrations-server';
 const serverNangoIntegrationsDir = path.join(serverIntegrationsRootDir, 'nango-integrations');
 fs.rmSync(serverIntegrationsRootDir, {recursive: true, force: true});
 fs.mkdirSync(serverIntegrationsRootDir);
-fs.cpSync('node_modules', path.join(serverIntegrationsRootDir, 'node_modules'), {recursive: true});
+fs.cpSync('node_modules', path.join(serverIntegrationsRootDir, 'node_modules'), {recursive: true}); // yes this is incredibly hacky. Will be fixed with proper packages setup
 
 // Prepare SQLLite DB
 let db = new DatabaseConstructor(path.join(serverIntegrationsRootDir, 'sqlite.db'));
@@ -57,11 +57,6 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
 
     let result = null;
     switch(nangoMessage.action) {
-        case NangoMessageAction.LOAD_CONFIG:
-            const configMessage = nangoMessage as NangoLoadConfigMessage;            
-            handleLoadConfig(configMessage);
-            break;
-
         case NangoMessageAction.REGISTER_CONNECTION:
             const registerMessage = nangoMessage as NangoRegisterConnectionMessage;
             handleRegisterConnection(registerMessage);
@@ -83,18 +78,20 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
     inboundRabbitChannel.ack(msg);
 }
 
-// - Stores copy of passed in nango-config.yaml for later reference
-// - Copies nango-integrations-compiled folder into a server-owned location
-// - Reads integrations.yaml and stores it for later reference
-function handleLoadConfig(configMsg: NangoLoadConfigMessage) {
-    nangoConfig = configMsg.config;
-
+function bootstrapServer() {
+    if (!process.env['NANGO_INTEGRATIONS_PACKAGE_DIR']) {
+        throw new Error(`Fatal server error, cannot bootstrap: NANGO_INTEGRATIONS_PACKAGE_DIR is not set.`);
+    }
+    
     // - Copies nango-integrations folder into a server-owned location
-    fs.cpSync(nangoConfig.nango_integrations_pkg_path, serverIntegrationsRootDir, {recursive: true}); // TODO: Rework this, it is an experimental feature of node >16.7
+    const nangoIntegrationsPackagePath = process.env['NANGO_INTEGRATIONS_PACKAGE_DIR'];
+    fs.cpSync(nangoIntegrationsPackagePath, serverIntegrationsRootDir, {recursive: true}); // TODO: Rework this, it is an experimental feature of node >16.7
+
+    // Read nango-config.yaml
+    nangoConfig = yaml.load(fs.readFileSync(path.join(serverNangoIntegrationsDir, 'nango-config.yaml')).toString()) as NangoConfig;
 
     // - Reads integrations.yaml and stores it for later reference
     loadedIntegrations = yaml.load(fs.readFileSync(path.join(serverNangoIntegrationsDir, 'integrations.yaml')).toString()) as NangoIntegrationsConfig;
-    console.log(`Loaded integrations:\n${JSON.stringify(loadedIntegrations)}`);
 }
 
 function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
@@ -149,9 +146,9 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
     // Load the JS file and execute the action
     const actionModule = await import(actionFilePath);
     const key = Object.keys(actionModule)[0] as string;
-    const actionInstance = new actionModule[key](integrationConfig, connectionObject);
+    const actionInstance = new actionModule[key](nangoConfig, integrationConfig, connectionObject);
     let result = await actionInstance.executeAction(nangoMsg.input);
-    console.log(`Result from action: ${result}`);
+    console.log(`Result from action: ${JSON.stringify(result)}`);
 
     return result;
 }
@@ -168,4 +165,5 @@ async function connectRabbit() {
 }
 
 // Alright, let's run!
+bootstrapServer(); // Must happen before we start to process messages
 inboundRabbitChannel = await connectRabbit();

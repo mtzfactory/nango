@@ -1,7 +1,5 @@
 import {connect, Channel, Connection} from 'amqplib'
-import {readFileSync} from 'fs'
-import * as yaml from 'js-yaml'
-import { NangoConfig, NangoLoadConfigMessage, NangoMessageAction, NangoTriggerActionMessage, NangoRegisterConnectionMessage } from './nango-types.mjs';
+import { NangoMessageAction, NangoTriggerActionMessage, NangoRegisterConnectionMessage } from './nango-types.mjs';
 
 export default class Nango
 {
@@ -10,22 +8,19 @@ export default class Nango
     private sendQueueId: string = 'server_inbound';
     private connection?: Connection;
     private channel?: Channel;
-    private configPath: string;
-    private nangoConfig?: NangoConfig;
     private nangoServerHost?: string;
     private nangoServerPort?: number;
 
     /** -------------------- Public Methods -------------------- */
 
-    constructor(configPath: string)
+    constructor(host: string, port?: number)
     {
-        this.configPath = configPath;
+        this.nangoServerHost = host;
+        this.nangoServerPort = (port) ? port : 5672;
     }
 
     public async connect() {
-        this.parseConfig();
         await this.connectRabbit();
-        this.loadConfig(); 
     }
 
     public registerConnection(integration: string, userId: string, oAuthAccessToken: string, additionalConfig: {}) {
@@ -64,20 +59,4 @@ export default class Nango
         await this.channel.assertQueue(this.sendQueueId);    
     }
 
-    private parseConfig() {
-        this.nangoConfig = yaml.load(readFileSync(this.configPath).toString()) as NangoConfig;
-        this.nangoServerHost = this.nangoConfig.nango_server_host;
-        this.nangoServerPort = this.nangoConfig.nango_server_port;
-    }
-
-    private loadConfig() {
-        if (this.nangoConfig == null) { return; }
-
-        const msg: NangoLoadConfigMessage = { 
-            config: this.nangoConfig,
-            action: NangoMessageAction.LOAD_CONFIG,
-        };
-
-        this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(msg)));
-    }
 }
