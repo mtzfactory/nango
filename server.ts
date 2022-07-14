@@ -1,21 +1,49 @@
-import { NangoConfig, NangoIntegrationsConfig, NangoLoadConfigMessage, NangoMessage, NangoMessageAction, NangoTriggerActionMessage } from './nango-types.js'; 
+import { NangoConfig, NangoIntegrationsConfig, NangoLoadConfigMessage, NangoMessage, NangoMessageAction, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from './nango-types.js'; 
 import * as fs from 'fs'
 import * as path from 'path'
-import {Channel, connect, ConsumeMessage} from 'amqplib'
+import { Channel, connect, ConsumeMessage } from 'amqplib'
 import * as yaml from 'js-yaml'
+import * as uuid from 'uuid'
+import DatabaseConstructor from 'better-sqlite3'
 
+/** -------------------- Server Internal Properties -------------------- */
+
+const inboundSeverQueue = 'server_inbound';
 let inboundRabbitChannel: Channel;
 
-// Reset & setup of server-owned location for nango-integrations
+// Server owned copies of nango-config.yaml and integrations.yaml for later reference
+let nangoConfig: NangoConfig;
+let loadedIntegrations: NangoIntegrationsConfig;
+
 // Should be moved to an env variable
 const serverIntegrationsRootDir = '/tmp/nango-integrations-server';
 const serverNangoIntegrationsDir = path.join(serverIntegrationsRootDir, 'nango-integrations');
 fs.rmSync(serverIntegrationsRootDir, {recursive: true, force: true});
 fs.mkdirSync(serverIntegrationsRootDir);
 
-// Server owned copies of nango-config.yaml and integrations.yaml for later reference
-let nangoConfig: NangoConfig;
-let loadedIntegrations: NangoIntegrationsConfig;
+// Prepare SQLLite DB
+let db = new DatabaseConstructor(path.join(serverIntegrationsRootDir, 'sqlite.db'));
+db.exec(`
+CREATE TABLE nango_connections (
+    uuid VARCHAR(36) NOT NULL,
+    integration TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    oauth_access_token TEXT NOT NULL,
+    additional_config TEXT,
+    datecreated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    lastmodified DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+PRIMARY KEY (uuid),
+UNIQUE (integration, user_id)
+);
+
+CREATE TRIGGER update_lastmodified_nango_connections
+AFTER UPDATE On nango_connections
+BEGIN
+    UPDATE nango_connections SET lastmodiefied = STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW') WHERE uuid = NEW.uuid;
+END;
+`);
+
+/** -------------------- Inbound message handling -------------------- */
 
 async function handleInboundMessage(msg: ConsumeMessage | null) {
     if (msg === null) {
@@ -31,6 +59,11 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
         case NangoMessageAction.LOAD_CONFIG:
             const configMessage = nangoMessage as NangoLoadConfigMessage;            
             handleLoadConfig(configMessage);
+            break;
+
+        case NangoMessageAction.REGISTER_CONNECTION:
+            const registerMessage = nangoMessage as NangoRegisterConnectionMessage;
+            handleRegisterConnection(registerMessage);
             break;
         
         case NangoMessageAction.TRIGGER_ACTION:
@@ -61,6 +94,21 @@ function handleLoadConfig(configMsg: NangoLoadConfigMessage) {
     // - Reads integrations.yaml and stores it for later reference
     loadedIntegrations = yaml.load(fs.readFileSync(path.join(serverNangoIntegrationsDir, 'integrations.yaml')).toString()) as NangoIntegrationsConfig;
     console.log(`Loaded integrations:\n${JSON.stringify(loadedIntegrations)}`);
+}
+
+function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
+
+    // Check if the connection already exists
+    const dbRes = db.prepare('SELECT uuid FROM nango_connections WHERE integration = ? AND user_id = ?').all([nangoMsg.integration, nangoMsg.userId]);
+    if (dbRes.length > 0) {
+        throw new Error(`Cannot register connection, connection for itegration '${nangoMsg.integration}' and user_id '${nangoMsg.userId}' already exists`);
+    }
+
+    db.prepare(`
+        INSERT INTO nango_connections
+        (uuid, integration, user_id, oauth_access_token, additional_config)
+        VALUES (?, ?, ?, ?, ?)
+    `).run([uuid.v4(), nangoMsg.integration, nangoMsg.userId, nangoMsg.oAuthAccessToken, JSON.stringify(nangoMsg.additionalConfig)]);
 }
 
 async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
@@ -95,7 +143,6 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
 }
 
 async function connectRabbit() {
-    const inboundSeverQueue = 'server_inbound';
     const rabbitConnection = await connect('amqp://localhost');
 
     const rabbitChannel = await rabbitConnection.createChannel();
