@@ -4,7 +4,7 @@ class SlackNotifyAction extends NangoAction {
 
     override async executeAction(input: any) {
 
-        console.log(`SlackNotifyAction has been called with input:\n${JSON.stringify(input)}`);
+        this.logger.info(`SlackNotifyAction has been called with input:\n${JSON.stringify(input)}`);
 
         // Check that we have a channel id and a message in our input
 		if (input.channelId === undefined || input.msg === undefined) {
@@ -21,7 +21,7 @@ class SlackNotifyAction extends NangoAction {
 
 		var response = await this.httpRequest('chat.postMessage', 'POST', undefined, requestBody);
 
-		return response;
+		return "all good!";
     }
 
 }

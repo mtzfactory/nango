@@ -4,4 +4,4 @@ integrations:
       auth_mode: OAuth
       call_auth:
         mode: AUTH_HEADER_TOKEN
-      debug_level: INFO
+      log_level: debug

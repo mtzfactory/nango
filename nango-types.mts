@@ -3,7 +3,10 @@
 //////////////////////
 
 export interface NangoConfig {
-    default_http_request_timeout_seconds: number
+    default_http_request_timeout_seconds: number,
+    default_action_log_level: string,
+
+    main_server_log_level: string
 }
 
 //////////////////////
@@ -28,6 +31,7 @@ export interface NangoIntegrationConfig {
     auth_mode: NangoIntegrationAuthModes,
     call_auth: NangoCallAuth,
     http_request_timeout_seconds?: number,
+    log_level?: string,
 }
 
 export enum NangoCallAuthModes {

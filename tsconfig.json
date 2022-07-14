@@ -5,6 +5,7 @@
 
     "compilerOptions": {
         "checkJs": false,
+        "sourceMap": true,
         "outDir": "js",
         "types": [
             "amqplib",
