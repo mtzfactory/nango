@@ -19,6 +19,10 @@ class NangoAction {
         });
     }
 
+    protected getCurrentConnectionConfig() {
+        return this.userConnection;
+    }
+
     protected async httpRequest(endpoint: string, method: Method, params?: HttpParams, body?: any, headers?: HttpHeader) {
         const fullURL = new URL(endpoint, this.integrationConfig.base_url).href;
 
