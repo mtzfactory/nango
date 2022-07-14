@@ -1,6 +1,6 @@
 import type { HttpHeader, HttpParams, NangoConfig, NangoConnection, NangoIntegrationConfig } from "./nango-types.mjs";
 import { NangoCallAuthModes } from './nango-types.mjs';
-import type { Axios, Method } from 'axios';
+import type { Axios, AxiosResponse, Method } from 'axios';
 import axios from 'axios';
 
 class NangoAction {
@@ -46,7 +46,7 @@ class NangoAction {
 
         console.log(`HTTP call - URL: ${fullURL}\nHeader: ${JSON.stringify(finalHeaders)}\n`);
 
-        const promise = new Promise<any>((resolve, reject) => {
+        const promise = new Promise<AxiosResponse<any, any>>((resolve, reject) => {
             
             this.axiosInstance.request({
                 url: fullURL,
@@ -70,7 +70,7 @@ class NangoAction {
         return promise;
     }   
     
-    public async executeAction(input: any) {
+    public async executeAction(input: any): Promise<any> {
         console.log(`Default NangoAction - executeAction has been called. This is probably not what you intended. Passed input:\n${JSON.stringify(input)}`);
         return;
     }
