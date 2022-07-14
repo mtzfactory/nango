@@ -1,7 +1,7 @@
 import {connect, Channel, Connection} from 'amqplib'
 import {readFileSync} from 'fs'
 import * as yaml from 'js-yaml'
-import { NangoConfig, NangoLoadConfigMessage, NangoMessageAction, NangoTriggerActionMessage, NangoRegisterConnectionMessage } from './nango-types.js';
+import { NangoConfig, NangoLoadConfigMessage, NangoMessageAction, NangoTriggerActionMessage, NangoRegisterConnectionMessage } from './nango-types.mjs';
 
 export default class Nango
 {

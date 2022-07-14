@@ -1,4 +1,4 @@
-import { NangoConfig, NangoIntegrationsConfig, NangoLoadConfigMessage, NangoMessage, NangoMessageAction, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from './nango-types.js'; 
+import { NangoConfig, NangoConnection, NangoIntegrationsConfig, NangoLoadConfigMessage, NangoMessage, NangoMessageAction, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from './nango-types.mjs'; 
 import * as fs from 'fs'
 import * as path from 'path'
 import { Channel, connect, ConsumeMessage } from 'amqplib'
@@ -20,6 +20,7 @@ const serverIntegrationsRootDir = '/tmp/nango-integrations-server';
 const serverNangoIntegrationsDir = path.join(serverIntegrationsRootDir, 'nango-integrations');
 fs.rmSync(serverIntegrationsRootDir, {recursive: true, force: true});
 fs.mkdirSync(serverIntegrationsRootDir);
+fs.cpSync('node_modules', path.join(serverIntegrationsRootDir, 'node_modules'), {recursive: true});
 
 // Prepare SQLLite DB
 let db = new DatabaseConstructor(path.join(serverIntegrationsRootDir, 'sqlite.db'));
@@ -108,7 +109,7 @@ function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
         INSERT INTO nango_connections
         (uuid, integration, user_id, oauth_access_token, additional_config)
         VALUES (?, ?, ?, ?, ?)
-    `).run([uuid.v4(), nangoMsg.integration, nangoMsg.userId, nangoMsg.oAuthAccessToken, JSON.stringify(nangoMsg.additionalConfig)]);
+    `).run(uuid.v4(), nangoMsg.integration, nangoMsg.userId, nangoMsg.oAuthAccessToken, JSON.stringify(nangoMsg.additionalConfig));
 }
 
 async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
@@ -126,6 +127,19 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
         throw new Error(`Tried to trigger an action for an integration that does not exist: ${nangoMsg.integration}`);
     }
 
+    // Check if the connection exists
+    const connection = db.prepare('SELECT * FROM nango_connections WHERE integration = ? AND user_id = ?').get(nangoMsg.integration, nangoMsg.userId);
+    if (connection === null) {
+        throw new Error(`Tried to trigger action '${nangoMsg.triggeredAction}' for integration '${nangoMsg.integration}' with user_id '${nangoMsg.userId}' but no connection exists for this user_id and integration`);
+    }
+    const connectionObject = {
+        uuid: connection.uuid,
+        integration: connection.integration,
+        userId: connection.user_id,
+        oAuthAccessToken: connection.oauth_access_token,
+        additionalConfig: JSON.parse(connection.additional_config)
+    } as NangoConnection;
+
     // Check if the action (file) exists
     const actionFilePath = path.join(path.join(serverNangoIntegrationsDir, nangoMsg.integration), nangoMsg.triggeredAction + '.action.mjs');
     if (!fs.existsSync(actionFilePath)) {
@@ -135,7 +149,7 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
     // Load the JS file and execute the action
     const actionModule = await import(actionFilePath);
     const key = Object.keys(actionModule)[0] as string;
-    const actionInstance = new actionModule[key]();
+    const actionInstance = new actionModule[key](integrationConfig, connectionObject);
     let result = await actionInstance.executeAction(nangoMsg.input);
     console.log(`Result from action: ${result}`);
 

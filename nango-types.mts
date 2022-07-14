@@ -33,7 +33,7 @@ export interface NangoIntegrationConfig {
 }
 
 export enum NangoCallAuthModes {
-    AUTH_HEADER_TOKEN
+    AUTH_HEADER_TOKEN = "AUTH_HEADER_TOKEN"
 }
 
 export interface NangoCallAuth {
@@ -71,4 +71,38 @@ export interface NangoRegisterConnectionMessage extends NangoMessage {
     userId: string,
     oAuthAccessToken: string,
     additionalConfig: object,
+}
+
+
+//////////////////////
+// Varia
+//////////////////////
+
+export interface NangoConnection {
+    uuid: string,
+    integration: string,
+    userId: string,
+    oAuthAccessToken: string,
+    additionalConfig: object
+}
+
+export interface HttpHeader {
+    [key: string]: string
+}
+
+export interface HttpParams {
+    [key: string]: string
+}
+
+
+export enum HTTPMethods {
+    POST = "POST",
+    GET = "GET",
+    PUT = "PUT",
+    DELETE = "DELETE",
+    HEAD = "HEAD",
+    PATCH = "PATCH",
+    TRACE = "TRACE",
+    CONNECT = "CONNECT",
+    OPTIONS = "OPTIONS"
 }
