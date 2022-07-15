@@ -2,7 +2,9 @@
   "type": "module",
   "scripts": {
     "server": "env $(cat .env | xargs) node js/server.js",
-    "compile-integrations": "node utils/cli.js compile-integrations"
+    "compile-integrations": "node utils/cli.js compile-integrations",
+    "prettier-format": "prettier --config .prettierrc './**/*.ts' --write",
+    "prettier-watch": "onchange './**/*.ts' -- prettier --write {{changed}}"
   },
   "devDependencies": {
     "@tsconfig/node18-strictest-esm": "^1.0.0",
@@ -11,6 +13,8 @@
     "@types/js-yaml": "^4.0.5",
     "@types/node": "^18.0.3",
     "@types/uuid": "^8.3.4",
+    "onchange": "^7.1.0",
+    "prettier": "^2.7.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {
