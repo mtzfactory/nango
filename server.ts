@@ -18,7 +18,7 @@ import * as winston from 'winston';
 /** -------------------- Server Internal Properties -------------------- */
 
 const inboundSeverQueue = 'server_inbound';
-const inboundRabbitChannel: Channel | null = null;
+let inboundRabbitChannel: Channel | null = null;
 
 // Server owned copies of nango-config.yaml and integrations.yaml for later reference
 let nangoConfig: NangoConfig;
