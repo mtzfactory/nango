@@ -1,6 +1,6 @@
-import Nango from '../nango-node.js';
+import Nango from '../dist/nango.js';
 
-const nango: Nango = new Nango('localhost');
+const nango = new Nango('localhost');
 await nango.connect();
 
 nango.registerConnection(

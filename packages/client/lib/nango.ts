@@ -3,7 +3,7 @@ import {
   NangoMessageAction,
   NangoTriggerActionMessage,
   NangoRegisterConnectionMessage
-} from './nango-types.mjs';
+} from '@nangohq/core';
 
 export default class Nango {
   /** -------------------- Private Properties -------------------- */

@@ -6,7 +6,7 @@ import {
   NangoMessageAction,
   NangoRegisterConnectionMessage,
   NangoTriggerActionMessage
-} from './nango-types.mjs';
+} from '@nangohq/core';
 import * as fs from 'fs';
 import * as path from 'path';
 import { connect, ConsumeMessage, Channel } from 'amqplib';
@@ -146,6 +146,7 @@ function bootstrapServer() {
   // - Copies nango-integrations folder into a server-owned location
   const nangoIntegrationsPackagePath =
     process.env['NANGO_INTEGRATIONS_PACKAGE_DIR'];
+
   fs.cpSync(nangoIntegrationsPackagePath, serverIntegrationsRootDir, {
     recursive: true
   }); // TODO: Rework this, it is an experimental feature of node >16.7
@@ -266,7 +267,7 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
   return result;
 }
 
-async function connectRabbit() {
+async function connectRabbit(): Promise<Channel> {
   const rabbitConnection = await connect('amqp://localhost');
 
   const rabbitChannel = await rabbitConnection.createChannel();
@@ -279,4 +280,5 @@ async function connectRabbit() {
 
 // Alright, let's run!
 bootstrapServer(); // Must happen before we start to process messages
+
 inboundRabbitChannel = await connectRabbit();

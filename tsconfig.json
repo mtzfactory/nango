@@ -1,15 +1,10 @@
 {
-    "extends": "@tsconfig/node18-strictest-esm/tsconfig.json",
-
-    "exclude": ["nango-integrations"],
-
-    "compilerOptions": {
-        "checkJs": false,
-        "sourceMap": true,
-        "outDir": "js",
-        "types": [
-            "amqplib",
-            "node"
-        ]
-    }
+  "extends": "@tsconfig/node18-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    "incremental": true,
+    "declaration": true,
+    "sourceMap": true,
+    "composite": true,
+    "checkJs": false
+  }
 }

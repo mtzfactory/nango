@@ -1,0 +1,17 @@
+{
+  "name": "@nangohq/client",
+  "version": "0.1.0",
+  "description": "Nango's NodeJS client.",
+  "type": "module",
+  "main": "dist/nango.js",
+  "bin": {
+    "client": "bin/raw-msg-pusher.js"
+  },
+  "keywords": [],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "dependencies": {
+    "@nango/core": "0.1.0",
+    "amqplib": "^0.10.0",
+    "@types/amqplib": "^0.8.2"
+  }
+}
