@@ -8,7 +8,7 @@ import {
 export default class Nango {
   /** -------------------- Private Properties -------------------- */
 
-  private sendQueueId: string = 'server_inbound';
+  private sendQueueId = 'server_inbound';
   private connection?: Connection;
   private channel?: Channel;
   private nangoServerHost?: string;
@@ -29,7 +29,7 @@ export default class Nango {
     integration: string,
     userId: string,
     oAuthAccessToken: string,
-    additionalConfig: {}
+    additionalConfig: Record<string, unknown>
   ) {
     const msg: NangoRegisterConnectionMessage = {
       integration: integration,
@@ -49,7 +49,7 @@ export default class Nango {
     integration: string,
     triggerAction: string,
     userId: string,
-    input: {}
+    input: Record<string, unknown>
   ) {
     const msg: NangoTriggerActionMessage = {
       integration: integration,

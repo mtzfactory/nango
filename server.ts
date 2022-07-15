@@ -9,7 +9,7 @@ import {
 } from './nango-types.mjs';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Channel, connect, ConsumeMessage } from 'amqplib';
+import { connect, ConsumeMessage, Channel } from 'amqplib';
 import * as yaml from 'js-yaml';
 import * as uuid from 'uuid';
 import DatabaseConstructor from 'better-sqlite3';
@@ -18,7 +18,7 @@ import * as winston from 'winston';
 /** -------------------- Server Internal Properties -------------------- */
 
 const inboundSeverQueue = 'server_inbound';
-let inboundRabbitChannel: Channel;
+const inboundRabbitChannel: Channel | null = null;
 
 // Server owned copies of nango-config.yaml and integrations.yaml for later reference
 let nangoConfig: NangoConfig;
@@ -76,7 +76,7 @@ function setupMainServerLogger() {
 }
 
 // Prepare SQLLite DB
-let db = new DatabaseConstructor(
+const db = new DatabaseConstructor(
   path.join(serverIntegrationsRootDir, 'sqlite.db')
 );
 db.exec(`
@@ -112,27 +112,28 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
 
   let result = null;
   switch (nangoMessage.action) {
-    case NangoMessageAction.REGISTER_CONNECTION:
+    case NangoMessageAction.REGISTER_CONNECTION: {
       const registerMessage = nangoMessage as NangoRegisterConnectionMessage;
       handleRegisterConnection(registerMessage);
       break;
-
-    case NangoMessageAction.TRIGGER_ACTION:
+    }
+    case NangoMessageAction.TRIGGER_ACTION: {
       const triggerMessage = nangoMessage as NangoTriggerActionMessage;
       result = await handleTriggerAction(triggerMessage);
       break;
-
-    default:
+    }
+    default: {
       throw new Error(
         `Received inbound server message with unknown action: ${nangoMessage.action}`
       );
+    }
   }
 
   if (result !== null) {
     // Send response back to client
   }
 
-  inboundRabbitChannel.ack(msg);
+  inboundRabbitChannel?.ack(msg);
 }
 
 function bootstrapServer() {
@@ -200,7 +201,7 @@ function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
 async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
   // Check if the integration exists
   let integrationConfig = null;
-  for (let integration of loadedIntegrations.integrations) {
+  for (const integration of loadedIntegrations.integrations) {
     const integrationName = Object.keys(integration)[0];
     if (integrationName === nangoMsg.integration) {
       integrationConfig = integration[integrationName];
@@ -258,7 +259,7 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
     actionLogPath,
     nangoMsg.triggeredAction
   );
-  let result = await actionInstance.executeAction(nangoMsg.input);
+  const result = await actionInstance.executeAction(nangoMsg.input);
   actionInstance.markExecutionComplete();
   logger.debug(`Result from action: ${JSON.stringify(result)}`);
 
