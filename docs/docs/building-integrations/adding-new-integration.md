@@ -10,3 +10,7 @@ This is a quick step by step guide on how to add a new Integration to Nango. It 
 ## Adding a new Integration from scratch
 
 ### Step 1: Create the `nango-integrations` folder if it does not already exist
+
+- Adding integration & scaffolds
+- Integration config: Auth, base url, 
+- Adding integrations from blueprints

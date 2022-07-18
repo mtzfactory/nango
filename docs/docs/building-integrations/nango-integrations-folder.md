@@ -60,7 +60,7 @@ Many keys here are optional, for all the details and possibilities please consul
 ### `package.json`
 This file makes `nango-integrations` an npm package, if you are familiar with npm packages and the `package.json` format you will find all the usual keys in here. If not don't worry: To use Nango you don't need to understand its content and we have guides with step by step commands for the few occasions where you do need to interact with it.
 
-## Action files in Nango
+## Action files in Nango {#actionFiles}
 The main components in the [Nango framework](framework-overview.md) are Actions: Small pieces of code which form the bridge between your application and an external system.
 
 Nango executes Actions inside of the Nango runtime, you can think of this very similar to how a web framework gives you a structure around handling incoming HTTP requests.

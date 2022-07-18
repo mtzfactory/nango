@@ -20,7 +20,7 @@ With Nango you get:
 and much more.
 
 :::tip
-Juast want to see Nango in action? Try Nango in **5 minutes** with our [Quickstart Guide](quickstart.md) 🏃‍♂️
+Just want to see Nango in action? Try Nango in **5 minutes** with our [Quickstart Guide](quickstart.md) 🏃‍♂️
 
 Or read on for more details on why we built Nango
 :::

@@ -43,8 +43,8 @@ All community and Nango contributed Blueprints are licensed under the same permi
 
 Blueprints that are shared on Nango always contain the following details:
 - Basic API configuration for the Integration (e.g. base API URL, authentication details, rate-limit metadata)
-- Implementations of specific Actions for the Integration
-- A brief description of each impleneted Action, it's input objects and information on the author & maintainer
+- Implementation(s) of specific Action(s) for the Integration
+- A brief description of each implemented Action, it's input objects and information on the author & maintainer
 
 Because we know that Blueprints are only helpful when they are maintained and work we take QA very seriously:
 - All Blueprints are hosted in our main Nango repository and undergo a QA review by a Nango maintainer before merging
@@ -57,7 +57,7 @@ Because we know that Blueprints are only helpful when they are maintained and wo
 Modelling Integrations in Nango should be easy in most cases and we have found that the framework lends itself well to almost all uses cases for native integrations. If you are just getting started with Nango or native integrations in general we hope these best practices set you on a path of success from day one.
 
 ### Keep Actions short and focused
-Actions are written in Typescript [[LINK TO DETAILS]] and the vast majority of Actions are less than 200 lines of code. They should focus on the data exchange with the external system and focus on one specific interaction with it. Good examples are:
+[Actions are written in Typescript](nango-integrations-folder.md#actionFiles) and the vast majority of Actions are less than 200 lines of code. They should focus on the data exchange with the external system and focus on one specific interaction with it. Good examples are:
 - Import all contacts from a CRM (which may mean dealing with pagination etc.)
 - Post a message to a slack channel (where the message and channel ID get passed in as inputs)
 - Load the X last commmits of a GitHub repo (where X and the repo identifier are passed in as inputs)
