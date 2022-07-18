@@ -1,16 +1,23 @@
-import { connect, Channel, Connection } from 'amqplib';
+import { connect, Channel, Connection, ConsumeMessage } from 'amqplib';
 import {
   NangoMessageAction,
   NangoTriggerActionMessage,
-  NangoRegisterConnectionMessage
+  NangoRegisterConnectionMessage,
+  NangoTriggerActionResponse
 } from '@nangohq/core';
+
+interface TriggerResponseCallback {
+  (response: NangoTriggerActionResponse): void;
+}
 
 export default class Nango {
   /** -------------------- Private Properties -------------------- */
 
   private sendQueueId = 'server_inbound';
+  private receiveQueueId = 'server_outbound';
   private connection?: Connection;
-  private channel?: Channel;
+  private sendChannel?: Channel;
+  private receiveChannel?: Channel;
   private nangoServerHost?: string;
   private nangoServerPort?: number;
 
@@ -39,17 +46,18 @@ export default class Nango {
       action: NangoMessageAction.REGISTER_CONNECTION
     };
 
-    this.channel?.sendToQueue(
+    this.sendChannel?.sendToQueue(
       this.sendQueueId,
       Buffer.from(JSON.stringify(msg), 'utf8')
     );
   }
 
-  public trigger(
+  public async trigger(
     integration: string,
     triggerAction: string,
     userId: string,
-    input: Record<string, unknown>
+    input: Record<string, unknown>,
+    callback?: TriggerResponseCallback
   ) {
     const msg: NangoTriggerActionMessage = {
       integration: integration,
@@ -59,9 +67,29 @@ export default class Nango {
       action: NangoMessageAction.TRIGGER_ACTION
     };
 
-    this.channel?.sendToQueue(
+    var correlationId = generateUuid();
+
+    this.receiveChannel?.consume(
+      this.receiveQueueId,
+      function (msg: ConsumeMessage | null) {
+        if (msg?.properties.correlationId == correlationId) {
+          if (callback != null) {
+            callback({ content: msg.content.toString() });
+          }
+        }
+      },
+      {
+        noAck: true
+      }
+    );
+
+    this.sendChannel?.sendToQueue(
       this.sendQueueId,
-      Buffer.from(JSON.stringify(msg), 'utf8')
+      Buffer.from(JSON.stringify(msg), 'utf8'),
+      {
+        correlationId: correlationId,
+        replyTo: this.receiveQueueId
+      }
     );
   }
 
@@ -75,7 +103,19 @@ export default class Nango {
     this.connection = await connect(
       'amqp://' + this.nangoServerHost + ':' + this.nangoServerPort
     );
-    this.channel = await this.connection.createChannel();
-    await this.channel.assertQueue(this.sendQueueId);
+
+    this.sendChannel = await this.connection.createChannel();
+    await this.sendChannel.assertQueue(this.sendQueueId);
+
+    this.receiveChannel = await this.connection.createChannel();
+    await this.receiveChannel.assertQueue(this.receiveQueueId);
   }
+}
+
+function generateUuid() {
+  return (
+    Math.random().toString() +
+    Math.random().toString() +
+    Math.random().toString()
+  );
 }

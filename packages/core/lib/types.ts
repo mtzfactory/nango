@@ -3,10 +3,10 @@
 //////////////////////
 
 export interface NangoConfig {
-    default_http_request_timeout_seconds: number,
-    default_action_log_level: string,
+  default_http_request_timeout_seconds: number;
+  default_action_log_level: string;
 
-    main_server_log_level: string
+  main_server_log_level: string;
 }
 
 //////////////////////
@@ -14,33 +14,33 @@ export interface NangoConfig {
 //////////////////////
 
 export interface NangoIntegrationsConfig {
-    integrations: Array<NangoIntegrationWrapper>
+  integrations: Array<NangoIntegrationWrapper>;
 }
 
 export enum NangoIntegrationAuthModes {
-    BASIC_AUTH,
-    OAUTH
+  BASIC_AUTH,
+  OAUTH
 }
 
 export interface NangoIntegrationWrapper {
-    [key: string]: NangoIntegrationConfig
+  [key: string]: NangoIntegrationConfig;
 }
 
 export interface NangoIntegrationConfig {
-    base_url: string,
-    auth_mode: NangoIntegrationAuthModes,
-    call_auth: NangoCallAuth,
-    http_request_timeout_seconds?: number,
-    log_level?: string,
+  base_url: string;
+  auth_mode: NangoIntegrationAuthModes;
+  call_auth: NangoCallAuth;
+  http_request_timeout_seconds?: number;
+  log_level?: string;
 }
 
 export enum NangoCallAuthModes {
-    AUTH_HEADER_TOKEN = "AUTH_HEADER_TOKEN"
+  AUTH_HEADER_TOKEN = 'AUTH_HEADER_TOKEN'
 }
 
 export interface NangoCallAuth {
-    mode: NangoCallAuthModes,
-    header_name?: string
+  mode: NangoCallAuthModes;
+  header_name?: string;
 }
 
 //////////////////////
@@ -48,58 +48,60 @@ export interface NangoCallAuth {
 //////////////////////
 
 export enum NangoMessageAction {
-    REGISTER_CONNECTION = "REGISTER_CONNECTION",
-    TRIGGER_ACTION = "TRIGGER_ACTION"
+  REGISTER_CONNECTION = 'REGISTER_CONNECTION',
+  TRIGGER_ACTION = 'TRIGGER_ACTION'
 }
 
 export interface NangoMessage {
-    action: NangoMessageAction
+  action: NangoMessageAction;
 }
 
 export interface NangoTriggerActionMessage extends NangoMessage {
-    integration: string,
-    triggeredAction: string,
-    userId: string,
-    input: object
+  integration: string;
+  triggeredAction: string;
+  userId: string;
+  input: object;
 }
 
 export interface NangoRegisterConnectionMessage extends NangoMessage {
-    integration: string,
-    userId: string,
-    oAuthAccessToken: string,
-    additionalConfig: object,
+  integration: string;
+  userId: string;
+  oAuthAccessToken: string;
+  additionalConfig: object;
 }
 
+export interface NangoTriggerActionResponse {
+  content: string;
+}
 
 //////////////////////
 // Varia
 //////////////////////
 
 export interface NangoConnection {
-    uuid: string,
-    integration: string,
-    userId: string,
-    oAuthAccessToken: string,
-    additionalConfig: object
+  uuid: string;
+  integration: string;
+  userId: string;
+  oAuthAccessToken: string;
+  additionalConfig: object;
 }
 
 export interface HttpHeader {
-    [key: string]: string
+  [key: string]: string;
 }
 
 export interface HttpParams {
-    [key: string]: string
+  [key: string]: string;
 }
 
-
 export enum HTTPMethods {
-    POST = "POST",
-    GET = "GET",
-    PUT = "PUT",
-    DELETE = "DELETE",
-    HEAD = "HEAD",
-    PATCH = "PATCH",
-    TRACE = "TRACE",
-    CONNECT = "CONNECT",
-    OPTIONS = "OPTIONS"
+  POST = 'POST',
+  GET = 'GET',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  HEAD = 'HEAD',
+  PATCH = 'PATCH',
+  TRACE = 'TRACE',
+  CONNECT = 'CONNECT',
+  OPTIONS = 'OPTIONS'
 }

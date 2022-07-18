@@ -11,7 +11,8 @@
     "prettier-watch": "onchange './**/*.ts' -- prettier --write {{changed}}",
     "lint": "eslint . --ext .ts",
     "server": "env $(cat .env | xargs) node packages/server/dist/server.js",
-    "compile-integrations": "node packages/cli/dist/cli.js compile-integrations"
+    "compile-integrations": "node packages/cli/dist/cli.js compile-integrations",
+    "sample": "node packages/client/bin/load-sample.js"
   },
   "devDependencies": {
     "@tsconfig/node18-strictest-esm": "^1.0.0",
