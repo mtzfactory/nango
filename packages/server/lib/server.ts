@@ -18,7 +18,9 @@ import * as winston from 'winston';
 /** -------------------- Server Internal Properties -------------------- */
 
 const inboundSeverQueue = 'server_inbound';
+const outboundSeverQueue = 'server_outbound';
 let inboundRabbitChannel: Channel | null = null;
+let outboundRabbitChannel: Channel | null = null;
 
 // Server owned copies of nango-config.yaml and integrations.yaml for later reference
 let nangoConfig: NangoConfig;
@@ -120,6 +122,15 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
     case NangoMessageAction.TRIGGER_ACTION: {
       const triggerMessage = nangoMessage as NangoTriggerActionMessage;
       result = await handleTriggerAction(triggerMessage);
+
+      outboundRabbitChannel?.sendToQueue(
+        msg.properties.replyTo,
+        Buffer.from(JSON.stringify(result), 'utf8'),
+        {
+          correlationId: msg.properties.correlationId
+        }
+      );
+
       break;
     }
     default: {
@@ -267,18 +278,18 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
   return result;
 }
 
-async function connectRabbit(): Promise<Channel> {
+async function connectRabbit() {
   const rabbitConnection = await connect('amqp://localhost');
 
-  const rabbitChannel = await rabbitConnection.createChannel();
-  await rabbitChannel.assertQueue(inboundSeverQueue);
+  inboundRabbitChannel = await rabbitConnection.createChannel();
+  await inboundRabbitChannel.assertQueue(inboundSeverQueue);
 
-  rabbitChannel.consume(inboundSeverQueue, handleInboundMessage);
+  inboundRabbitChannel.consume(inboundSeverQueue, handleInboundMessage);
 
-  return rabbitChannel;
+  outboundRabbitChannel = await rabbitConnection.createChannel();
+  await outboundRabbitChannel.assertQueue(outboundSeverQueue);
 }
 
 // Alright, let's run!
 bootstrapServer(); // Must happen before we start to process messages
-
-inboundRabbitChannel = await connectRabbit();
+connectRabbit();

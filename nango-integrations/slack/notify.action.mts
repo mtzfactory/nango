@@ -24,8 +24,8 @@ class SlackNotifyAction extends NangoAction {
       undefined,
       requestBody
     );
-    console.log(response);
-    return 'all good!';
+
+    return response.statusText;
   }
 }
 
