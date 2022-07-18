@@ -1,7 +1,6 @@
 integrations:
   - slack:
       base_url: https://slack.com/api/
-      auth_mode: OAuth
       call_auth:
         mode: AUTH_HEADER_TOKEN
       log_level: debug
