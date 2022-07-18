@@ -248,7 +248,7 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
   // Check if the action (file) exists
   const actionFilePath = path.join(
     path.join(serverNangoIntegrationsDir, nangoMsg.integration),
-    nangoMsg.triggeredAction + '.action.mjs'
+    nangoMsg.triggeredAction + '.action.js'
   );
   if (!fs.existsSync(actionFilePath)) {
     throw new Error(

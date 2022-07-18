@@ -17,7 +17,7 @@ switch (action) {
       force: true
     });
     child_process.execSync(
-      `../../../node_modules/typescript/bin/tsc ../../../nango-integrations/**/*.mts --outDir ../../../nango-integrations-compiled --rootDir ../../.. -t es2022 --moduleResolution node `
+      `../../../node_modules/typescript/bin/tsc ../../../nango-integrations/**/*.ts --outDir ../../../nango-integrations-compiled --rootDir ../../.. -t es2022 --moduleResolution node `
     );
     fs.cpSync(
       '../../../nango-integrations/integrations.yaml',
@@ -26,5 +26,9 @@ switch (action) {
     fs.cpSync(
       '../../../nango-integrations/nango-config.yaml',
       '../../../nango-integrations-compiled/nango-integrations/nango-config.yaml'
+    );
+    fs.cpSync(
+      '../../../nango-integrations/package.json',
+      '../../../nango-integrations-compiled/nango-integrations/package.json'
     );
 }
