@@ -17,7 +17,7 @@ function closeConnection() {
 
 /** -------------------- Triger Actions -------------------- */
 
-function slack() {
+async function slack() {
   var integration = 'slack';
   var action = 'notify';
   var userId = '1';
