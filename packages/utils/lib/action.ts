@@ -5,8 +5,8 @@ import type {
   NangoConnection,
   NangoIntegrationConfig
 } from '@nangohq/core';
-import { NangoCallAuthModes } from '@nangohq/core';
-import * as winston from 'winston';
+import * as core from '@nangohq/core';
+import type * as winston from 'winston';
 import type { Axios, AxiosResponse, Method } from 'axios';
 import axios from 'axios';
 
@@ -28,23 +28,40 @@ class NangoAction {
     logPath: string,
     actionName: string
   ) {
+    this.executionStartTime = process.hrtime();
+
     this.nangoConfig = nangoConfig;
     this.integrationConfig = integrationConfig;
     this.userConnection = userConnection;
     this.actionName = actionName;
 
-    this.executionStartTime = process.hrtime();
-
-    this.setupLogger(logPath);
-    this.logger.info(
-      `Starting execution of action '${actionName}' in integration '${this.userConnection.integration}' for user_id '${this.userConnection.userId}'`
-    );
-
+    // Configure Axios
     this.axiosInstance = new axios.Axios({
       timeout: this.integrationConfig.http_request_timeout_seconds
         ? this.integrationConfig.http_request_timeout_seconds * 1000
         : this.nangoConfig.default_http_request_timeout_seconds * 1000
     });
+
+    // Setup logging
+    const log_level = this.integrationConfig?.log_level
+      ? this.integrationConfig.log_level
+      : this.nangoConfig.default_action_log_level;
+    const logFilePath = core.getServerLogFilePath(logPath);
+    const defaultMeta = {
+      integration: this.userConnection.integration,
+      action: this.actionName,
+      userId: this.userConnection.userId,
+      actionExecutionId: core.makeId(8)
+    };
+    this.logger = core.getLogger(
+      log_level,
+      core.nangoActionLogFormat,
+      logFilePath,
+      defaultMeta
+    );
+    this.logger.info(
+      `Starting execution of action '${actionName}' in integration '${this.userConnection.integration}' for user_id '${this.userConnection.userId}'`
+    );
   }
 
   // A bit hacky but found no other decent way to get this message logged
@@ -54,52 +71,6 @@ class NangoAction {
     this.logger.info(
       `Execution of action finished in ${elapsedMilliseconds.toFixed(3)} ms`
     );
-  }
-
-  private setupLogger(logPath: string) {
-    const nangoActionLogFormat = winston.format.printf((info) => {
-      return `${info['timestamp']} ${info['level']} [${info['integration']}] [${info['action']}] [user: ${info['userId']}] [execution id #${info['actionExecutionId']}] ${info['message']}`;
-    });
-
-    this.logger = winston.createLogger({
-      level: this.integrationConfig?.log_level
-        ? this.integrationConfig.log_level
-        : this.nangoConfig.default_action_log_level,
-      defaultMeta: {
-        integration: this.userConnection.integration,
-        action: this.actionName,
-        userId: this.userConnection.userId,
-        actionExecutionId: this.makeid(8)
-      },
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        nangoActionLogFormat
-      ),
-      transports: [new winston.transports.File({ filename: logPath })]
-    });
-
-    if (process.env['NODE_ENV'] !== 'production') {
-      this.logger.add(
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.timestamp(),
-            nangoActionLogFormat
-          )
-        })
-      );
-    }
-  }
-
-  // A helper function to generate IDs that are unique but still humanly readable
-  private makeid(length: number) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
   }
 
   protected getCurrentConnectionConfig() {
@@ -127,7 +98,7 @@ class NangoAction {
 
     if (
       this.integrationConfig.call_auth.mode ===
-      NangoCallAuthModes.AUTH_HEADER_TOKEN
+      core.NangoCallAuthModes.AUTH_HEADER_TOKEN
     ) {
       finalHeaders[
         'Authorization'
@@ -143,7 +114,7 @@ class NangoAction {
     }
 
     const promise = new Promise<AxiosResponse<any, any>>((resolve, reject) => {
-      const requestId = this.makeid(8);
+      const requestId = core.makeId(8);
       this.logger.debug(
         `HTTP request #${requestId} - REQUEST\nURL: ${fullURL}\nHeaders:\n${JSON.stringify(
           finalHeaders,

@@ -1,19 +1,18 @@
 import {
   NangoConfig,
-  NangoConnection,
   NangoIntegrationsConfig,
   NangoMessage,
   NangoMessageAction,
   NangoRegisterConnectionMessage,
   NangoTriggerActionMessage
 } from '@nangohq/core';
+import * as core from '@nangohq/core';
 import * as fs from 'fs';
 import * as path from 'path';
 import { connect, ConsumeMessage, Channel } from 'amqplib';
 import * as yaml from 'js-yaml';
-import * as uuid from 'uuid';
-import DatabaseConstructor from 'better-sqlite3';
-import * as winston from 'winston';
+import type winston from 'winston';
+import { ConnectionsManager } from './connections.js';
 
 /** -------------------- Server Internal Properties -------------------- */
 
@@ -21,6 +20,9 @@ const inboundSeverQueue = 'server_inbound';
 const outboundSeverQueue = 'server_outbound';
 let inboundRabbitChannel: Channel | null = null;
 let outboundRabbitChannel: Channel | null = null;
+
+let logger: winston.Logger;
+let connectionsManager: ConnectionsManager;
 
 // Server owned copies of nango-config.yaml and integrations.yaml for later reference
 let nangoConfig: NangoConfig;
@@ -39,67 +41,6 @@ fs.cpSync(
   path.join(serverIntegrationsRootDir, 'node_modules'),
   { recursive: true }
 ); // yes this is incredibly hacky. Will be fixed with proper packages setup
-
-// Setup logger
-let logger: winston.Logger;
-function setupMainServerLogger() {
-  const nangoServerLogFormat = winston.format.printf((info) => {
-    return `${info['timestamp']} ${info['level']} [SERVER-MAIN] ${info['message']}`;
-  });
-
-  logger = winston.createLogger({
-    level: nangoConfig.main_server_log_level,
-    format: winston.format.combine(
-      winston.format.timestamp(),
-      nangoServerLogFormat
-    ),
-    transports: [
-      new winston.transports.File({
-        filename: path.join(serverIntegrationsRootDir, 'nango-server.log')
-      })
-    ]
-  });
-
-  if (process.env['NODE_ENV'] !== 'production') {
-    logger.add(
-      new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.colorize(),
-          winston.format.timestamp(),
-          nangoServerLogFormat
-        )
-      })
-    );
-  }
-
-  logger.silly(
-    'A SQL query goes to a bar, walks up to two tables and asks: "Can I join you?"'
-  );
-}
-
-// Prepare SQLLite DB
-const db = new DatabaseConstructor(
-  path.join(serverIntegrationsRootDir, 'sqlite.db')
-);
-db.exec(`
-CREATE TABLE nango_connections (
-    uuid VARCHAR(36) NOT NULL,
-    integration TEXT NOT NULL,
-    user_id TEXT NOT NULL,
-    oauth_access_token TEXT NOT NULL,
-    additional_config TEXT,
-    datecreated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    lastmodified DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-PRIMARY KEY (uuid),
-UNIQUE (integration, user_id)
-);
-
-CREATE TRIGGER update_lastmodified_nango_connections
-AFTER UPDATE On nango_connections
-BEGIN
-    UPDATE nango_connections SET lastmodiefied = STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW') WHERE uuid = NEW.uuid;
-END;
-`);
 
 /** -------------------- Inbound message handling -------------------- */
 
@@ -176,38 +117,39 @@ function bootstrapServer() {
       .toString()
   ) as NangoIntegrationsConfig;
 
+  // Setup connectionsManager
+  connectionsManager = new ConnectionsManager(
+    path.join(serverIntegrationsRootDir, 'server.db')
+  );
+
   // Must happen once config is loaded as it contains the log level
-  setupMainServerLogger();
+  logger = core.getLogger(
+    nangoConfig.main_server_log_level,
+    core.nangoServerLogFormat,
+    core.getServerLogFilePath(serverIntegrationsRootDir)
+  );
 
   logger.info('Server ready!');
 }
 
 function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
   // Check if the connection already exists
-  const dbRes = db
-    .prepare(
-      'SELECT uuid FROM nango_connections WHERE integration = ? AND user_id = ?'
-    )
-    .all([nangoMsg.integration, nangoMsg.userId]);
-  if (dbRes.length > 0) {
+  const connection = connectionsManager.getConnection(
+    nangoMsg.userId,
+    nangoMsg.integration
+  );
+  if (connection !== undefined) {
     logger.warn(
       `Attempt to register an already-existing connection (integration: ${nangoMsg.integration}, user_id: ${nangoMsg.userId})`
     );
     return;
   }
 
-  db.prepare(
-    `
-        INSERT INTO nango_connections
-        (uuid, integration, user_id, oauth_access_token, additional_config)
-        VALUES (?, ?, ?, ?, ?)
-    `
-  ).run(
-    uuid.v4(),
-    nangoMsg.integration,
+  connectionsManager.registerConnection(
     nangoMsg.userId,
+    nangoMsg.integration,
     nangoMsg.oAuthAccessToken,
-    JSON.stringify(nangoMsg.additionalConfig)
+    nangoMsg.additionalConfig
   );
 }
 
@@ -228,23 +170,15 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
   }
 
   // Check if the connection exists
-  const connection = db
-    .prepare(
-      'SELECT * FROM nango_connections WHERE integration = ? AND user_id = ?'
-    )
-    .get(nangoMsg.integration, nangoMsg.userId);
+  const connection = connectionsManager.getConnection(
+    nangoMsg.userId,
+    nangoMsg.integration
+  );
   if (connection === undefined) {
     throw new Error(
       `Tried to trigger action '${nangoMsg.triggeredAction}' for integration '${nangoMsg.integration}' with user_id '${nangoMsg.userId}' but no connection exists for this user_id and integration`
     );
   }
-  const connectionObject = {
-    uuid: connection.uuid,
-    integration: connection.integration,
-    userId: connection.user_id,
-    oAuthAccessToken: connection.oauth_access_token,
-    additionalConfig: JSON.parse(connection.additional_config)
-  } as NangoConnection;
 
   // Check if the action (file) exists
   const actionFilePath = path.join(
@@ -257,19 +191,14 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
     );
   }
 
-  const actionLogPath = path.join(
-    serverIntegrationsRootDir,
-    'nango-server.log'
-  );
-
   // Load the JS file and execute the action
   const actionModule = await import(actionFilePath);
   const key = Object.keys(actionModule)[0] as string;
   const actionInstance = new actionModule[key](
     nangoConfig,
     integrationConfig,
-    connectionObject,
-    actionLogPath,
+    connection,
+    serverIntegrationsRootDir,
     nangoMsg.triggeredAction
   );
   const result = await actionInstance.executeAction(nangoMsg.input);
