@@ -1,6 +1,4 @@
 import {
-  NangoConfig,
-  NangoIntegrationsConfig,
   NangoMessage,
   NangoMessageAction,
   NangoRegisterConnectionMessage,
@@ -10,9 +8,9 @@ import * as core from '@nangohq/core';
 import * as fs from 'fs';
 import * as path from 'path';
 import { connect, ConsumeMessage, Channel } from 'amqplib';
-import * as yaml from 'js-yaml';
 import type winston from 'winston';
 import { ConnectionsManager } from './connections.js';
+import { IntegrationsManager } from './nango-integrations.js';
 
 /** -------------------- Server Internal Properties -------------------- */
 
@@ -22,24 +20,6 @@ let inboundRabbitChannel: Channel | null = null;
 let outboundRabbitChannel: Channel | null = null;
 
 let logger: winston.Logger;
-
-// Server owned copies of nango-config.yaml and integrations.yaml for later reference
-let nangoConfig: NangoConfig;
-let loadedIntegrations: NangoIntegrationsConfig;
-
-// Should be moved to an env variable
-const serverIntegrationsRootDir = '/tmp/nango-integrations-server';
-const serverNangoIntegrationsDir = path.join(
-  serverIntegrationsRootDir,
-  'nango-integrations'
-);
-fs.rmSync(serverIntegrationsRootDir, { recursive: true, force: true });
-fs.mkdirSync(serverIntegrationsRootDir);
-fs.cpSync(
-  'node_modules',
-  path.join(serverIntegrationsRootDir, 'node_modules'),
-  { recursive: true }
-); // yes this is incredibly hacky. Will be fixed with proper packages setup
 
 /** -------------------- Inbound message handling -------------------- */
 
@@ -88,44 +68,27 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
 }
 
 function bootstrapServer() {
-  if (!process.env['NANGO_INTEGRATIONS_PACKAGE_DIR']) {
+  const serverRootDir = process.env['NANGO_SERVER_ROOT_DIR'];
+  if (serverRootDir === undefined) {
     throw new Error(
-      `Fatal server error, cannot bootstrap: NANGO_INTEGRATIONS_PACKAGE_DIR is not set.`
+      `Fatal server error, cannot bootstrap: NANGO_SERVER_ROOT_DIR is not set.`
     );
   }
 
-  // - Copies nango-integrations folder into a server-owned location
-  const nangoIntegrationsPackagePath =
-    process.env['NANGO_INTEGRATIONS_PACKAGE_DIR'];
+  fs.rmSync(serverRootDir, { recursive: true, force: true });
+  fs.mkdirSync(serverRootDir);
 
-  fs.cpSync(nangoIntegrationsPackagePath, serverIntegrationsRootDir, {
-    recursive: true
-  }); // TODO: Rework this, it is an experimental feature of node >16.7
-
-  // Read nango-config.yaml
-  nangoConfig = yaml.load(
-    fs
-      .readFileSync(path.join(serverNangoIntegrationsDir, 'nango-config.yaml'))
-      .toString()
-  ) as NangoConfig;
-
-  // - Reads integrations.yaml and stores it for later reference
-  loadedIntegrations = yaml.load(
-    fs
-      .readFileSync(path.join(serverNangoIntegrationsDir, 'integrations.yaml'))
-      .toString()
-  ) as NangoIntegrationsConfig;
+  // Initiate nango-integrations package loading
+  IntegrationsManager.getInstance().init(serverRootDir);
 
   // Setup connectionsManager
-  ConnectionsManager.getInstance().init(
-    path.join(serverIntegrationsRootDir, 'server.db')
-  );
+  ConnectionsManager.getInstance().init(path.join(serverRootDir, 'server.db'));
 
   // Must happen once config is loaded as it contains the log level
   logger = core.getLogger(
-    nangoConfig.main_server_log_level,
+    IntegrationsManager.getInstance().getNangoConfig().main_server_log_level,
     core.nangoServerLogFormat,
-    core.getServerLogFilePath(serverIntegrationsRootDir)
+    core.getServerLogFilePath(serverRootDir)
   );
 
   logger.info('Server ready!');
@@ -153,14 +116,12 @@ function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
 }
 
 async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
+  const integrationsManager = IntegrationsManager.getInstance();
+
   // Check if the integration exists
-  let integrationConfig = null;
-  for (const integration of loadedIntegrations.integrations) {
-    const integrationName = Object.keys(integration)[0];
-    if (integrationName === nangoMsg.integration) {
-      integrationConfig = integration[integrationName];
-    }
-  }
+  let integrationConfig = integrationsManager.getIntegrationConfig(
+    nangoMsg.integration
+  );
 
   if (integrationConfig === null) {
     throw new Error(
@@ -180,24 +141,24 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
   }
 
   // Check if the action (file) exists
-  const actionFilePath = path.join(
-    path.join(serverNangoIntegrationsDir, nangoMsg.integration),
-    nangoMsg.triggeredAction + '.action.js'
-  );
-  if (!fs.existsSync(actionFilePath)) {
+  if (
+    integrationsManager.actionExists(nangoMsg.action, nangoMsg.triggeredAction)
+  ) {
     throw new Error(
-      `Tried to trigger action '${nangoMsg.triggeredAction}' for integration '${nangoMsg.integration}' but the action file at '${actionFilePath}' does not exist`
+      `Tried to trigger action '${nangoMsg.triggeredAction}' for integration '${nangoMsg.integration}' but the action file does not exist`
     );
   }
 
   // Load the JS file and execute the action
-  const actionModule = await import(actionFilePath);
-  const key = Object.keys(actionModule)[0] as string;
-  const actionInstance = new actionModule[key](
-    nangoConfig,
+  const actionModule = await integrationsManager.getActionModule(
+    nangoMsg.integration,
+    nangoMsg.triggeredAction
+  );
+  const actionInstance = new actionModule(
+    integrationsManager.getNangoConfig(),
     integrationConfig,
     connection,
-    serverIntegrationsRootDir,
+    process.env['NANGO_SERVER_ROOT_DIR'],
     nangoMsg.triggeredAction
   );
   const result = await actionInstance.executeAction(nangoMsg.input);
