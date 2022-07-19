@@ -13,16 +13,17 @@ export const nangoActionLogFormat = winston.format.printf((info) => {
 export function getLogger(
   log_level: string,
   logFormat: winston.Logform.Format,
-  logPath: string,
   defaultMeta?: object
 ): winston.Logger {
+  const serverRootDir = process.env['NANGO_SERVER_ROOT_DIR'];
+
   const logger = winston.createLogger({
     level: log_level,
     defaultMeta: defaultMeta,
     format: winston.format.combine(winston.format.timestamp(), logFormat),
     transports: [
       new winston.transports.File({
-        filename: logPath
+        filename: path.join(serverRootDir!, 'nango-server.log')
       })
     ]
   });
@@ -44,8 +45,4 @@ export function getLogger(
   );
 
   return logger;
-}
-
-export function getServerLogFilePath(serverRootPath: string) {
-  return path.join(serverRootPath, 'nango-server.log');
 }

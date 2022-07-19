@@ -25,7 +25,7 @@ class NangoAction {
     nangoConfig: NangoConfig,
     integrationConfig: NangoIntegrationConfig,
     userConnection: NangoConnection,
-    logPath: string,
+    logger: winston.Logger,
     actionName: string
   ) {
     this.executionStartTime = process.hrtime();
@@ -33,6 +33,7 @@ class NangoAction {
     this.nangoConfig = nangoConfig;
     this.integrationConfig = integrationConfig;
     this.userConnection = userConnection;
+    this.logger = logger;
     this.actionName = actionName;
 
     // Configure Axios
@@ -42,25 +43,8 @@ class NangoAction {
         : this.nangoConfig.default_http_request_timeout_seconds * 1000
     });
 
-    // Setup logging
-    const log_level = this.integrationConfig?.log_level
-      ? this.integrationConfig.log_level
-      : this.nangoConfig.default_action_log_level;
-    const logFilePath = core.getServerLogFilePath(logPath);
-    const defaultMeta = {
-      integration: this.userConnection.integration,
-      action: this.actionName,
-      userId: this.userConnection.userId,
-      actionExecutionId: core.makeId(8)
-    };
-    this.logger = core.getLogger(
-      log_level,
-      core.nangoActionLogFormat,
-      logFilePath,
-      defaultMeta
-    );
     this.logger.info(
-      `Starting execution of action '${actionName}' in integration '${this.userConnection.integration}' for user_id '${this.userConnection.userId}'`
+      `Starting execution of action '${this.actionName}' in integration '${this.userConnection.integration}' for user_id '${this.userConnection.userId}'`
     );
   }
 
@@ -184,7 +168,7 @@ class NangoAction {
   }
 
   public async executeAction(input: any): Promise<any> {
-    console.log(
+    this.logger.warn(
       `Default NangoAction - executeAction has been called. This is probably not what you intended. Passed input:\n${JSON.stringify(
         input
       )}`
