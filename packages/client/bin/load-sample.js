@@ -44,7 +44,7 @@ async function slack() {
 }
 
 // Internal blueprint docs: https://www.notion.so/nangohq/Github-Blueprint-ec92750f43804677a44e92d1cda1db5f
-function github() {
+async function github() {
   var integration = 'github';
   var action = 'star';
   var userId = '1';
@@ -52,20 +52,21 @@ function github() {
   var owner = 'nodejs';
   var repo = 'node';
 
-  nango.registerConnection(integration, userId, authToken);
-
-  nango.trigger(
+  let registerConnectionPromise = nango.registerConnection(
     integration,
-    action,
     userId,
-    {
-      owner: owner,
-      repo: repo
-    },
-    function (response) {
-      logResponse(integration, action, userId, response);
-    }
+    authToken
   );
+  registerConnectionPromise.catch((errorMsg) => {
+    console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
+  });
+
+  let result = await nango.trigger(integration, action, userId, {
+    owner: owner,
+    repo: repo
+  });
+
+  logResponse(integration, action, userId, result);
 }
 
 /** -------------------- Execution -------------------- */
