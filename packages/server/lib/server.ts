@@ -5,13 +5,13 @@ import {
   NangoRegisterConnectionMessage,
   NangoTriggerActionMessage
 } from '@nangohq/core';
-import * as core from '@nangohq/core';
+import * as logging from './logging.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import { connect, ConsumeMessage, Channel, Connection } from 'amqplib';
 import type winston from 'winston';
-import { ConnectionsManager } from './connections.js';
-import { IntegrationsManager } from './nango-integrations.js';
+import { ConnectionsManager } from './connections-manager.js';
+import { IntegrationsManager } from './integrations-manager.js';
 import {
   handleRegisterConnection,
   handleTriggerAction
@@ -91,10 +91,9 @@ function bootstrapServer() {
   ConnectionsManager.getInstance().init(path.join(serverRootDir, 'server.db'));
 
   // Must happen once config is loaded as it contains the log level
-  logger = core.getLogger(
+  logger = logging.getLogger(
     IntegrationsManager.getInstance().getNangoConfig().main_server_log_level,
-    core.nangoServerLogFormat,
-    core.getServerLogFilePath(serverRootDir)
+    logging.nangoServerLogFormat
   );
 
   logger.info('Server ready!');

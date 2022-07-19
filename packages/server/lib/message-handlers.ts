@@ -3,8 +3,10 @@ import type {
   NangoRegisterConnectionMessage,
   NangoTriggerActionMessage
 } from '@nangohq/core';
-import { ConnectionsManager } from './connections.js';
-import { IntegrationsManager } from './nango-integrations.js';
+import { ConnectionsManager } from './connections-manager.js';
+import { IntegrationsManager } from './integrations-manager.js';
+import * as logging from './logging.js';
+import * as core from '@nangohq/core';
 
 function createError(errorMsg: string): NangoMessageHandlerResult {
   return {
@@ -80,16 +82,34 @@ export async function handleTriggerAction(
     );
   }
 
+  // Create a logger for the execution of the action
+  const nangoConfig = integrationsManager.getNangoConfig();
+  const log_level = integrationConfig?.log_level
+    ? integrationConfig.log_level
+    : nangoConfig.default_action_log_level;
+  const defaultMeta = {
+    integration: connection.integration,
+    action: nangoMsg.triggeredAction,
+    userId: connection.userId,
+    actionExecutionId: core.makeId(8)
+  };
+
+  const actionLogger = logging.getLogger(
+    log_level,
+    logging.nangoActionLogFormat,
+    defaultMeta
+  );
+
   // Load the JS file and execute the action
   const actionModule = await integrationsManager.getActionModule(
     nangoMsg.integration,
     nangoMsg.triggeredAction
   );
   const actionInstance = new actionModule(
-    integrationsManager.getNangoConfig(),
+    nangoConfig,
     integrationConfig,
     connection,
-    process.env['NANGO_SERVER_ROOT_DIR'],
+    actionLogger,
     nangoMsg.triggeredAction
   );
   const result = await actionInstance.executeAction(nangoMsg.input);
