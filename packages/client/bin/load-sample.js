@@ -12,7 +12,7 @@ function closeConnection() {
   setTimeout(function () {
     nango.close();
     process.exit(0);
-  }, 500);
+  }, 1000);
 }
 
 /** -------------------- Triger Actions -------------------- */
@@ -65,6 +65,26 @@ async function github() {
     owner: owner,
     repo: repo
   });
+
+  logResponse(integration, action, userId, result);
+}
+
+async function asana() {
+  var integration = 'asana';
+  var action = 'users';
+  var userId = '1';
+  var authToken = '1/1191314943604817:be1e3305fda920917fbd5a85240f578c';
+
+  let registerConnectionPromise = nango.registerConnection(
+    integration,
+    userId,
+    authToken
+  );
+  registerConnectionPromise.catch((errorMsg) => {
+    console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
+  });
+
+  let result = await nango.trigger(integration, action, userId, {});
 
   logResponse(integration, action, userId, result);
 }

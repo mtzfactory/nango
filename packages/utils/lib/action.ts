@@ -116,7 +116,7 @@ class NangoAction {
     const promise = new Promise<AxiosResponse<any, any>>((resolve, reject) => {
       const requestId = core.makeId(8);
       this.logger.debug(
-        `HTTP request #${requestId} - REQUEST\nURL: ${fullURL}\nHeaders:\n${JSON.stringify(
+        `HTTP request #${requestId} - ${method} REQUEST\nURL: ${fullURL}\nHeaders:\n${JSON.stringify(
           finalHeaders,
           null,
           4

@@ -9,3 +9,8 @@ integrations:
       call_auth:
         mode: AUTH_HEADER_TOKEN
       log_level: debug
+  - asana:
+      base_url: https://app.asana.com/api/
+      call_auth:
+        mode: AUTH_HEADER_TOKEN
+      log_level: debug
