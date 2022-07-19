@@ -105,3 +105,8 @@ export enum HTTPMethods {
   CONNECT = 'CONNECT',
   OPTIONS = 'OPTIONS'
 }
+
+export enum ServerNangoIntegrationsDirInstallMethod {
+  LOCAL_COPY = 'LOCAL_COPY',
+  NPM_INSTALL = 'NPM_INSTALL'
+}
