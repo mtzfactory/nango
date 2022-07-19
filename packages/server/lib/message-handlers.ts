@@ -3,8 +3,8 @@ import type {
   NangoRegisterConnectionMessage,
   NangoTriggerActionMessage
 } from '@nangohq/core';
-import { ConnectionsManager } from './connections.js';
-import { IntegrationsManager } from './nango-integrations.js';
+import { ConnectionsManager } from './connections-manager.js';
+import { IntegrationsManager } from './integrations-manager.js';
 
 function createError(errorMsg: string): NangoMessageHandlerResult {
   return {

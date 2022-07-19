@@ -10,8 +10,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { connect, ConsumeMessage, Channel, Connection } from 'amqplib';
 import type winston from 'winston';
-import { ConnectionsManager } from './connections.js';
-import { IntegrationsManager } from './nango-integrations.js';
+import { ConnectionsManager } from './connections-manager.js';
+import { IntegrationsManager } from './integrations-manager.js';
 import {
   handleRegisterConnection,
   handleTriggerAction
