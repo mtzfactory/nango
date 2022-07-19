@@ -71,7 +71,7 @@ export interface NangoRegisterConnectionMessage extends NangoMessage {
 }
 
 export interface NangoTriggerActionResponse {
-  content: string;
+  content: any;
 }
 
 //////////////////////

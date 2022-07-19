@@ -3,30 +3,74 @@ import Nango from '../dist/nango.js';
 const nango = new Nango('localhost');
 await nango.connect();
 
-nango.registerConnection(
-  'slack',
-  '1',
-  'xoxb-2710526930471-3758349823251-Y8sw1nYPOpzI5yNOCtu6GbCc',
-  { key1: 'value1', complexKey: { subkey1: 'value1' } }
-);
+testSlackNotify();
+// testGithubStar();
 
-nango.trigger(
-  'slack',
-  'notify',
-  '1',
-  {
-    channelId: 'C02MPPQC8FK',
-    msg: 'Hello @channel, this is your friendly chat bot post to you through Nango :wave:'
-  },
-  function (response) {
-    console.log(
-      'Client logging the server response for the trigger action: ' +
-        response.content
-    );
-  }
-);
+closeConnection();
 
-setTimeout(function () {
-  nango.close();
-  process.exit(0);
-}, 500);
+/** -------------------- Utils -------------------- */
+
+function logResponse(integration, action, userId, response) {
+  console.log(
+    `${integration}.${action} response (userId: ${userId}): ${response.content.status} - ${response.content.statusText}`
+  );
+}
+
+function closeConnection() {
+  setTimeout(function () {
+    nango.close();
+    process.exit(0);
+  }, 500);
+}
+
+/** -------------------- Triger Actions -------------------- */
+
+function testSlackNotify() {
+  var integration = 'slack';
+  var action = 'notify';
+  var userId = '1';
+  var authToken = 'xoxb-2710526930471-3758349823251-Y8sw1nYPOpzI5yNOCtu6GbCc';
+  var channelId = 'C02MPPQC8FK';
+  var msg =
+    'Hello @channel, this is your friendly chat bot post to you through Nango :wave:';
+
+  nango.registerConnection(integration, userId, authToken);
+
+  nango.trigger(
+    integration,
+    action,
+    userId,
+    {
+      channelId: channelId,
+      msg: msg
+    },
+    function (response) {
+      logResponse(integration, action, userId, response);
+    }
+  );
+}
+
+// Internal blueprint docs: https://www.notion.so/nangohq/Github-Blueprint-ec92750f43804677a44e92d1cda1db5f
+function testGithubStar(integration, action, userId, authToken, owner, repo) {
+  var integration = 'github';
+  var action = 'star';
+  var userId = '1';
+  var authToken = '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';
+  var owner = 'nodejs';
+  var repo = 'node';
+
+  nango.registerConnection(integration, userId, authToken);
+
+  nango.trigger(
+    integration,
+    action,
+    userId,
+    {
+      owner: owner,
+      repo: repo
+    },
+    function (response) {
+      logResponse(integration, action, userId, response);
+    }
+  );
+}
