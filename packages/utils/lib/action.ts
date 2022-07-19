@@ -68,6 +68,13 @@ class NangoAction {
     body?: any,
     headers?: HttpHeader
   ) {
+    if (this.integrationConfig.base_url.slice(-1) !== '/') {
+      this.integrationConfig.base_url += '/';
+    }
+    if (endpoint.slice(0, 1) === '/') {
+      endpoint = endpoint.substring(1);
+    }
+
     const fullURL = new URL(endpoint, this.integrationConfig.base_url).href;
 
     let finalHeaders: HttpHeader = {};
