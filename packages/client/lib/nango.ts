@@ -74,7 +74,7 @@ export default class Nango {
       function (msg: ConsumeMessage | null) {
         if (msg?.properties.correlationId == correlationId) {
           if (callback != null) {
-            callback({ content: msg.content.toString() });
+            callback({ content: JSON.parse(msg.content.toString()) });
           }
         }
       },

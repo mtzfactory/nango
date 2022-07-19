@@ -25,7 +25,7 @@ class SlackNotifyAction extends NangoAction {
       requestBody
     );
 
-    return response.statusText;
+    return { status: response.status, statusText: response.statusText };
   }
 }
 

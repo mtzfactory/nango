@@ -164,6 +164,14 @@ class NangoAction {
         })
         .then((response) => {
           // TODO: This currently assumes the response.data is JSON, but it could be other data types (which would require other serialization for logging)
+          let bodyLog = '';
+
+          try {
+            bodyLog = JSON.stringify(JSON.parse(response.data), null, 4);
+          } catch {
+            bodyLog = 'Could not parse body.';
+          }
+
           this.logger.debug(
             `HTTP request #${requestId} - RESPONSE\nStatus: ${
               response.status
@@ -171,7 +179,7 @@ class NangoAction {
               response.headers,
               null,
               4
-            )}\nBody:\n${JSON.stringify(JSON.parse(response.data), null, 4)}`
+            )}\nBody:\n${bodyLog}`
           );
 
           resolve(response);
