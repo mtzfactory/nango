@@ -4,11 +4,16 @@ import DatabaseConstructor, { Database } from 'better-sqlite3';
 
 export class ConnectionsManager {
   /** -------------------- Private Properties -------------------- */
-  private db: Database;
+  private static _instance: ConnectionsManager;
+  private db!: Database;
 
   /** -------------------- Public Methods -------------------- */
 
-  public constructor(dbFilePath: string) {
+  public static getInstance() {
+    return this._instance || (this._instance = new this());
+  }
+
+  public init(dbFilePath: string) {
     this.db = new DatabaseConstructor(dbFilePath);
 
     // Check if the table exists, if not create it
@@ -70,6 +75,8 @@ export class ConnectionsManager {
   }
 
   /** -------------------- Private Methods -------------------- */
+
+  private constructor() {}
 
   private setupDb() {
     this.db.exec(`

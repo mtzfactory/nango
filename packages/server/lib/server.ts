@@ -22,7 +22,6 @@ let inboundRabbitChannel: Channel | null = null;
 let outboundRabbitChannel: Channel | null = null;
 
 let logger: winston.Logger;
-let connectionsManager: ConnectionsManager;
 
 // Server owned copies of nango-config.yaml and integrations.yaml for later reference
 let nangoConfig: NangoConfig;
@@ -118,7 +117,7 @@ function bootstrapServer() {
   ) as NangoIntegrationsConfig;
 
   // Setup connectionsManager
-  connectionsManager = new ConnectionsManager(
+  ConnectionsManager.getInstance().init(
     path.join(serverIntegrationsRootDir, 'server.db')
   );
 
@@ -134,7 +133,7 @@ function bootstrapServer() {
 
 function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
   // Check if the connection already exists
-  const connection = connectionsManager.getConnection(
+  const connection = ConnectionsManager.getInstance().getConnection(
     nangoMsg.userId,
     nangoMsg.integration
   );
@@ -145,7 +144,7 @@ function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
     return;
   }
 
-  connectionsManager.registerConnection(
+  ConnectionsManager.getInstance().registerConnection(
     nangoMsg.userId,
     nangoMsg.integration,
     nangoMsg.oAuthAccessToken,
@@ -170,7 +169,7 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
   }
 
   // Check if the connection exists
-  const connection = connectionsManager.getConnection(
+  const connection = ConnectionsManager.getInstance().getConnection(
     nangoMsg.userId,
     nangoMsg.integration
   );
