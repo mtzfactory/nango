@@ -12,7 +12,7 @@ closeConnection();
 
 function logResponse(integration, action, userId, response) {
   console.log(
-    `${integration}.${action} response (userId: ${userId}): ${response.content.status} - ${response.content.statusText}`
+    `${integration}.${action} response (userId: ${userId}): ${response.status} - ${response.statusText}`
   );
 }
 
@@ -25,7 +25,7 @@ function closeConnection() {
 
 /** -------------------- Triger Actions -------------------- */
 
-function testSlackNotify() {
+async function testSlackNotify() {
   var integration = 'slack';
   var action = 'notify';
   var userId = '1';
@@ -34,20 +34,21 @@ function testSlackNotify() {
   var msg =
     'Hello @channel, this is your friendly chat bot post to you through Nango :wave:';
 
-  nango.registerConnection(integration, userId, authToken);
-
-  nango.trigger(
+  let registerConnectionPromise = nango.registerConnection(
     integration,
-    action,
     userId,
-    {
-      channelId: channelId,
-      msg: msg
-    },
-    function (response) {
-      logResponse(integration, action, userId, response);
-    }
+    authToken
   );
+  registerConnectionPromise.catch((errorMsg) => {
+    console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
+  });
+
+  let result = await nango.trigger(integration, action, userId, {
+    channelId: channelId,
+    msg: msg
+  });
+
+  logResponse(integration, action, userId, result);
 }
 
 // Internal blueprint docs: https://www.notion.so/nangohq/Github-Blueprint-ec92750f43804677a44e92d1cda1db5f

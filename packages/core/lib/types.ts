@@ -70,8 +70,10 @@ export interface NangoRegisterConnectionMessage extends NangoMessage {
   additionalConfig: object;
 }
 
-export interface NangoTriggerActionResponse {
-  content: any;
+export interface NangoMessageHandlerResult {
+  success: boolean;
+  errorMsg?: string;
+  returnValue?: any;
 }
 
 //////////////////////

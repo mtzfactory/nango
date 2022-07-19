@@ -1,23 +1,27 @@
 import {
   NangoMessage,
   NangoMessageAction,
+  NangoMessageHandlerResult,
   NangoRegisterConnectionMessage,
   NangoTriggerActionMessage
 } from '@nangohq/core';
 import * as core from '@nangohq/core';
 import * as fs from 'fs';
 import * as path from 'path';
-import { connect, ConsumeMessage, Channel } from 'amqplib';
+import { connect, ConsumeMessage, Channel, Connection } from 'amqplib';
 import type winston from 'winston';
 import { ConnectionsManager } from './connections.js';
 import { IntegrationsManager } from './nango-integrations.js';
+import {
+  handleRegisterConnection,
+  handleTriggerAction
+} from './message-handlers.js';
 
 /** -------------------- Server Internal Properties -------------------- */
 
 const inboundSeverQueue = 'server_inbound';
-const outboundSeverQueue = 'server_outbound';
+let rabbitConnection: Connection;
 let inboundRabbitChannel: Channel | null = null;
-let outboundRabbitChannel: Channel | null = null;
 
 let logger: winston.Logger;
 
@@ -32,25 +36,21 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
 
   logger.debug(`Server received message:\n${msg.content.toString()}`);
 
-  let result = null;
+  let result: NangoMessageHandlerResult;
   switch (nangoMessage.action) {
     case NangoMessageAction.REGISTER_CONNECTION: {
       const registerMessage = nangoMessage as NangoRegisterConnectionMessage;
-      handleRegisterConnection(registerMessage);
+      result = handleRegisterConnection(registerMessage);
       break;
     }
     case NangoMessageAction.TRIGGER_ACTION: {
       const triggerMessage = nangoMessage as NangoTriggerActionMessage;
       result = await handleTriggerAction(triggerMessage);
-
-      outboundRabbitChannel?.sendToQueue(
-        msg.properties.replyTo,
-        Buffer.from(JSON.stringify(result), 'utf8'),
-        {
-          correlationId: msg.properties.correlationId
-        }
-      );
-
+      if (result.success) {
+        logger.debug(
+          `Result from action: ${JSON.stringify(result.returnValue)}`
+        );
+      }
       break;
     }
     default: {
@@ -60,11 +60,17 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
     }
   }
 
-  if (result !== null) {
-    // Send response back to client
-  }
-
   inboundRabbitChannel?.ack(msg);
+
+  const outboundRabbitChannel = await rabbitConnection.createChannel();
+  await outboundRabbitChannel.assertQueue(msg.properties.replyTo);
+  outboundRabbitChannel?.sendToQueue(
+    msg.properties.replyTo,
+    Buffer.from(JSON.stringify(result), 'utf8'),
+    {
+      correlationId: msg.properties.correlationId
+    }
+  );
 }
 
 function bootstrapServer() {
@@ -94,90 +100,13 @@ function bootstrapServer() {
   logger.info('Server ready!');
 }
 
-function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
-  // Check if the connection already exists
-  const connection = ConnectionsManager.getInstance().getConnection(
-    nangoMsg.userId,
-    nangoMsg.integration
-  );
-  if (connection !== undefined) {
-    logger.warn(
-      `Attempt to register an already-existing connection (integration: ${nangoMsg.integration}, user_id: ${nangoMsg.userId})`
-    );
-    return;
-  }
-
-  ConnectionsManager.getInstance().registerConnection(
-    nangoMsg.userId,
-    nangoMsg.integration,
-    nangoMsg.oAuthAccessToken,
-    nangoMsg.additionalConfig
-  );
-}
-
-async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
-  const integrationsManager = IntegrationsManager.getInstance();
-
-  // Check if the integration exists
-  let integrationConfig = integrationsManager.getIntegrationConfig(
-    nangoMsg.integration
-  );
-
-  if (integrationConfig === null) {
-    throw new Error(
-      `Tried to trigger an action for an integration that does not exist: ${nangoMsg.integration}`
-    );
-  }
-
-  // Check if the connection exists
-  const connection = ConnectionsManager.getInstance().getConnection(
-    nangoMsg.userId,
-    nangoMsg.integration
-  );
-  if (connection === undefined) {
-    throw new Error(
-      `Tried to trigger action '${nangoMsg.triggeredAction}' for integration '${nangoMsg.integration}' with user_id '${nangoMsg.userId}' but no connection exists for this user_id and integration`
-    );
-  }
-
-  // Check if the action (file) exists
-  if (
-    integrationsManager.actionExists(nangoMsg.action, nangoMsg.triggeredAction)
-  ) {
-    throw new Error(
-      `Tried to trigger action '${nangoMsg.triggeredAction}' for integration '${nangoMsg.integration}' but the action file does not exist`
-    );
-  }
-
-  // Load the JS file and execute the action
-  const actionModule = await integrationsManager.getActionModule(
-    nangoMsg.integration,
-    nangoMsg.triggeredAction
-  );
-  const actionInstance = new actionModule(
-    integrationsManager.getNangoConfig(),
-    integrationConfig,
-    connection,
-    process.env['NANGO_SERVER_ROOT_DIR'],
-    nangoMsg.triggeredAction
-  );
-  const result = await actionInstance.executeAction(nangoMsg.input);
-  actionInstance.markExecutionComplete();
-  logger.debug(`Result from action: ${JSON.stringify(result)}`);
-
-  return result;
-}
-
 async function connectRabbit() {
-  const rabbitConnection = await connect('amqp://localhost');
+  rabbitConnection = await connect('amqp://localhost');
 
   inboundRabbitChannel = await rabbitConnection.createChannel();
   await inboundRabbitChannel.assertQueue(inboundSeverQueue);
 
   inboundRabbitChannel.consume(inboundSeverQueue, handleInboundMessage);
-
-  outboundRabbitChannel = await rabbitConnection.createChannel();
-  await outboundRabbitChannel.assertQueue(outboundSeverQueue);
 }
 
 // Alright, let's run!

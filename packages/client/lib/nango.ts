@@ -1,14 +1,12 @@
-import { connect, Channel, Connection, ConsumeMessage } from 'amqplib';
+import { connect, Channel, Connection } from 'amqplib';
 import {
   NangoMessageAction,
   NangoTriggerActionMessage,
   NangoRegisterConnectionMessage,
-  NangoTriggerActionResponse
+  NangoMessageHandlerResult,
+  NangoMessage
 } from '@nangohq/core';
-
-interface TriggerResponseCallback {
-  (response: NangoTriggerActionResponse): void;
-}
+import * as core from '@nangohq/core';
 
 export default class Nango {
   /** -------------------- Private Properties -------------------- */
@@ -32,7 +30,7 @@ export default class Nango {
     await this.connectRabbit();
   }
 
-  public registerConnection(
+  public async registerConnection(
     integration: string,
     userId: string,
     oAuthAccessToken: string,
@@ -46,18 +44,14 @@ export default class Nango {
       action: NangoMessageAction.REGISTER_CONNECTION
     };
 
-    this.sendChannel?.sendToQueue(
-      this.sendQueueId,
-      Buffer.from(JSON.stringify(msg), 'utf8')
-    );
+    return this.sendMessageToServer(msg);
   }
 
   public async trigger(
     integration: string,
     triggerAction: string,
     userId: string,
-    input: Record<string, unknown>,
-    callback?: TriggerResponseCallback
+    input: Record<string, unknown>
   ) {
     const msg: NangoTriggerActionMessage = {
       integration: integration,
@@ -67,30 +61,7 @@ export default class Nango {
       action: NangoMessageAction.TRIGGER_ACTION
     };
 
-    var correlationId = generateUuid();
-
-    this.receiveChannel?.consume(
-      this.receiveQueueId,
-      function (msg: ConsumeMessage | null) {
-        if (msg?.properties.correlationId == correlationId) {
-          if (callback != null) {
-            callback({ content: JSON.parse(msg.content.toString()) });
-          }
-        }
-      },
-      {
-        noAck: true
-      }
-    );
-
-    this.sendChannel?.sendToQueue(
-      this.sendQueueId,
-      Buffer.from(JSON.stringify(msg), 'utf8'),
-      {
-        correlationId: correlationId,
-        replyTo: this.receiveQueueId
-      }
-    );
+    return this.sendMessageToServer(msg);
   }
 
   public close() {
@@ -98,6 +69,46 @@ export default class Nango {
   }
 
   /** -------------------- Private Methods -------------------- */
+
+  private async sendMessageToServer(nangoMsg: NangoMessage) {
+    let correlationId = core.makeId(8);
+    let promise = new Promise((resolve, reject) => {
+      this.receiveChannel?.consume(
+        this.receiveQueueId,
+        (msg) => {
+          if (msg === null) {
+            return;
+          }
+
+          if (msg?.properties.correlationId == correlationId) {
+            const nangoMsg = JSON.parse(
+              msg.content.toString()
+            ) as NangoMessageHandlerResult;
+
+            if (nangoMsg.success) {
+              resolve(nangoMsg.returnValue);
+            } else {
+              reject(nangoMsg.errorMsg);
+            }
+          }
+        },
+        {
+          noAck: true
+        }
+      );
+
+      this.sendChannel?.sendToQueue(
+        this.sendQueueId,
+        Buffer.from(JSON.stringify(nangoMsg), 'utf8'),
+        {
+          correlationId: correlationId,
+          replyTo: this.receiveQueueId
+        }
+      );
+    });
+
+    return promise;
+  }
 
   private async connectRabbit() {
     this.connection = await connect(
@@ -110,12 +121,4 @@ export default class Nango {
     this.receiveChannel = await this.connection.createChannel();
     await this.receiveChannel.assertQueue(this.receiveQueueId);
   }
-}
-
-function generateUuid() {
-  return (
-    Math.random().toString() +
-    Math.random().toString() +
-    Math.random().toString()
-  );
 }
