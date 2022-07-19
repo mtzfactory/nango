@@ -7,13 +7,14 @@ import {
   NangoRegisterConnectionMessage,
   NangoTriggerActionMessage
 } from '@nangohq/core';
+import * as core from '@nangohq/core';
 import * as fs from 'fs';
 import * as path from 'path';
 import { connect, ConsumeMessage, Channel } from 'amqplib';
 import * as yaml from 'js-yaml';
 import * as uuid from 'uuid';
 import DatabaseConstructor from 'better-sqlite3';
-import * as winston from 'winston';
+import type winston from 'winston';
 
 /** -------------------- Server Internal Properties -------------------- */
 
@@ -21,6 +22,8 @@ const inboundSeverQueue = 'server_inbound';
 const outboundSeverQueue = 'server_outbound';
 let inboundRabbitChannel: Channel | null = null;
 let outboundRabbitChannel: Channel | null = null;
+
+let logger: winston.Logger;
 
 // Server owned copies of nango-config.yaml and integrations.yaml for later reference
 let nangoConfig: NangoConfig;
@@ -39,43 +42,6 @@ fs.cpSync(
   path.join(serverIntegrationsRootDir, 'node_modules'),
   { recursive: true }
 ); // yes this is incredibly hacky. Will be fixed with proper packages setup
-
-// Setup logger
-let logger: winston.Logger;
-function setupMainServerLogger() {
-  const nangoServerLogFormat = winston.format.printf((info) => {
-    return `${info['timestamp']} ${info['level']} [SERVER-MAIN] ${info['message']}`;
-  });
-
-  logger = winston.createLogger({
-    level: nangoConfig.main_server_log_level,
-    format: winston.format.combine(
-      winston.format.timestamp(),
-      nangoServerLogFormat
-    ),
-    transports: [
-      new winston.transports.File({
-        filename: path.join(serverIntegrationsRootDir, 'nango-server.log')
-      })
-    ]
-  });
-
-  if (process.env['NODE_ENV'] !== 'production') {
-    logger.add(
-      new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.colorize(),
-          winston.format.timestamp(),
-          nangoServerLogFormat
-        )
-      })
-    );
-  }
-
-  logger.silly(
-    'A SQL query goes to a bar, walks up to two tables and asks: "Can I join you?"'
-  );
-}
 
 // Prepare SQLLite DB
 const db = new DatabaseConstructor(
@@ -177,7 +143,11 @@ function bootstrapServer() {
   ) as NangoIntegrationsConfig;
 
   // Must happen once config is loaded as it contains the log level
-  setupMainServerLogger();
+  logger = core.getLogger(
+    nangoConfig.main_server_log_level,
+    core.nangoServerLogFormat,
+    core.getServerLogFilePath(serverIntegrationsRootDir)
+  );
 
   logger.info('Server ready!');
 }
@@ -257,11 +227,6 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
     );
   }
 
-  const actionLogPath = path.join(
-    serverIntegrationsRootDir,
-    'nango-server.log'
-  );
-
   // Load the JS file and execute the action
   const actionModule = await import(actionFilePath);
   const key = Object.keys(actionModule)[0] as string;
@@ -269,7 +234,7 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
     nangoConfig,
     integrationConfig,
     connectionObject,
-    actionLogPath,
+    serverIntegrationsRootDir,
     nangoMsg.triggeredAction
   );
   const result = await actionInstance.executeAction(nangoMsg.input);

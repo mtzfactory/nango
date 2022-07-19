@@ -1,9 +1,9 @@
 {
   "files": [],
   "references": [
+    { "path": "packages/core" },
     { "path": "packages/cli" },
     { "path": "packages/client" },
-    { "path": "packages/core" },
     { "path": "packages/utils" },
     { "path": "packages/server" },
     { "path": "nango-integrations" }
