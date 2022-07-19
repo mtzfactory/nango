@@ -136,27 +136,21 @@ class NangoAction {
         .then((response) => {
           let bodyLog = '';
 
-          console.log('BB: debugger 1');
           if (response.data != null) {
             try {
               // Body is JSON.
-              console.log('BB: debugger 2');
               bodyLog = JSON.stringify(JSON.parse(response.data), null, 4);
-              console.log('BB: debugger 3');
             } catch {
               if (
                 typeof response.data === 'string' &&
                 response.data.length > 0
               ) {
-                console.log('BB: debugger 4');
-                console.log(response.data.length);
                 // Body is not JSON but has been parsed to a string type by Axios.
                 bodyLog = response.data;
               } else if (
                 typeof response.data === 'string' &&
                 response.data.length === 0
               ) {
-                console.log('BB: debugger 5');
                 // Body is an empty string.
                 bodyLog = 'Response body is empty.';
               } else {
