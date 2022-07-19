@@ -9,6 +9,7 @@ nango.registerConnection(
   'xoxb-2710526930471-3758349823251-Y8sw1nYPOpzI5yNOCtu6GbCc',
   { key1: 'value1', complexKey: { subkey1: 'value1' } }
 );
+
 nango.trigger(
   'slack',
   'notify',

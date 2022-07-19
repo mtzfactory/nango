@@ -190,9 +190,10 @@ function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
     )
     .all([nangoMsg.integration, nangoMsg.userId]);
   if (dbRes.length > 0) {
-    throw new Error(
-      `Cannot register connection, connection for itegration '${nangoMsg.integration}' and user_id '${nangoMsg.userId}' already exists`
+    logger.warn(
+      `Attempt to register an already-existing connection (integration: ${nangoMsg.integration}, user_id: ${nangoMsg.userId})`
     );
+    return;
   }
 
   db.prepare(
