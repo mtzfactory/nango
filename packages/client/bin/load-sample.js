@@ -89,6 +89,26 @@ async function asana() {
   logResponse(integration, action, userId, result);
 }
 
+async function hubspot() {
+  var integration = 'hubspot';
+  var action = 'contacts';
+  var userId = '1';
+  var authToken = 'pat-na1-c8dfe9b2-1bdc-449a-a2c6-fda036a2c030';
+
+  let registerConnectionPromise = nango.registerConnection(
+    integration,
+    userId,
+    authToken
+  );
+  registerConnectionPromise.catch((errorMsg) => {
+    console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
+  });
+
+  let result = await nango.trigger(integration, action, userId, { limit: 5 });
+
+  logResponse(integration, action, userId, result);
+}
+
 /** -------------------- Execution -------------------- */
 
 const nango = new Nango('localhost');

@@ -14,3 +14,8 @@ integrations:
       call_auth:
         mode: AUTH_HEADER_TOKEN
       log_level: debug
+  - hubspot:
+      base_url: https://api.hubapi.com/
+      call_auth:
+        mode: AUTH_HEADER_TOKEN
+      log_level: debug
