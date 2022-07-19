@@ -134,13 +134,39 @@ class NangoAction {
           data: serializedBody
         })
         .then((response) => {
-          // TODO: This currently assumes the response.data is JSON, but it could be other data types (which would require other serialization for logging)
           let bodyLog = '';
 
-          try {
-            bodyLog = JSON.stringify(JSON.parse(response.data), null, 4);
-          } catch {
-            bodyLog = 'Could not parse body.';
+          console.log('BB: debugger 1');
+          if (response.data != null) {
+            try {
+              // Body is JSON.
+              console.log('BB: debugger 2');
+              bodyLog = JSON.stringify(JSON.parse(response.data), null, 4);
+              console.log('BB: debugger 3');
+            } catch {
+              if (
+                typeof response.data === 'string' &&
+                response.data.length > 0
+              ) {
+                console.log('BB: debugger 4');
+                console.log(response.data.length);
+                // Body is not JSON but has been parsed to a string type by Axios.
+                bodyLog = response.data;
+              } else if (
+                typeof response.data === 'string' &&
+                response.data.length === 0
+              ) {
+                console.log('BB: debugger 5');
+                // Body is an empty string.
+                bodyLog = 'Response body is empty.';
+              } else {
+                // Body has an unknown format.
+                bodyLog = 'Could not parse body.';
+              }
+            }
+          } else {
+            // Body is empty.
+            bodyLog = 'Response body is empty.';
           }
 
           this.logger.debug(

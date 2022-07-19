@@ -1,13 +1,5 @@
 import Nango from '../dist/nango.js';
 
-const nango = new Nango('localhost');
-await nango.connect();
-
-testSlackNotify();
-// testGithubStar();
-
-closeConnection();
-
 /** -------------------- Utils -------------------- */
 
 function logResponse(integration, action, userId, response) {
@@ -25,7 +17,7 @@ function closeConnection() {
 
 /** -------------------- Triger Actions -------------------- */
 
-async function testSlackNotify() {
+function slack() {
   var integration = 'slack';
   var action = 'notify';
   var userId = '1';
@@ -52,7 +44,7 @@ async function testSlackNotify() {
 }
 
 // Internal blueprint docs: https://www.notion.so/nangohq/Github-Blueprint-ec92750f43804677a44e92d1cda1db5f
-function testGithubStar(integration, action, userId, authToken, owner, repo) {
+function github() {
   var integration = 'github';
   var action = 'star';
   var userId = '1';
@@ -75,3 +67,20 @@ function testGithubStar(integration, action, userId, authToken, owner, repo) {
     }
   );
 }
+
+/** -------------------- Execution -------------------- */
+
+const nango = new Nango('localhost');
+await nango.connect();
+
+const fn = process.argv[2];
+
+if (typeof fn !== 'string') {
+  console.log(
+    'Provided parameter does not correspond to sample test function. Please call: node run sample <sample-test-function-name>'
+  );
+} else {
+  eval(fn)();
+}
+
+closeConnection();
