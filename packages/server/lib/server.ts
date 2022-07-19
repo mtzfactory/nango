@@ -1,6 +1,5 @@
 import {
   NangoConfig,
-  NangoConnection,
   NangoIntegrationsConfig,
   NangoMessage,
   NangoMessageAction,
@@ -12,9 +11,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { connect, ConsumeMessage, Channel } from 'amqplib';
 import * as yaml from 'js-yaml';
-import * as uuid from 'uuid';
-import DatabaseConstructor from 'better-sqlite3';
 import type winston from 'winston';
+import { ConnectionsManager } from './connections.js';
 
 /** -------------------- Server Internal Properties -------------------- */
 
@@ -24,6 +22,7 @@ let inboundRabbitChannel: Channel | null = null;
 let outboundRabbitChannel: Channel | null = null;
 
 let logger: winston.Logger;
+let connectionsManager: ConnectionsManager;
 
 // Server owned copies of nango-config.yaml and integrations.yaml for later reference
 let nangoConfig: NangoConfig;
@@ -42,30 +41,6 @@ fs.cpSync(
   path.join(serverIntegrationsRootDir, 'node_modules'),
   { recursive: true }
 ); // yes this is incredibly hacky. Will be fixed with proper packages setup
-
-// Prepare SQLLite DB
-const db = new DatabaseConstructor(
-  path.join(serverIntegrationsRootDir, 'sqlite.db')
-);
-db.exec(`
-CREATE TABLE nango_connections (
-    uuid VARCHAR(36) NOT NULL,
-    integration TEXT NOT NULL,
-    user_id TEXT NOT NULL,
-    oauth_access_token TEXT NOT NULL,
-    additional_config TEXT,
-    datecreated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    lastmodified DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-PRIMARY KEY (uuid),
-UNIQUE (integration, user_id)
-);
-
-CREATE TRIGGER update_lastmodified_nango_connections
-AFTER UPDATE On nango_connections
-BEGIN
-    UPDATE nango_connections SET lastmodiefied = STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW') WHERE uuid = NEW.uuid;
-END;
-`);
 
 /** -------------------- Inbound message handling -------------------- */
 
@@ -142,6 +117,11 @@ function bootstrapServer() {
       .toString()
   ) as NangoIntegrationsConfig;
 
+  // Setup connectionsManager
+  connectionsManager = new ConnectionsManager(
+    path.join(serverIntegrationsRootDir, 'server.db')
+  );
+
   // Must happen once config is loaded as it contains the log level
   logger = core.getLogger(
     nangoConfig.main_server_log_level,
@@ -154,30 +134,22 @@ function bootstrapServer() {
 
 function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage) {
   // Check if the connection already exists
-  const dbRes = db
-    .prepare(
-      'SELECT uuid FROM nango_connections WHERE integration = ? AND user_id = ?'
-    )
-    .all([nangoMsg.integration, nangoMsg.userId]);
-  if (dbRes.length > 0) {
+  const connection = connectionsManager.getConnection(
+    nangoMsg.userId,
+    nangoMsg.integration
+  );
+  if (connection !== undefined) {
     logger.warn(
       `Attempt to register an already-existing connection (integration: ${nangoMsg.integration}, user_id: ${nangoMsg.userId})`
     );
     return;
   }
 
-  db.prepare(
-    `
-        INSERT INTO nango_connections
-        (uuid, integration, user_id, oauth_access_token, additional_config)
-        VALUES (?, ?, ?, ?, ?)
-    `
-  ).run(
-    uuid.v4(),
-    nangoMsg.integration,
+  connectionsManager.registerConnection(
     nangoMsg.userId,
+    nangoMsg.integration,
     nangoMsg.oAuthAccessToken,
-    JSON.stringify(nangoMsg.additionalConfig)
+    nangoMsg.additionalConfig
   );
 }
 
@@ -198,23 +170,15 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
   }
 
   // Check if the connection exists
-  const connection = db
-    .prepare(
-      'SELECT * FROM nango_connections WHERE integration = ? AND user_id = ?'
-    )
-    .get(nangoMsg.integration, nangoMsg.userId);
+  const connection = connectionsManager.getConnection(
+    nangoMsg.userId,
+    nangoMsg.integration
+  );
   if (connection === undefined) {
     throw new Error(
       `Tried to trigger action '${nangoMsg.triggeredAction}' for integration '${nangoMsg.integration}' with user_id '${nangoMsg.userId}' but no connection exists for this user_id and integration`
     );
   }
-  const connectionObject = {
-    uuid: connection.uuid,
-    integration: connection.integration,
-    userId: connection.user_id,
-    oAuthAccessToken: connection.oauth_access_token,
-    additionalConfig: JSON.parse(connection.additional_config)
-  } as NangoConnection;
 
   // Check if the action (file) exists
   const actionFilePath = path.join(
@@ -233,7 +197,7 @@ async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage) {
   const actionInstance = new actionModule[key](
     nangoConfig,
     integrationConfig,
-    connectionObject,
+    connection,
     serverIntegrationsRootDir,
     nangoMsg.triggeredAction
   );
