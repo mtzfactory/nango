@@ -10,7 +10,7 @@
         "prettier-format": "prettier --config .prettierrc './**/*.ts' --write",
         "prettier-watch": "onchange './**/*.ts' -- prettier --write {{changed}}",
         "lint": "eslint . --ext .ts",
-        "server": "sh -c 'set -a; source .env; node packages/server/dist/server.js'",
+        "server": "sh -c 'set -a; source .env-local-dev; node packages/server/dist/server.js'",
         "compile-integrations": "node packages/cli/dist/cli.js compile-integrations",
         "prepublish-module": "node packages/cli/dist/cli.js prepublish-module",
         "sample": "node packages/client/bin/load-sample.js",

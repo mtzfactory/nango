@@ -1,10 +1,9 @@
-FROM node:18
+FROM node:18-alpine
 
 ENV NANGO_SERVER_RABBIT_HOST=nango-rabbit
 ENV NANGO_SERVER_RABBIT_PORT=5672
 ENV NANGO_SERVER_ROOT_DIR=/usr/nango-server
-ENV NANGO_INTEGRATIONS_PACKAGE_DIR=/var/nango-integrations-compiled
-ENV NANGO_INTEGRATIONS_INSTALL_MODE=LOCAL_COPY
+ENV NANGO_SERVER_RUN_MODE=DOCKERIZED
 
 WORKDIR /usr/nango-server/src
 
@@ -19,6 +18,6 @@ COPY packages/server/package*.json packages/server/
 
 COPY package*.json ./
 
-RUN npm install --only=production
+RUN npm install --omit=dev
 
 CMD ["node", "packages/server/dist/server.js"]

@@ -108,8 +108,8 @@ export enum HTTPMethods {
     OPTIONS = 'OPTIONS'
 }
 
-export enum ServerNangoIntegrationsDirInstallMethod {
-    NO_COPY = 'NO_COPY',
-    LOCAL_COPY = 'LOCAL_COPY',
-    NPM_INSTALL = 'NPM_INSTALL'
+export enum ServerRunMode {
+    LOCAL_DEV = 'LOCAL_DEV',
+    DOCKERIZED = 'DOCKERIZED',
+    PROD = 'PROD'
 }
