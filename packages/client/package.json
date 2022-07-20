@@ -1,14 +1,14 @@
 {
-  "name": "@nangohq/client",
-  "version": "0.1.0",
-  "description": "Nango's NodeJS client.",
-  "type": "module",
-  "main": "dist/nango.js",
-  "keywords": [],
-  "license": "SEE LICENSE IN LICENSE.md",
-  "dependencies": {
-    "@nangohq/core": "0.1.0",
-    "amqplib": "^0.10.0",
-    "@types/amqplib": "^0.8.2"
-  }
+    "name": "@nangohq/client",
+    "version": "0.1.4",
+    "description": "Nango's NodeJS client.",
+    "type": "module",
+    "main": "dist/nango.js",
+    "keywords": [],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "dependencies": {
+        "@nangohq/core": "*",
+        "amqplib": "^0.10.0",
+        "@types/amqplib": "^0.8.2"
+    }
 }

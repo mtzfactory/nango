@@ -1,14 +1,14 @@
 {
-  "name": "@nangohq/utils",
-  "version": "0.1.0",
-  "description": "Nango's integrations.",
-  "type": "module",
-  "main": "dist/action.js",
-  "keywords": [],
-  "license": "SEE LICENSE IN LICENSE.md",
-  "dependencies": {
-    "@nangohq/core": "0.1.0",
-    "axios": "^0.27.2",
-    "winston": "^3.8.1"
-  }
+    "name": "@nangohq/utils",
+    "version": "0.1.4",
+    "description": "Nango's integrations.",
+    "type": "module",
+    "main": "dist/action.js",
+    "keywords": [],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "dependencies": {
+        "@nangohq/core": "*",
+        "axios": "^0.27.2",
+        "winston": "^3.8.1"
+    }
 }

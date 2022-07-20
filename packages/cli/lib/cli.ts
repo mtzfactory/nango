@@ -33,6 +33,23 @@ function runCli(action?: string) {
 
             console.log('\n✅ Successfully compiled integrations!\n');
             break;
+        case 'prepublish-module':
+            const module = process.argv[3];
+            const supported_modules = ['cli'];
+
+            if (typeof module !== 'string' || supported_modules.indexOf(module) === -1) {
+                throw new Error("Wrong argument for 'publish-module' command. Please provide a module name.");
+            }
+
+            switch (module) {
+                case 'cli':
+                    fs.cpSync('../../../Readme.md', '../../../packages/cli/Readme.md');
+                    console.log("\n✅ Successfully prepared module 'cli' for publishing!\n");
+                    break;
+                default:
+                    throw new Error('Unknown module, provided module should one of the following: cli.');
+            }
+            break;
         default:
             throw new Error('Command not found.');
     }
