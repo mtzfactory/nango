@@ -13,10 +13,10 @@ export const nangoActionLogFormat = winston.format.printf((info) => {
 // Helper function that configures a Winston logger with the specified properties
 export function getLogger(log_level: string, logFormat: winston.Logform.Format, defaultMeta?: object): winston.Logger {
     const serverRootDir = process.env['NANGO_SERVER_ROOT_DIR'];
-    const serverIntegrationsInstallMode = process.env['NANGO_INTEGRATIONS_INSTALL_MODE'];
+    const ServerRunMode = process.env['NANGO_SERVER_RUN_MODE'];
 
     let serverWorkingDir = serverRootDir!;
-    if (serverIntegrationsInstallMode === core.ServerNangoIntegrationsDirInstallMethod.NO_COPY) {
+    if (ServerRunMode === core.ServerRunMode.LOCAL_DEV) {
         serverWorkingDir = path.join(serverRootDir!, 'server-files');
     }
 

@@ -10,7 +10,7 @@
         "prettier-format": "prettier --config .prettierrc './**/*.ts' --write",
         "prettier-watch": "onchange './**/*.ts' -- prettier --write {{changed}}",
         "lint": "eslint . --ext .ts",
-        "server": "sh -c 'set -a; source .env; node packages/server/dist/server.js'",
+        "server": "sh -c 'set -a; source .env-local-dev; node packages/server/dist/server.js'",
         "compile-integrations": "node packages/cli/dist/cli.js compile-integrations",
         "sample": "node packages/client/bin/load-sample.js",
         "build": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/client packages/server packages/utils packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json && npm run compile-integrations && npm run docker-build",

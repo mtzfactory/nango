@@ -19,8 +19,8 @@ services:
         container_name: nango-server
         volumes:
             - type: bind
-              source: ./nango-integrations-compiled
-              target: /var/nango-integrations-compiled
+              source: ${NANGO_INTEGRATIONS_DIR}
+              target: /usr/nango-server/src/nango-integrations
         restart: on-failure
         links:
             - rabbitmq

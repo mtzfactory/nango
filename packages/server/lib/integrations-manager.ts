@@ -19,26 +19,15 @@ export class IntegrationsManager {
         return this._instance || (this._instance = new this());
     }
 
-    // Loads the nango-integrations folder and initializes the manager
-    // To re-load a different folder just call this method again
+    // Sets the path for the compiled nango-integrations folder depending on the server run mode
+    // Also loads the config files
     public init(serverRootDir: string) {
-        const serverIntegrationsInstallMode = process.env['NANGO_INTEGRATIONS_INSTALL_MODE'];
+        const ServerRunMode = process.env['NANGO_SERVER_RUN_MODE'];
 
-        if (serverIntegrationsInstallMode === core.ServerNangoIntegrationsDirInstallMethod.NO_COPY) {
+        if (ServerRunMode === core.ServerRunMode.LOCAL_DEV) {
             this.nangoIntegrationsDirPath = path.join(serverRootDir, '/nango-integrations-compiled/nango-integrations');
-        } else if (serverIntegrationsInstallMode === core.ServerNangoIntegrationsDirInstallMethod.LOCAL_COPY) {
-            this.nangoIntegrationsDirPath = path.join(serverRootDir, '/src/nango-integrations');
-
-            // Copy over nango-integrations dir
-            const nangoIntegrationSourceDir = process.env['NANGO_INTEGRATIONS_PACKAGE_DIR'];
-
-            if (nangoIntegrationSourceDir === undefined) {
-                throw new Error(`Fatal server error, cannot bootstrap: NANGO_INTEGRATIONS_PACKAGE_DIR is not set.`);
-            }
-
-            fs.cpSync(nangoIntegrationSourceDir, path.join(serverRootDir, '/src'), {
-                recursive: true
-            });
+        } else if (ServerRunMode === core.ServerRunMode.DOCKERIZED) {
+            this.nangoIntegrationsDirPath = '/usr/nango-server/src/nango-integrations';
         }
 
         this.nangoConfig = yaml.load(fs.readFileSync(path.join(this.nangoIntegrationsDirPath, 'nango-config.yaml')).toString()) as NangoConfig;

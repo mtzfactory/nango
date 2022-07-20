@@ -60,18 +60,18 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
 function bootstrapServer() {
     // Load env variables, based on mode setup working dir for server to store logs & DB
     const serverRootDir = process.env['NANGO_SERVER_ROOT_DIR'];
-    const serverIntegrationsInstallMode = process.env['NANGO_INTEGRATIONS_INSTALL_MODE'];
+    const serverRunMode = process.env['NANGO_SERVER_RUN_MODE'];
 
     if (serverRootDir === undefined) {
         throw new Error(`Fatal server error, cannot bootstrap: NANGO_SERVER_ROOT_DIR is not set.`);
     }
 
-    if (serverIntegrationsInstallMode === undefined) {
-        throw new Error(`Fatal server error, cannot bootstrap: NANGO_INTEGRATIONS_INSTALL_MODE is not set.`);
+    if (serverRunMode === undefined) {
+        throw new Error(`Fatal server error, cannot bootstrap: NANGO_SERVER_RUN_MODE is not set.`);
     }
 
     let serverWorkingDir = serverRootDir;
-    if (serverIntegrationsInstallMode === core.ServerNangoIntegrationsDirInstallMethod.NO_COPY) {
+    if (serverRunMode === core.ServerRunMode.LOCAL_DEV) {
         serverWorkingDir = path.join(serverRootDir, 'server-files');
     }
 
@@ -109,7 +109,7 @@ async function connectRabbit() {
 // Alright, let's run!
 try {
     bootstrapServer(); // Must happen before we start to process messages
-    connectRabbit();
+    await connectRabbit();
 
     logger!.info('✅ Server ready!');
 } catch (e) {
