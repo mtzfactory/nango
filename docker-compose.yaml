@@ -7,11 +7,6 @@ services:
         ports:
             - '5672:5672'
             - '8082:15672'
-        healthcheck:
-            test: ['CMD', 'nc', '-z', 'localhost', '5672']
-            interval: 5s
-            timeout: 15s
-            retries: 1
 
     server:
         #build: packages/server
@@ -21,7 +16,6 @@ services:
             - type: bind
               source: ${NANGO_INTEGRATIONS_DIR}
               target: /usr/nango-server/src/nango-integrations
-        restart: on-failure
         links:
             - rabbitmq
         depends_on:

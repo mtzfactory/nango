@@ -18,6 +18,6 @@ COPY packages/server/package*.json packages/server/
 
 COPY package*.json ./
 
-RUN npm install --only=production
+RUN npm install --omit=dev
 
 CMD ["node", "packages/server/dist/server.js"]
