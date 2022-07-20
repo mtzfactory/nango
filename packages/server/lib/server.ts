@@ -115,7 +115,7 @@ async function connectRabbit() {
         .catch((error) => {
             rabbitConnectionTries++;
 
-            if (rabbitConnectionTries < 2) {
+            if (rabbitConnectionTries < 10) {
                 logger.warn(`Failed to connect to rabbitMQ, got error: ${error}\nWill retry ${10 - rabbitConnectionTries} more times, next in 5 seconds...`);
                 setTimeout(connectRabbit, 5000);
             } else {
