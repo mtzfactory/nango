@@ -1,17 +1,24 @@
 import * as path from 'path';
 import * as winston from 'winston';
+import * as core from '@nangohq/core';
 
 export const nangoServerLogFormat = winston.format.printf((info) => {
     return `${info['timestamp']} ${info['level']} [SERVER-MAIN] ${info['message']}`;
 });
 
 export const nangoActionLogFormat = winston.format.printf((info) => {
-    return `${info['timestamp']} ${info['level']} [${info['integration']}.${info['action']}, user: ${info['userId']}, exec ID #${info['actionExecutionId']}] ${info['message']}`;
+    return `${info['timestamp']} ${info['level']} [${info['integration']}] [${info['action']}] [user-id: ${info['userId']}] [exec ID: #${info['actionExecutionId']}] ${info['message']}`;
 });
 
 // Helper function that configures a Winston logger with the specified properties
 export function getLogger(log_level: string, logFormat: winston.Logform.Format, defaultMeta?: object): winston.Logger {
     const serverRootDir = process.env['NANGO_SERVER_ROOT_DIR'];
+    const serverIntegrationsInstallMode = process.env['NANGO_INTEGRATIONS_INSTALL_MODE'];
+
+    let serverWorkingDir = serverRootDir!;
+    if (serverIntegrationsInstallMode === core.ServerNangoIntegrationsDirInstallMethod.NO_COPY) {
+        serverWorkingDir = path.join(serverRootDir!, 'server-files');
+    }
 
     const logger = winston.createLogger({
         level: log_level,
@@ -19,7 +26,7 @@ export function getLogger(log_level: string, logFormat: winston.Logform.Format, 
         format: winston.format.combine(winston.format.timestamp(), logFormat),
         transports: [
             new winston.transports.File({
-                filename: path.join(serverRootDir!, 'nango-server.log')
+                filename: path.join(serverWorkingDir, 'nango-server.log')
             })
         ]
     });

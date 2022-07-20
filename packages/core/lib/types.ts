@@ -109,6 +109,7 @@ export enum HTTPMethods {
 }
 
 export enum ServerNangoIntegrationsDirInstallMethod {
+    NO_COPY = 'NO_COPY',
     LOCAL_COPY = 'LOCAL_COPY',
     NPM_INSTALL = 'NPM_INSTALL'
 }

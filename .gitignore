@@ -2,3 +2,4 @@
 node_modules/*
 js/*
 nango-integrations-compiled/*
+server-files/*

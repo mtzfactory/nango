@@ -22,19 +22,12 @@ export class IntegrationsManager {
     // Loads the nango-integrations folder and initializes the manager
     // To re-load a different folder just call this method again
     public init(serverRootDir: string) {
-        this.nangoIntegrationsDirPath = path.join(serverRootDir, 'nango-integrations');
-
         const serverIntegrationsInstallMode = process.env['NANGO_INTEGRATIONS_INSTALL_MODE'];
 
-        if (serverIntegrationsInstallMode === undefined) {
-            throw new Error(`Fatal server error, cannot bootstrap: NANGO_INTEGRATIONS_INSTALL_MODE is not set.`);
-        }
-
-        if (serverIntegrationsInstallMode === core.ServerNangoIntegrationsDirInstallMethod.LOCAL_COPY) {
-            // Copy over node_modules
-            fs.cpSync('node_modules', path.join(serverRootDir, 'node_modules'), {
-                recursive: true
-            }); // hacky way to get depencies in for local development (cannot use npm install)
+        if (serverIntegrationsInstallMode === core.ServerNangoIntegrationsDirInstallMethod.NO_COPY) {
+            this.nangoIntegrationsDirPath = path.join(serverRootDir, '/nango-integrations-compiled/nango-integrations');
+        } else if (serverIntegrationsInstallMode === core.ServerNangoIntegrationsDirInstallMethod.LOCAL_COPY) {
+            this.nangoIntegrationsDirPath = path.join(serverRootDir, '/src/nango-integrations');
 
             // Copy over nango-integrations dir
             const nangoIntegrationSourceDir = process.env['NANGO_INTEGRATIONS_PACKAGE_DIR'];
@@ -43,7 +36,7 @@ export class IntegrationsManager {
                 throw new Error(`Fatal server error, cannot bootstrap: NANGO_INTEGRATIONS_PACKAGE_DIR is not set.`);
             }
 
-            fs.cpSync(nangoIntegrationSourceDir, serverRootDir, {
+            fs.cpSync(nangoIntegrationSourceDir, path.join(serverRootDir, '/src'), {
                 recursive: true
             });
         }

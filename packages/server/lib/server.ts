@@ -1,7 +1,8 @@
 import { NangoMessage, NangoMessageAction, NangoMessageHandlerResult, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from '@nangohq/core';
+import * as core from '@nangohq/core';
 import * as logging from './logging.js';
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'fs';
 import { connect, ConsumeMessage, Channel, Connection } from 'amqplib';
 import type winston from 'winston';
 import { ConnectionsManager } from './connections-manager.js';
@@ -57,24 +58,47 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
 }
 
 function bootstrapServer() {
+    // Load env variables, based on mode setup working dir for server to store logs & DB
     const serverRootDir = process.env['NANGO_SERVER_ROOT_DIR'];
+    const serverIntegrationsInstallMode = process.env['NANGO_INTEGRATIONS_INSTALL_MODE'];
 
     if (serverRootDir === undefined) {
         throw new Error(`Fatal server error, cannot bootstrap: NANGO_SERVER_ROOT_DIR is not set.`);
     }
 
-    fs.rmSync(serverRootDir, { recursive: true, force: true });
-    fs.mkdirSync(serverRootDir);
+    if (serverIntegrationsInstallMode === undefined) {
+        throw new Error(`Fatal server error, cannot bootstrap: NANGO_INTEGRATIONS_INSTALL_MODE is not set.`);
+    }
+
+    let serverWorkingDir = serverRootDir;
+    if (serverIntegrationsInstallMode === core.ServerNangoIntegrationsDirInstallMethod.NO_COPY) {
+        serverWorkingDir = path.join(serverRootDir, 'server-files');
+    }
+
+    if (!fs.existsSync(serverWorkingDir)) {
+        fs.mkdirSync(serverWorkingDir);
+    }
 
     // Initiate nango-integrations package loading
     IntegrationsManager.getInstance().init(serverRootDir);
 
     // Setup connectionsManager
-    ConnectionsManager.getInstance().init(path.join(serverRootDir, 'server.db'));
+    ConnectionsManager.getInstance().init(path.join(serverWorkingDir, 'server.db'));
+
+    // Must happen once config is loaded as it contains the log level
+    logger = logging.getLogger(IntegrationsManager.getInstance().getNangoConfig().main_server_log_level, logging.nangoServerLogFormat);
 }
 
 async function connectRabbit() {
-    rabbitConnection = await connect('amqp://localhost');
+    const rabbitHost = process.env['NANGO_SERVER_RABBIT_HOST'];
+    let rabbitPort = process.env['NANGO_SERVER_PORT'];
+    rabbitPort = rabbitPort ? rabbitPort : '5672';
+
+    if (rabbitHost === undefined) {
+        throw new Error(`Fatal server error, cannot bootstrap: NANGO_SERVER_RABBIT_HOST is not set.`);
+    }
+
+    rabbitConnection = await connect(`amqp://${rabbitHost}:${rabbitPort}`);
 
     inboundRabbitChannel = await rabbitConnection.createChannel();
     await inboundRabbitChannel.assertQueue(inboundSeverQueue);
@@ -87,9 +111,7 @@ try {
     bootstrapServer(); // Must happen before we start to process messages
     connectRabbit();
 
-    // Must happen once config is loaded as it contains the log level
-    logger = logging.getLogger(IntegrationsManager.getInstance().getNangoConfig().main_server_log_level, logging.nangoServerLogFormat);
-    logger.info('✅ Server ready!');
+    logger!.info('✅ Server ready!');
 } catch (e) {
     console.log(e);
     console.log('\n❌ Failed to start server.\n');

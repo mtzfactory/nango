@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: nango-rabbit
+        ports:
+            - '5672:5672'
+            - '8082:15672'
+        healthcheck:
+            test: ['CMD', 'nc', '-z', 'localhost', '5672']
+            interval: 5s
+            timeout: 15s
+            retries: 1
+
+    server:
+        #build: packages/server
+        image: nangohq/server
+        container_name: nango-server
+        volumes:
+            - type: bind
+              source: ./nango-integrations-compiled
+              target: /var/nango-integrations-compiled
+        restart: on-failure
+        links:
+            - rabbitmq
+        depends_on:
+            - rabbitmq
