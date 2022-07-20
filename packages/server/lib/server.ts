@@ -58,6 +58,7 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
 
 function bootstrapServer() {
     const serverRootDir = process.env['NANGO_SERVER_ROOT_DIR'];
+
     if (serverRootDir === undefined) {
         throw new Error(`Fatal server error, cannot bootstrap: NANGO_SERVER_ROOT_DIR is not set.`);
     }
@@ -70,11 +71,6 @@ function bootstrapServer() {
 
     // Setup connectionsManager
     ConnectionsManager.getInstance().init(path.join(serverRootDir, 'server.db'));
-
-    // Must happen once config is loaded as it contains the log level
-    logger = logging.getLogger(IntegrationsManager.getInstance().getNangoConfig().main_server_log_level, logging.nangoServerLogFormat);
-
-    logger.info('Server ready!');
 }
 
 async function connectRabbit() {
@@ -87,5 +83,15 @@ async function connectRabbit() {
 }
 
 // Alright, let's run!
-bootstrapServer(); // Must happen before we start to process messages
-connectRabbit();
+try {
+    bootstrapServer(); // Must happen before we start to process messages
+    connectRabbit();
+
+    // Must happen once config is loaded as it contains the log level
+    logger = logging.getLogger(IntegrationsManager.getInstance().getNangoConfig().main_server_log_level, logging.nangoServerLogFormat);
+    logger.info('✅ Server ready!');
+} catch (e) {
+    console.log(e);
+    console.log('\n❌ Failed to start server.\n');
+    process.exit(1);
+}

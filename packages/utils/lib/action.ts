@@ -37,15 +37,13 @@ class NangoAction {
                 : this.nangoConfig.default_http_request_timeout_seconds * 1000
         });
 
-        this.logger.info(
-            `Starting execution of action '${this.actionName}' in integration '${this.userConnection.integration}' for user_id '${this.userConnection.userId}'`
-        );
+        this.logger.info(`🏁👉 Starting execution of action ${this.userConnection.integration}.${this.actionName}.`);
     }
 
     // A bit hacky but found no other decent way to get this message logged
     public markExecutionComplete() {
         const elapsedMilliseconds = process.hrtime(this.executionStartTime)[1] / 1000000;
-        this.logger.info(`Execution of action finished in ${elapsedMilliseconds.toFixed(3)} ms`);
+        this.logger.info(`🏁✅ Execution of action finished in ${elapsedMilliseconds.toFixed(3)} ms`);
     }
 
     protected getCurrentConnectionConfig() {
@@ -87,7 +85,7 @@ class NangoAction {
         const promise = new Promise<AxiosResponse<any, any>>((resolve, reject) => {
             const requestId = core.makeId(8);
             this.logger.debug(
-                `HTTP request #${requestId} - ${method} REQUEST\nURL: ${fullURL}\nHeaders:\n${JSON.stringify(finalHeaders, null, 4)}\nBody:\n${serializedBody}`
+                `📡👆 HTTP ${method} request (#${requestId}): ${fullURL}\n\nHeaders:\n${JSON.stringify(finalHeaders, null, 4)}\n\nBody:\n${serializedBody}\n\n`
             );
 
             this.axiosInstance
@@ -124,12 +122,13 @@ class NangoAction {
                         bodyLog = 'Response body is empty.';
                     }
 
+                    const statusHundred = `${response.status}`.slice(0, 1);
+                    const statusEmoji = '45'.includes(statusHundred) ? '❌' : statusHundred === '2' ? '✅' : '';
+
                     this.logger.debug(
-                        `HTTP request #${requestId} - RESPONSE\nStatus: ${response.status} - ${response.statusText}\nHeaders:\n${JSON.stringify(
-                            response.headers,
-                            null,
-                            4
-                        )}\nBody:\n${bodyLog}`
+                        `📡👇${statusEmoji} ${response.status} HTTP ${method} response (#${requestId}): ${fullURL}\nStatus: ${response.status} - ${
+                            response.statusText
+                        }\n\nHeaders:\n${JSON.stringify(response.headers, null, 4)}\n\nBody:\n${bodyLog}\n\n`
                     );
 
                     resolve(response);

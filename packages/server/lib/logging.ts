@@ -6,7 +6,7 @@ export const nangoServerLogFormat = winston.format.printf((info) => {
 });
 
 export const nangoActionLogFormat = winston.format.printf((info) => {
-    return `${info['timestamp']} ${info['level']} [${info['integration']}] [${info['action']}] [user: ${info['userId']}] [execution id #${info['actionExecutionId']}] ${info['message']}`;
+    return `${info['timestamp']} ${info['level']} [${info['integration']}.${info['action']}, user: ${info['userId']}, exec ID #${info['actionExecutionId']}] ${info['message']}`;
 });
 
 // Helper function that configures a Winston logger with the specified properties

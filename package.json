@@ -1,31 +1,31 @@
 {
-  "name": "nangohq",
-  "private": true,
-  "type": "module",
-  "workspaces": [
-    "packages/*",
-    "nango-integrations"
-  ],
-  "scripts": {
-    "prettier-format": "prettier --config .prettierrc './**/*.ts' --write",
-    "prettier-watch": "onchange './**/*.ts' -- prettier --write {{changed}}",
-    "lint": "eslint . --ext .ts",
-    "server": "env $(cat .env | xargs) node packages/server/dist/server.js",
-    "compile-integrations": "node packages/cli/dist/cli.js compile-integrations",
-    "sample": "node packages/client/bin/load-sample.js"
-  },
-  "devDependencies": {
-    "@tsconfig/node18-strictest-esm": "^1.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.30.6",
-    "@typescript-eslint/parser": "^5.30.6",
-    "eslint": "^8.19.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "onchange": "^7.1.0",
-    "prettier": "^2.7.1"
-  },
-  "dependencies": {
-    "@types/node": "^18.0.3",
-    "typescript": "^4.7.4"
-  }
+    "name": "nangohq",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "packages/*",
+        "nango-integrations"
+    ],
+    "scripts": {
+        "prettier-format": "prettier --config .prettierrc './**/*.ts' --write",
+        "prettier-watch": "onchange './**/*.ts' -- prettier --write {{changed}}",
+        "lint": "eslint . --ext .ts",
+        "server": "env $(cat .env | xargs) node packages/server/dist/server.js",
+        "compile-integrations": "node packages/cli/dist/cli.js compile-integrations",
+        "sample": "node packages/client/bin/load-sample.js"
+    },
+    "devDependencies": {
+        "@tsconfig/node18-strictest-esm": "^1.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.30.6",
+        "@typescript-eslint/parser": "^5.30.6",
+        "eslint": "^8.19.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "onchange": "^7.1.0",
+        "prettier": "^2.7.1"
+    },
+    "dependencies": {
+        "@types/node": "^18.0.3",
+        "typescript": "^4.7.4"
+    }
 }
