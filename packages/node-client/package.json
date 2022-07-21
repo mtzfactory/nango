@@ -1,5 +1,5 @@
 {
-    "name": "@nangohq/client",
+    "name": "@nangohq/node-client",
     "version": "0.1.7",
     "description": "Nango's NodeJS client.",
     "type": "module",
