@@ -8,6 +8,6 @@
         "@tsconfig/recommended": "^1.0.1"
     },
     "dependencies": {
-        "@nangohq/action": "^0.1.9"
+        "@nangohq/action": "^0.1.10"
     }
 }
