@@ -8,8 +8,10 @@
     "keywords": [],
     "license": "SEE LICENSE IN LICENSE.md",
     "dependencies": {
-        "@nangohq/core": "^0.1.9",
-        "amqplib": "^0.10.0",
+        "@nangohq/core": "*",
+        "amqplib": "^0.10.0"
+    },
+    "devDependencies": {
         "@types/amqplib": "^0.8.2"
     },
     "files": [

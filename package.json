@@ -26,11 +26,10 @@
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.2.1",
         "onchange": "^7.1.0",
-        "prettier": "^2.7.1"
-    },
-    "dependencies": {
+        "prettier": "^2.7.1",
         "@types/node": "^18.0.3",
         "typescript": "^4.7.4"
     },
+    "dependencies": {},
     "version": "0.0.1"
 }
