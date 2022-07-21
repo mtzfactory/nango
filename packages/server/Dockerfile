@@ -10,9 +10,6 @@ WORKDIR /usr/nango-server/src
 COPY packages/core/dist/*.js packages/core/dist/
 COPY packages/core/package*.json packages/core/
 
-COPY packages/action/dist/*.js packages/action/dist/
-COPY packages/action/package*.json packages/action/
-
 COPY packages/server/dist/*.js packages/server/dist/
 COPY packages/server/package*.json packages/server/
 
