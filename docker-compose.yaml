@@ -1,5 +1,4 @@
 version: '3.9'
-
 services:
     rabbitmq:
         image: rabbitmq:3-management
@@ -9,14 +8,11 @@ services:
             - '8082:15672'
 
     server:
-        #build: packages/server
         image: nangohq/server
         container_name: nango-server
         volumes:
             - type: bind
               source: ${NANGO_INTEGRATIONS_DIR}
               target: /usr/nango-server/src/nango-integrations
-        links:
-            - rabbitmq
         depends_on:
             - rabbitmq
