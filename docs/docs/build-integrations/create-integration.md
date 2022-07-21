@@ -1,7 +1,26 @@
 ---
-sidebar_label: Understanding the quickstart
-sidebar_position: 5
+sidebar_label: Create an integration
+sidebar_position: 3
 ---
+
+# Imported from other pages in
+
+## OAuth and User Configure
+
+- OAuth & Auth handling
+- Auth storage: Connections object & client code
+- Per user config
+- How to present user UI (querying user connection data) (?)
+
+## Write an action
+- Write action from scratch: scaffold & file setup
+- Input & output handling
+- Builtin objects: HTTPrequest and logger
+- Calling actions from the client & responses
+
+## Test an action
+
+
 
 # Understanding the quickstart
 

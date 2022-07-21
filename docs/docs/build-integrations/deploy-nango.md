@@ -1,6 +1,6 @@
 ---
 sidebar_label: Deploying Nango
-sidebar_position: 6
+sidebar_position: 4
 ---
 
 - Packaging nango-integrations
