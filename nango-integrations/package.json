@@ -1,11 +1,11 @@
 {
     "name": "@nangohq/nango-integrations",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "Nango's integrations.",
     "type": "module",
     "keywords": [],
     "license": "SEE LICENSE IN LICENSE.md",
     "dependencies": {
-        "@nangohq/utils": "*"
+        "@nangohq/action": "^0.1.5"
     }
 }

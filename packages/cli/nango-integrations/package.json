@@ -1,0 +1,13 @@
+{
+    "name": "my-nango-integrations",
+    "version": "0.1.0",
+    "description": "Package hosting your native integrations.",
+    "type": "module",
+    "keywords": [],
+    "devDependencies": {
+        "@tsconfig/recommended": "^1.0.1"
+    },
+    "dependencies": {
+        "@nangohq/action": "^0.1.5"
+    }
+}

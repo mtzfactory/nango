@@ -1,4 +1,4 @@
-import { NangoAction } from '@nangohq/utils';
+import { NangoAction } from '@nangohq/action';
 
 class GithubStarAction extends NangoAction {
     override async executeAction(input: { owner: string; repo: string }) {

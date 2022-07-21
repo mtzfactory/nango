@@ -14,7 +14,7 @@
         "compile-integrations": "node packages/cli/dist/cli.js compile-integrations",
         "prepublish-module": "node packages/cli/dist/cli.js prepublish-module",
         "sample": "node packages/client/bin/load-sample.js",
-        "build": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/client packages/server packages/utils packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json && npm run compile-integrations && npm run docker-build",
+        "build": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/client packages/server packages/action packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json && npm run compile-integrations && npm run docker-build",
         "docker-build": "docker build -f packages/server/Dockerfile -t nangohq/server .",
         "docker-run": "docker run -d -it --name nango-server --mount type=bind,source=$(pwd)/nango-integrations-compiled,target=/var/nango-integrations-compiled nangohq/server"
     },

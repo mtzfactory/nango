@@ -84,7 +84,7 @@ To add a new Action for an Integration all you have to do is add a file to the c
 Actions are written in TypeScript and make use of a Nango provided runtime class. Because of this every Action file has the same structure and follows this scaffold:
 
 ```typescript
-import { NangoAction } from '@nangohq/utils';
+import { NangoAction } from '@nangohq/action';
 
 class SampleAction extends NangoAction {
 

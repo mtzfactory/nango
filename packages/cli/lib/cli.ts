@@ -43,7 +43,9 @@ function runCli(action?: string) {
 
             switch (module) {
                 case 'cli':
+                    // Copy main Readme over to appear on the NPM registry.
                     fs.cpSync('../../../Readme.md', '../../../packages/cli/Readme.md');
+
                     console.log("\n✅ Successfully prepared module 'cli' for publishing!\n");
                     break;
                 default:

@@ -1,4 +1,4 @@
-import { NangoAction } from '@nangohq/utils';
+import { NangoAction } from '@nangohq/action';
 
 class HubspotContactsAction extends NangoAction {
     override async executeAction(input: { limit?: number }) {
