@@ -1,9 +1,10 @@
 {
     "name": "@nangohq/action",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "Nango's framework for developing native integrations, deployed to the runtime to be executed on Nango's server.",
     "type": "module",
     "main": "dist/action.js",
+    "typings": "dist/action.d.ts",
     "keywords": [],
     "license": "SEE LICENSE IN LICENSE.md",
     "dependencies": {
