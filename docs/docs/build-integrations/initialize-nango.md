@@ -3,14 +3,17 @@ sidebar_label: Initialize Nango
 sidebar_position: 1
 ---
 
-# How to add a new Integration
+:::caution
+Nango is conceptually agnostic to your project's programming language and stack. We plan to have Nango client SDKs for all major languages in the near future. For the time being, this tutorial assumes that you are integrating Nango to a NodeJS project. 
+:::
 
-This is a quick step by step guide on how to add a new Integration to Nango. It assumes you are somewhat familiar with the [framework](framework-overview.md) and the [`nango-integrations` folder](nango-integrations-folder.md).
+:::tip
+If you do not have a existing NodeJS project, you can create a new one with this [tutorial](https://www.digitalocean.com/community/tutorials/setting-up-a-node-project-with-typescript).
+:::
 
-## Adding a new Integration from scratch
+Using the commend line, navigate to the project for which you want to add an integration. Inside your project, initialize the `nango-integrations` repository.
+```bash
+npx nango init
+```
 
-### Step 1: Create the `nango-integrations` folder if it does not already exist
-
-- Adding integration & scaffolds
-- Integration config: Auth, base url, 
-- Adding integrations from blueprints
+This command installs the Nango CLI and creates the `nango-integrations` folder with the right scaffolding and configuration. The `nango-integrations` folder will contain your integrations, including the Slack one that we are about to create. Feel free to explore this directory or [learn more about it here](understand-nango/nango-integrations-folder.md).
