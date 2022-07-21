@@ -1,6 +1,6 @@
 ---
 sidebar_label: Configuration Reference
-sidebar_position: 7
+sidebar_position: 1
 ---
 
 # Nango configuration reference

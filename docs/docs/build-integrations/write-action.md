@@ -1,5 +1,5 @@
 ---
-sidebar_label: Writing Actions
+sidebar_label: Write an action
 sidebar_position: 4
 ---
 

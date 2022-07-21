@@ -1,6 +1,6 @@
 ---
-sidebar_label: NangoAction reference
-sidebar_position: 8
+sidebar_label: NangoAction Reference
+sidebar_position: 2
 ---
 
 - Detailed reference for:

@@ -1,6 +1,6 @@
 ---
-sidebar_label: Adding a new Integration
-sidebar_position: 3
+sidebar_label: Initialize Nango
+sidebar_position: 1
 ---
 
 # How to add a new Integration

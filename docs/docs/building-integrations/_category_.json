@@ -1,8 +1,0 @@
-{
-    "label": "Building integrations",
-    "position": 5,
-    "link": {
-        "type": "generated-index",
-        "description": "Everything you need to know to build integrations with Nango from scratch or using Blueprints"
-    }
-}

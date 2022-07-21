@@ -1,6 +1,6 @@
 ---
 sidebar_label: Auth & per user config
-sidebar_position: 5
+sidebar_position: 3
 ---
 
 - OAuth & Auth handling
