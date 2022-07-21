@@ -1,6 +1,6 @@
 {
     "name": "nango",
-    "version": "0.1.7",
+    "version": "0.1.9",
     "description": "Nango's CLI tool.",
     "type": "module",
     "main": "dist/index.js",
@@ -10,5 +10,11 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "dependencies": {
         "commander": "^9.4.0"
-    }
+    },
+    "files": [
+        "dist/**/*",
+        "nango-integrations/**/*",
+        "!**/*.json",
+        "README.md"
+    ]
 }

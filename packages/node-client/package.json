@@ -1,6 +1,6 @@
 {
     "name": "@nangohq/node-client",
-    "version": "0.1.7",
+    "version": "0.1.9",
     "description": "Nango's NodeJS client.",
     "type": "module",
     "main": "dist/nango.js",
@@ -13,5 +13,10 @@
     },
     "devDependencies": {
         "@types/amqplib": "^0.8.2"
-    }
+    },
+    "files": [
+        "dist/**/*",
+        "!**/*.json",
+        "README.md"
+    ]
 }
