@@ -1,4 +1,4 @@
-import { Nango } from '@nangohq/client';
+import { Nango } from '@nangohq/node-client';
 
 const nango = new Nango();
 nango.connect();
