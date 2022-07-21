@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import * as child_process from 'child_process';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -18,21 +17,6 @@ try {
 
 function runCli(action?: string) {
     switch (action) {
-        // Compiles nango-integrations TS files & copies integrations.yaml over
-        case 'compile-integrations':
-            fs.rmSync('../../../nango-integrations-compiled', {
-                recursive: true,
-                force: true
-            });
-            child_process.execSync(
-                `../../../node_modules/typescript/bin/tsc ../../../nango-integrations/**/*.ts --outDir ../../../nango-integrations-compiled --rootDir ../../.. -t es2022 --moduleResolution node `
-            );
-            fs.cpSync('../../../nango-integrations/integrations.yaml', '../../../nango-integrations-compiled/nango-integrations/integrations.yaml');
-            fs.cpSync('../../../nango-integrations/nango-config.yaml', '../../../nango-integrations-compiled/nango-integrations/nango-config.yaml');
-            fs.cpSync('../../../nango-integrations/package.json', '../../../nango-integrations-compiled/nango-integrations/package.json');
-
-            console.log('\n✅ Successfully compiled integrations!\n');
-            break;
         case 'prepublish-module':
             const module = process.argv[3];
             const supported_modules = ['cli'];

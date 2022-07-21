@@ -25,7 +25,7 @@ export class IntegrationsManager {
         const ServerRunMode = process.env['NANGO_SERVER_RUN_MODE'];
 
         if (ServerRunMode === core.ServerRunMode.LOCAL_DEV) {
-            this.nangoIntegrationsDirPath = path.join(serverRootDir, '/nango-integrations-compiled/nango-integrations');
+            this.nangoIntegrationsDirPath = path.join(serverRootDir, '/nango-integrations');
         } else if (ServerRunMode === core.ServerRunMode.DOCKERIZED) {
             this.nangoIntegrationsDirPath = '/usr/nango-server/src/nango-integrations';
         }
@@ -68,6 +68,6 @@ export class IntegrationsManager {
     private constructor() {}
 
     private getActionFilePath(integration: string, action: string): string {
-        return path.join(path.join(this.nangoIntegrationsDirPath, integration), action + '.action.js');
+        return path.join(path.join(path.join(this.nangoIntegrationsDirPath, 'dist'), integration), action + '.action.js');
     }
 }

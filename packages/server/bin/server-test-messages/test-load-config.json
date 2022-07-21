@@ -1,8 +1,0 @@
-{
-    "action": "LOAD_CONFIG",
-    "config": {
-        "nango_server_host": "localhost",
-        "nango_server_port": 5672,
-        "nango_integrations_pkg_path": "/Users/robin/Documents/nango/code/nango/nango-integrations-compiled"
-    }
-}

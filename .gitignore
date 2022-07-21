@@ -1,5 +1,4 @@
 .DS_Store
 node_modules/*
 js/*
-nango-integrations-compiled/*
 server-files/*
