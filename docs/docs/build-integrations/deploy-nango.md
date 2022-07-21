@@ -1,5 +1,5 @@
 ---
-sidebar_label: Deploying Nango
+sidebar_label: Deploy Nango
 sidebar_position: 4
 ---
 

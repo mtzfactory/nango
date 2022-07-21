@@ -3,7 +3,7 @@ sidebar_label: Framework Overview
 sidebar_position: 1
 ---
 
-# Nango integrations framework overview
+# Nango integrations framework overview {#overview}
 
 At the heart of Nango is a simple, but powerful framework for integrations. It ensures that Nango can provide powerful infrastructure and solve many development and runtime issues around native integrations for you.
 
