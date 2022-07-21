@@ -3,12 +3,14 @@ sidebar_label: Set up local development
 sidebar_position: 2
 ---
 
+# Set up local development
+
 `cd` to the `nango-integrations` folders.
 ```bash
 cd nango-integrations
 ```
 
-# Set up the Nango runtime
+## Set up the Nango runtime
 
 Start the Nango server docker container:
 ```bash
@@ -25,7 +27,7 @@ You can see the the Nango runtime as an independent micro-service. It is the uni
 Nango's runtime automatically loads the integrations from your `nango-integrations` folder contained in your project to power your native integrations.
 :::
 
-# Set up the Node environment
+## Set up the Node environment
 
 In a new terminal, navigate to the `nango-integrations` folder inside your project.
 
@@ -36,7 +38,7 @@ Our `nango-integrations` package depends on other npm packages that we need to i
 npm install
 ```
 
-# Set up the Typescript environment
+## Set up the Typescript environment
 Nango leverages the [typescript](https://www.typescriptlang.org/) programming language to write integrations. Because typescript compiles into javascript, we need to make sure that this compilation happens everytime we modify a typescript file. 
 
 To do so, run the command:

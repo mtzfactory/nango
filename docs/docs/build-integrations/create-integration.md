@@ -3,9 +3,11 @@ sidebar_label: Create an integration
 sidebar_position: 3
 ---
 
+# Create an integration
+
 Let's create a Slack integration from scratch! It will post a message in a specific channel in Nango's Slack workspace.
 
-# Configure a new integration
+## Configure a new integration
 
 The `nango-integrations` folders contains two configuration files in addition to the `package.json` file:
 - `integrations.yaml` which contains the configuration for individual integrations
@@ -40,7 +42,7 @@ The last step to configure our Slack integration is to create a directory to loc
 mkdir slack
 ```
 
-# Write a new action
+## Write a new action
 Nango integrations are composed of actions. 
 
 An action represents a workflow that involves one or multiple interactions with the 3rd-party API. In our case, the action we want to perform is to post a message on Slack. 
@@ -132,7 +134,7 @@ class SlackNotifyAction extends NangoAction {
 export { SlackNotifyAction };
 ```
 
-# Trigger the action 
+## Trigger the action 
 
 We are now going to trigger the action from your main application. 
 
@@ -217,7 +219,7 @@ console.log('Message sent, check the #welcome channel in our community Slack!');
 nango.close();
 ```
 
-# Test your action
+## Test your action
 
 Execute your script with: 
 ```bash

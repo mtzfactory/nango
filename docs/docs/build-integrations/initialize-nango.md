@@ -3,6 +3,8 @@ sidebar_label: Initialize Nango
 sidebar_position: 1
 ---
 
+# Initialize Nango
+
 :::caution
 Nango is conceptually agnostic to your project's programming language and stack. We plan to have Nango client SDKs for all major languages in the near future. For the time being, this tutorial assumes that you are integrating Nango to a NodeJS project. 
 :::
