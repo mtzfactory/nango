@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # Quickstart
 
-Let's test Nango and send a message to the #welcome channel on our community Slack [[LINK]] in 30 seconds.
+Let's test Nango and send a message to the #welcome channel on our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA) in 30 seconds.
 
 ## Start the clock & let's go!
 Clone the Nango repo & move into the example dir:
@@ -24,6 +24,7 @@ const slackMessage = `Hello ${yourName}, welcome to Nango! :wave:`;
 await nango.registerConnection('slack', 1, 'xoxb-XXXXXXXXXXXXXX'); // TODO: Get the 'xoxb-' access token from the pinned message in #welcome on our commmunity Slack
 ...
 ```
+Get the access token from the [pinned message in the #welcome channel](https://nango-community.slack.com/archives/C03QBJWCWJ1/p1658405550216239) of our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA).
 
 Start the Nango server docker container:
 ```bash
@@ -36,8 +37,8 @@ Open a new terminal, CD to the example folder and run `run-quickstart.js`:
 node run-quickstart.js
 ```
 
-You should see a success message, check the #welcome channel in our Slack and you should see your personal greeting 🎉
+You should see a success message, check the [#welcome channel](https://nango-community.slack.com/archives/C03QBJWCWJ1) in our Slack and you should see your personal greeting 🎉
 
-Not working as expected? Just ask in the community Slack, we are very active there and will be glad to assist you!
+Not working as expected? Just ask in the [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA), we are very active there and will be glad to assist you!
 
 ## Where to go from here

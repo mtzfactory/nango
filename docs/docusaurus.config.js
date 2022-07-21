@@ -91,8 +91,8 @@ const config = {
                 href: 'https://github.com/facebook/docusaurus',
               },
               {
-                label: 'Slack [FIX URL]',
-                href: 'https://discordapp.com/invite/docusaurus',
+                label: 'Slack',
+                href: 'https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA',
               },
               {
                 label: 'Twitter',
