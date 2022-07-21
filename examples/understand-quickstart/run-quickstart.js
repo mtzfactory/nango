@@ -1,4 +1,4 @@
-import { Nango } from '@nangohq/client';
+import { Nango } from '@nangohq/node-client';
 
 // Setup a connection to the Nango server
 const nango = new Nango();
