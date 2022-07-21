@@ -1,6 +1,6 @@
 ---
 sidebar_label: Setting up local development
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 How to setup nango for local development

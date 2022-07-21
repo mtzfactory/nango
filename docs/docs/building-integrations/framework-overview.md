@@ -30,7 +30,7 @@ Integrations in Nango are always built from 3 basic components:
 
 In this documentation we capitalize these terms when they refer to their Nango specific meaning, look out for Integration, Action and Connection mentions on these pages!
 
-## Blueprints: Community contributed Actions
+## Blueprints: Community contributed Actions {#blueprints}
 **TODO: ADD DETAILS ON WHERE TO FIND BLUEPRINTS**
 
 A big advantage of the Nango framework is that Integrations and Actions can be contributed and shared by the community:

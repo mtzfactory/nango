@@ -1,0 +1,11 @@
+{
+    "name": "nango-quickstart-example",
+    "version": "0.1.0",
+    "description": "A quick example to experience the power of Nango",
+    "type": "module",
+    "keywords": [],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "dependencies": {
+        "@nangohq/client": "^0.1.4"
+    }
+}
