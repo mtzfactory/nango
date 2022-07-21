@@ -46,11 +46,11 @@ class NangoAction {
         this.logger.info(`🏁✅ Execution of action finished in ${elapsedMilliseconds.toFixed(3)} ms`);
     }
 
-    protected getCurrentConnectionConfig() {
+    protected getCurrentConnectionConfig(): NangoConnection {
         return this.userConnection;
     }
 
-    protected async httpRequest(endpoint: string, method: Method, params?: HttpParams, body?: any, headers?: HttpHeader) {
+    protected async httpRequest(endpoint: string, method: Method, params?: HttpParams, body?: any, headers?: HttpHeader): Promise<AxiosResponse> {
         if (this.integrationConfig.base_url.slice(-1) !== '/') {
             this.integrationConfig.base_url += '/';
         }
