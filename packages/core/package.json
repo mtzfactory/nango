@@ -1,9 +1,9 @@
 {
-  "name": "@nangohq/core",
-  "version": "0.1.0",
-  "description": "Nango's utilities shared across packages.",
-  "type": "module",
-  "main": "dist/index.js",
-  "keywords": [],
-  "license": "SEE LICENSE IN LICENSE.md"
+    "name": "@nangohq/core",
+    "version": "0.1.4",
+    "description": "Nango's utilities shared across packages.",
+    "type": "module",
+    "main": "dist/index.js",
+    "keywords": [],
+    "license": "SEE LICENSE IN LICENSE.md"
 }
