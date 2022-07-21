@@ -1,8 +1,8 @@
-import { Nango } from '@nangohq/node-client';
+import Nango from '@nangohq/node-client';
 
 // Setup a connection to the Nango server
-const nango = new Nango();
-nango.connect();
+const nango = new Nango('localhost');
+await nango.connect();
 
 // TODO: Edit these to your liking
 const yourName = 'YourName';
@@ -13,7 +13,8 @@ const slackMessage = `Hello ${yourName}, welcome to Nango! :wave:`;
 await nango.registerConnection(
     'slack',               // The name of the integration
     1,                     // The end user's user-id, we just use 1 here
-    'xoxb-XXXXXXXXXXXXXX'  // A Slack OAuth access token. TODO: Get this from the pinned item in #welcome on our commmunity Slack
+    'xoxb-XXXXXXXXXXXXXX',  // A Slack OAuth access token. TODO: Get this from the pinned item in #welcome on our commmunity Slack
+    {}
 );
 
 // Ready, let's send a message!
@@ -29,3 +30,5 @@ await nango.trigger(
 );
 
 console.log('Message sent, check the #welcome channel in our community Slack!');
+
+nango.close();
