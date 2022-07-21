@@ -1,9 +1,10 @@
 {
     "name": "@nangohq/client",
-    "version": "0.1.5",
+    "version": "0.1.7",
     "description": "Nango's NodeJS client.",
     "type": "module",
     "main": "dist/nango.js",
+    "typings": "dist/nango.d.ts",
     "keywords": [],
     "license": "SEE LICENSE IN LICENSE.md",
     "dependencies": {

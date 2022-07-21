@@ -1,7 +1,7 @@
 {
     "name": "@nangohq/nango-integrations",
-    "version": "0.1.5",
-    "description": "Nango's integrations.",
+    "version": "0.1.7",
+    "description": "Package hosting Nango's integration blueprints.",
     "type": "module",
     "keywords": [],
     "license": "SEE LICENSE IN LICENSE.md",
