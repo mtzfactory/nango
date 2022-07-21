@@ -1,11 +1,11 @@
 {
-  "files": [],
-  "references": [
-    { "path": "packages/core" },
-    { "path": "packages/cli" },
-    { "path": "packages/client" },
-    { "path": "packages/action" },
-    { "path": "packages/server" },
-    { "path": "nango-integrations" }
-  ]
+    "files": [],
+    "references": [
+        { "path": "packages/core" },
+        { "path": "packages/cli" },
+        { "path": "packages/node-client" },
+        { "path": "packages/action" },
+        { "path": "packages/server" },
+        { "path": "nango-integrations" }
+    ]
 }
