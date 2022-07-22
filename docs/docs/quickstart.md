@@ -17,11 +17,8 @@ cd nango/examples/quickstart
 Open the `run-quickstart.js` file and edit the highlighted lines:
 ```javascript {3-4,6} title="run-quickstart.js"
 ...
-// TODO: Edit these to your liking
-const yourName = 'YourName';
-const slackMessage = `Hello ${yourName}, welcome to Nango! :wave:`;
-
-await nango.registerConnection('slack', 1, 'xoxb-XXXXXXXXXXXXXX'); // TODO: Get the 'xoxb-' access token from the pinned message in #welcome on our commmunity Slack
+const slackMessage = `Hello <your-name-goes-here>, welcome to Nango! :wave:`; // TODO: fill in your name.
+await nango.registerConnection('slack', 1, '<token-goes-here>'); // TODO: fill in token.
 ...
 ```
 On our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA), get the access token from the [pinned message in the #welcome channel](https://nango-community.slack.com/archives/C03QBJWCWJ1/p1658405550216239).

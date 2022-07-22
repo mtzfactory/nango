@@ -4,14 +4,11 @@
 
 import Nango from '@nangohq/node-client';
 
-const nango = new Nango('localhost');
+const nango = new Nango();
 await nango.connect();
 
-// TODO: Edit these to your liking
-const yourName = 'YourName';
-const slackMessage = `Hello ${yourName}, welcome to Nango! :wave:`;
-
-await nango.registerConnection('slack', 1, 'xoxb-XXXXXXXXXXXXXX'); // TODO: Get the 'xoxb-' access token from the pinned message in #welcome on our commmunity Slack
+const slackMessage = `Hello <your-name-goes-here>, welcome to Nango! :wave:`; // TODO: fill in your name.
+await nango.registerConnection('slack', 1, '<token-goes-here>'); // TODO: fill in token.
 
 await nango.triggerAction('slack', 'notify', 1, {
         channelId: 'C03QBJWCWJ1',
