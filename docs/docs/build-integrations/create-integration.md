@@ -7,7 +7,7 @@ sidebar_position: 3
 
 Time for the fun stuff, let's create a Slack integration from scratch!
 
-Our Slack integration will allow us to post any message to any Slack channel of which we know the channel id. In the context of the Nango framework we will create an integration for Slack and then add an action to posting the message to it. If you are curious what exactly an Action is an how the framework works you can [learn more about it here](understand-nango/framework-overview.md).
+Our Slack integration will post messages on any channel of which we know the channel id. In the context of the Nango framework, we need to create a new **Integration** (Slack) and a new **Action** (post message). If you are curious of what **Integrations** and **Actions** exactly represent in Nango, you can read about it in the [Framework Overview](understand-nango/framework-overview.md).
 
 ## Add a new integration
 
@@ -15,7 +15,7 @@ The `nango-integrations` folders contains two configuration files in addition to
 - `integrations.yaml` which contains the configuration for individual integrations (cf. [`integrations.yaml` reference](reference/config-reference.md#integrationsYaml))
 - `nango-config.yaml` which contains Nango-wide variables (cf. [`nango-conifg.yaml` reference](reference/config-reference.md#nangoConfigYaml))
 
-Open the `configurations.yaml` file and copy/paste the configuration for our new Slack integration:
+Open the `integrations.yaml` file and copy/paste the configuration for our new Slack integration:
 ```yaml title="integrations.yaml"
   - slack:
       base_url: https://slack.com/api/
@@ -102,7 +102,7 @@ From [Slack's API reference](https://api.slack.com/methods/chat.postMessage), th
 We will pass these details to our action by using the `input` parameter.
 
 Nango also provides us with some helpers that we can (and should) use in our action:
-- To make an HTTP request we can leverage the builtin `this.httpRequest` method, which takes care of auth parameters, retried etc. for us
+- To make an HTTP request we can leverage the builtin `this.httpRequest` method, which takes care of auth parameters, retries,  etc. for us
 - To log things we can use `this.logger`, a builtin logger
 
 Using these we can easily write the logic for our Slack application:
@@ -110,7 +110,7 @@ Using these we can easily write the logic for our Slack application:
 // Add this inside of executeAction
         const requestBody = {
             channel: input.channelId,
-            mrkdwn: true,
+            mrkdwn: input.mrkdwn,
             text: input.msg
         };
         const response = await this.httpRequest('chat.postMessage', 'POST', undefined, requestBody);
@@ -128,7 +128,7 @@ class SlackNotifyAction extends NangoAction {
     override async executeAction(input: any) {
         const requestBody = {
             channel: input.channelId,
-            mrkdwn: true,
+            mrkdwn: input.mrkdwn,
             text: input.msg
         };
         const response = await this.httpRequest('chat.postMessage', 'POST', undefined, requestBody);

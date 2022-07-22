@@ -24,7 +24,7 @@ const slackMessage = `Hello ${yourName}, welcome to Nango! :wave:`;
 await nango.registerConnection('slack', 1, 'xoxb-XXXXXXXXXXXXXX'); // TODO: Get the 'xoxb-' access token from the pinned message in #welcome on our commmunity Slack
 ...
 ```
-Get the access token from the [pinned message in the #welcome channel](https://nango-community.slack.com/archives/C03QBJWCWJ1/p1658405550216239) of our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA).
+On our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA), get the access token from the [pinned message in the #welcome channel](https://nango-community.slack.com/archives/C03QBJWCWJ1/p1658405550216239).
 
 Start the Nango server docker container:
 ```bash
@@ -32,7 +32,7 @@ cd nango-integrations
 docker compose up # or docker-compose up
 ```
 
-Open a new terminal, CD to the example folder and run `run-quickstart.js`:
+Open a new terminal, `cd` back to the example folder and run `run-quickstart.js`:
 ```bash
 node run-quickstart.js
 ```
@@ -42,3 +42,5 @@ You should see a success message, check the [#welcome channel](https://nango-com
 Not working as expected? Just ask in the [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA), we are very active there and will be glad to assist you!
 
 ## Where to go from here
+
+Curious to understand what happens under the hood? Unwrap this Quickstart with the step-by-step [Tutorial](build-integrations/README.md). 
