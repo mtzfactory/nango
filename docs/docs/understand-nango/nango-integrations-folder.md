@@ -99,7 +99,7 @@ Nango will help you generate these scaffolds with our CLI.
 
 ## Optional content: `docker-compose.yaml` and `.env`
 
-When you [initialize a new `nango-integrations` directory](/building-integrations/initialize-nango.md) with our CLI Nango adds two additional files by default:
+When you [initialize a new `nango-integrations` directory](/build-integrations/initialize-nango.md) with our CLI Nango adds two additional files by default:
 - a `.env` file that specifies a single environment variable
 - a `docker-compose.yaml` file which specifies a simple docker compose configuration
 
@@ -110,4 +110,4 @@ Together these files make it very easy to launch a local development environment
 docker compose up  # or docker-compose up if you are on an older version of docker
 ```
 
-To learn how to setup an awesome local development environment read our [tutorial on that topic](/building-integrations/setup-local-development.md).
+To learn how to setup an awesome local development environment read our [tutorial on that topic](/build-integrations/setup-local-dev.md).
