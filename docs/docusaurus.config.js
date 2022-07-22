@@ -65,6 +65,11 @@ const config = {
             label: 'Docs',
           },
           {
+            label: 'Community Slack',
+            href: 'https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA',
+            position: 'left',
+          },
+          {
             href: 'https://github.com/nangohq/nango',
             label: 'GitHub',
             position: 'right',

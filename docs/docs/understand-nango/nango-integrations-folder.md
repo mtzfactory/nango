@@ -38,7 +38,7 @@ Besides the folder there are three top level files:
 ### `nango-config.yaml`
 This YAML file contains all the global configuration for Nango. Many of these configuration parameters relate to how Nango executes Actions, interacts with 3rd party APIs and treats response data: These configuration keys can usually be overwritten for specific Integrations by specifying them in the Integration's `integrations.yaml` config.
 
-For a list of all possible keys currently supported please check the [`nango-config.yaml` reference](/config-reference.md#nangoConfigYaml).
+For a list of all possible keys currently supported please check the [`nango-config.yaml` reference](/reference/config-reference.md#nangoConfigYaml).
 
 ### `integrations.yaml`
 Contains the Integration specific configuration for each Integration. Because this file lists all the available Integrations in your Nango installation it is also a good lookup place for that.
@@ -55,7 +55,7 @@ integrations:
       log_level: debug
 ```
 
-Many keys here are optional, for all the details and possibilities please consult the [`integrations.yaml` reference](/config-reference.md#integrationsYaml).
+Many keys here are optional, for all the details and possibilities please consult the [`integrations.yaml` reference](/reference/config-reference.md#integrationsYaml).
 
 ### `package.json`
 This file makes `nango-integrations` an npm package, if you are familiar with npm packages and the `package.json` format you will find all the usual keys in here. If not don't worry: To use Nango you don't need to understand its content and we have guides with step by step commands for the few occasions where you do need to interact with it.
