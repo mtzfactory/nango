@@ -13,6 +13,12 @@ export class IntegrationsManager {
     private nangoConfig!: NangoConfig;
     private integrationsConfig!: NangoIntegrationsConfig;
 
+    private nangoConfigFile = 'nango-config.yaml';
+    private integrationsConfigFile = 'integrations.yaml';
+
+    private fsNangoConfigTimeout: NodeJS.Timeout | null = null;
+    private fsIntegrationsConfigTimeout: NodeJS.Timeout | null = null;
+
     /** -------------------- Public Methods -------------------- */
 
     public static getInstance() {
@@ -29,6 +35,26 @@ export class IntegrationsManager {
         } else if (ServerRunMode === core.ServerRunMode.DOCKERIZED) {
             this.nangoIntegrationsDirPath = '/usr/nango-server/src/nango-integrations';
         }
+
+        fs.watch(this.nangoIntegrationsDirPath, {}, (_, filename) => {
+            if (filename) {
+                if (filename === this.nangoConfigFile && !this.fsNangoConfigTimeout) {
+                    this.reloadNangoConfig();
+                    console.log("❗️ 'nango-config.yaml' has been edited. Please restart the server's Docker container to apply these changes.");
+                    this.fsNangoConfigTimeout = setTimeout(() => {
+                        this.fsNangoConfigTimeout = null;
+                    }, 1000);
+                } else if (filename === this.integrationsConfigFile && !this.fsIntegrationsConfigTimeout) {
+                    this.reloadIntegrationsConfig();
+                    this.fsIntegrationsConfigTimeout = setTimeout(() => {
+                        this.fsIntegrationsConfigTimeout = null;
+                    }, 1000);
+                }
+            }
+        });
+
+        this.reloadNangoConfig();
+        this.reloadIntegrationsConfig();
 
         this.nangoConfig = yaml.load(fs.readFileSync(path.join(this.nangoIntegrationsDirPath, 'nango-config.yaml')).toString()) as NangoConfig;
 
@@ -69,5 +95,15 @@ export class IntegrationsManager {
 
     private getActionFilePath(integration: string, action: string): string {
         return path.join(path.join(path.join(this.nangoIntegrationsDirPath, 'dist'), integration), action + '.action.js');
+    }
+
+    private reloadNangoConfig() {
+        this.nangoConfig = yaml.load(fs.readFileSync(path.join(this.nangoIntegrationsDirPath, this.nangoConfigFile)).toString()) as NangoConfig;
+    }
+
+    private reloadIntegrationsConfig() {
+        this.integrationsConfig = yaml.load(
+            fs.readFileSync(path.join(this.nangoIntegrationsDirPath, this.integrationsConfigFile)).toString()
+        ) as NangoIntegrationsConfig;
     }
 }
