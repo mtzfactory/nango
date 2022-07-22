@@ -91,7 +91,11 @@ const config = {
             items: [
               {
                 label: 'Intro to Nango',
-                to: '/docs/introduction',
+                to: '/',
+              },
+              {
+                label: 'Quickstart 🚀',
+                to: '/quickstart',
               },
             ],
           },
