@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # Quickstart
 
-Let's test Nango and send a message to the #welcome channel on our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA) in 30 seconds.
+Let's test Nango and send a message to Slack in 30 seconds.
 
 ## Start the clock & let's go!
 Clone the Nango repo & move into the example dir:
@@ -14,14 +14,15 @@ git clone https://github.com/nangohq/nango.git
 cd nango/examples/quickstart
 ```
 
-Open the `run-quickstart.js` file and edit the highlighted lines:
-```javascript {3-4,6} title="run-quickstart.js"
+Copy/paste the Slack access token provided [here](https://nangohq.notion.site/Quickstart-Slack-access-token-f41c7cc291c74fbd9b1110af6d631d01).
+
+Open the `run-quickstart.js` file and fill in your name and token on the following lines:
+```javascript
 ...
 const slackMessage = `Hello <your-name-goes-here>, welcome to Nango! :wave:`; // TODO: fill in your name.
 await nango.registerConnection('slack', 1, '<token-goes-here>'); // TODO: fill in token.
 ...
 ```
-On our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA), get the access token from the [pinned message in the #welcome channel](https://nango-community.slack.com/archives/C03QBJWCWJ1/p1658405550216239).
 
 Start the Nango server docker container:
 ```bash
@@ -34,9 +35,11 @@ Open a new terminal, `cd` back to the example folder and run `run-quickstart.js`
 node run-quickstart.js
 ```
 
-You should see a success message, check the [#welcome channel](https://nango-community.slack.com/archives/C03QBJWCWJ1) in our Slack and you should see your personal greeting 🎉
+Finally, go check that your greeting message was sent to the **#welcome** channel of our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA) 🎉
 
+:::tip
 Not working as expected? Just ask in the [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA), we are very active there and will be glad to assist you!
+:::
 
 ## Where to go from here
 
