@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import { NangoAction } from '@nangohq/action';
 
 class GithubStarAction extends NangoAction {

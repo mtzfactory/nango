@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import Nango from '@nangohq/node-client';
 
 const nango = new Nango('localhost');

@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import { Command } from 'commander';
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';

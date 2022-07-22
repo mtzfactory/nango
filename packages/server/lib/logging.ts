@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import * as path from 'path';
 import * as winston from 'winston';
 import * as core from '@nangohq/core';

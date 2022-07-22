@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import { connect, Channel, Connection } from 'amqplib';
 import { NangoMessageAction, NangoTriggerActionMessage, NangoRegisterConnectionMessage, NangoMessageHandlerResult, NangoMessage } from '@nangohq/core';
 import * as core from '@nangohq/core';

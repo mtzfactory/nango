@@ -7,16 +7,16 @@ sidebar_position: 1
 
 At the heart of Nango is a simple, but powerful framework for integrations. It ensures that Nango can provide powerful infrastructure and solve many development and runtime issues around native integrations for you.
 
-## A simple integration example
+## Framework by example: A simple integration
 As an example, imagine you are a new startup and want to integrate with Salesforce so your customers can load their contacts from Salesforce into your system.
 
-You also want to write data back into Salesforce, for instance whenever a contact opens an email that was sent through your system you want to write that back to Salesforce:
+You also want to write data back into Salesforce, for instance whenever a contact opens an email that was sent through your system:
 
 ![A startup integrates with Salesforce](/img/startup-salesforce-integration.png)
 
 As a new startup, Salesforce will probably not build anything towards you, so you have to use the Salesforce API to build this native integration yourself.
 
-SuperStartup uses Nango, so it will model its Salesforce integration like this:
+Your startup, SuperStartup, uses Nango, so it will model its Salesforce integration like this:
 
 ![The Nango model of SuperStartup integration with Salesforce](/img/startup-salesforce-nango-model.png)
 
@@ -28,17 +28,15 @@ Integrations in Nango are always built from 3 basic components:
 
 ![The Nango model of SuperStartup integration with Salesforce - annotated](/img/startup-salesforce-nango-model-annotated.png)
 
-In this documentation we capitalize these terms when they refer to their Nango specific meaning, look out for Integration, Action and Connection mentions on these pages!
 
 ## Blueprints: Community contributed Actions {#blueprints}
-**TODO: ADD DETAILS ON WHERE TO FIND BLUEPRINTS**
 
 A big advantage of the Nango framework is that Integrations and Actions can be contributed and shared by the community:
 In our example above SuperStartup wants to import contacts from Salesforce. It is unlikely that SuperStartup is the first company looking to support this Action in their product, so they can check the Nango Blueprints repository to see if somebody has already contributed this Action.
 
 ![An illustration that shows how Blueprints work in Nango](/img/nango-blueprints-illustration.png)
 
-If they find one that they like they can just copy this Blueprint into their codebase (see [[Importing a Blueprint]]) and use it as is or treat it as a base from which to customize their own "Import all contacts" Action.
+If they find one that they like they can just copy this Blueprint into their codebase and use it as is or treat it as a base from which to customize their own "Import all contacts" Action.
 All community and Nango contributed Blueprints are licensed under the same permissive license as Nango itself so you can use them without having to worry about licensing.
 
 Blueprints that are shared on Nango always contain the following details:
@@ -52,31 +50,37 @@ Because we know that Blueprints are only helpful when they are maintained and wo
 - We develop tooling that automatically periodically tests all Blueprints to make sure they work and are up to date with the respective APIs
 - We offer community support for all Blueprints on the Nango Slack
 
-## Best-practices on Integrations modeling with Nango {#actionBestPractices}
+:::info
+The Blueprints feature is currently work in progress.
 
-Modeling Integrations in Nango should be easy in most cases and we have found that the framework lends itself well to almost all uses cases for native integrations. If you are just getting started with Nango or native integrations in general we hope these best practices set you on a path of success from day one.
+You can find a [first small collection of Blueprints](https://github.com/NangoHQ/nango/tree/main/nango-integrations) in the `nango-integrations` folder in the Nango repo. We plan on expanding that in the near future and to provide a better, more sustainable way to discover and use them in your applications. Want to contribute or provide feedback? Reach out to us in the Nango Slack community!
+:::
+
+## Best-practices on integrations modeling with Nango {#actionBestPractices}
+
+Modeling integrations in Nango should be easy in most cases and we have found that the framework lends itself well to almost all uses cases for native integrations. If you are just getting started with Nango or native integrations in general we hope these best practices set you on a path of success from day one.
 
 ### Keep Actions short and focused
-[Actions are written in Typescript](nango-integrations-folder.md#actionFiles) and the vast majority of Actions are less than 200 lines of code. They should focus on the data exchange with the external system and focus on one specific interaction with it. Good examples are:
+[Actions are written in Typescript](nango-integrations-folder.md#actionFiles) and the vast majority of actions are less than 200 lines of code. They should focus on the data exchange with the external system and focus on one specific interaction with it. Good examples are:
 - Import all contacts from a CRM (which may mean dealing with pagination etc.)
 - Post a message to a slack channel (where the message and channel ID get passed in as inputs)
 - Load the X last commits of a GitHub repo (where X and the repo identifier are passed in as inputs)
 
 And here are some counter examples, avoid these:
 - A generic "contacts" action that takes an input parameter on whether a contact should be created, updated or deleted => Use 3 separate actions instead
-- An Action that posts a message to a Slack channel with a specific id => Channel ids are account specific and should thus be passed in as an input (or get stored on the user's Connection object, see below)
-- Including business logic that interacts with other parts of your application: Actions execute within the Nango runtime and do not have access to the other parts of your application (such as your database, other services etc.)
+- An action that posts a message to a Slack channel with a specific id => channel ids are account specific and should thus be passed in as an input (or get stored on the user's connection object)
+- Including business logic that interacts with other parts of your application: actions execute within the Nango runtime and do not have access to the other parts of your application (such as your database, other services etc.)
 
 ### Actions that do the same thing should have consistent names across Integrations
 If it does the same thing it should have the same name.
 
-For example, if you integrate with three different CRM systems and you support importing contacts from each it is a best practice to name the Action that does this import the same for all three Integrations. "Import all contacts" might be a reasonable name.
+For example, if you integrate with three different CRM systems and you support importing contacts from each it is a best practice to name the action that does this import the same for all three Integrations. "Import all contacts" might be a reasonable name.
 
 This helps other team members and future engineers understand that these work the same way across these different Integrations. You should also, as much as possible, standardize the input these actions take so they can be called interchangeably.
 
-### One Integration per API of the external system
-Most companies and products offer a single open API to connect to them and in this case you should model them also as 1 Integration in Nango. This will be the most-common use case and cover 95%+ of the systems you want to integrate with.
+### One integration per API of the external system
+Most companies and products offer a single open API to connect to them and in this case you should model them also as 1 integration in Nango. This will be the most-common use case and cover 95%+ of the systems you want to integrate with.
 
-However, some very big and complex products sometimes offer a number of different APIs with very different capabilities, different base URLs, sometimes different authentication and often different rate-limits. In this case it probably makes sense to model these different APIs as different Integrations in Nango, as Nango makes some assumptions about authentication, base URL and rate-limits within a given Integration.
+However, some very big and complex products sometimes offer a number of different APIs with very different capabilities, different base URLs, sometimes different authentication and often different rate-limits. In this case it probably makes sense to model these different APIs as different Integrations in Nango, as Nango makes some assumptions about authentication, base URL and rate-limits within a given integration.
 
 Examples of these edge-cases include advanced use cases of Shopify, whose Shopify Plus API is significantly different and Salesforce, which for instance offers a REST and Bulk API with different capabilities.

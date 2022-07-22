@@ -6,7 +6,11 @@
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "keywords": [],
-    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/NangoHQ/nango"
+    },
+    "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "files": [
         "dist/**/*",
         "!**/*.json",

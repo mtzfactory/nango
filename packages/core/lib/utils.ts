@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 // A helper function to generate IDs that are unique but still humanly readable
 export function makeId(length: number) {
     var result = '';

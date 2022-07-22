@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import { NangoMessage, NangoMessageAction, NangoMessageHandlerResult, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from '@nangohq/core';
 import * as core from '@nangohq/core';
 import * as logging from './logging.js';

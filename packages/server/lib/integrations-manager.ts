@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import type { NangoConfig, NangoIntegrationsConfig, NangoIntegrationConfig } from '@nangohq/core';
 import * as core from '@nangohq/core';
 import * as path from 'path';
