@@ -1,9 +1,11 @@
 import Nango from '../dist/nango.js';
+import * as yaml from 'js-yaml';
+import * as fs from 'fs';
 
 /** -------------------- Utils -------------------- */
 
-function logResponse(integration, action, userId, response) {
-    console.log(`${integration}.${action} response (userId: ${userId}): ${response.status} - ${response.statusText}`);
+function logResponse(integration, action, response) {
+    console.log(`${integration}.${action} response: ${response.status} - ${response.statusText}`);
 }
 
 function closeConnection() {
@@ -13,81 +15,25 @@ function closeConnection() {
     }, 1000);
 }
 
-/** -------------------- Triger Actions -------------------- */
-
-async function slack() {
-    var integration = 'slack';
-    var action = 'notify';
-    var userId = '1';
-    var authToken = 'xoxb-2710526930471-3758349823251-Y8sw1nYPOpzI5yNOCtu6GbCc';
-    var channelId = 'C02MPPQC8FK';
-    var msg = 'Hello @robin, this is your friendly chat bot post to you through Nango :wave:';
-
-    let registerConnectionPromise = nango.registerConnection(integration, userId, authToken);
+async function registerConnection(integration) {
+    let registerConnectionPromise = nango.registerConnection(integration, 1, tokens[integration]);
     registerConnectionPromise.catch((errorMsg) => {
         console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
     });
-
-    let result = await nango.triggerAction(integration, action, userId, {
-        channelId: channelId,
-        msg: msg
-    });
-
-    logResponse(integration, action, userId, result);
 }
 
-// Internal blueprint docs: https://www.notion.so/nangohq/Github-Blueprint-ec92750f43804677a44e92d1cda1db5f
-async function github() {
-    var integration = 'github';
-    var action = 'star';
-    var userId = '1';
-    var authToken = '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';
-    var owner = 'nodejs';
-    var repo = 'node';
-
-    let registerConnectionPromise = nango.registerConnection(integration, userId, authToken);
-    registerConnectionPromise.catch((errorMsg) => {
-        console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
-    });
-
-    let result = await nango.triggerAction(integration, action, userId, {
-        owner: owner,
-        repo: repo
-    });
-
-    logResponse(integration, action, userId, result);
+async function triggerAction(integration, action, input) {
+    let result = await nango.triggerAction(integration, action, 1, input);
+    logResponse(integration, action, result);
 }
 
-async function asana() {
-    var integration = 'asana';
-    var action = 'users';
-    var userId = '1';
-    var authToken = '1/1191314943604817:be1e3305fda920917fbd5a85240f578c';
-
-    let registerConnectionPromise = nango.registerConnection(integration, userId, authToken);
-    registerConnectionPromise.catch((errorMsg) => {
-        console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
-    });
-
-    let result = await nango.triggerAction(integration, action, userId, {});
-
-    logResponse(integration, action, userId, result);
-}
-
-async function hubspot() {
-    var integration = 'hubspot';
-    var action = 'contacts';
-    var userId = '1';
-    var authToken = 'pat-na1-c8dfe9b2-1bdc-449a-a2c6-fda036a2c030';
-
-    let registerConnectionPromise = nango.registerConnection(integration, userId, authToken);
-    registerConnectionPromise.catch((errorMsg) => {
-        console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
-    });
-
-    let result = await nango.triggerAction(integration, action, userId, { limit: 5 });
-
-    logResponse(integration, action, userId, result);
+async function loadSample(sample) {
+    try {
+        await registerConnection(sample.integration);
+        await triggerAction(sample.integration, sample.action, sample.input);
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 /** -------------------- Execution -------------------- */
@@ -95,12 +41,17 @@ async function hubspot() {
 const nango = new Nango('localhost');
 await nango.connect();
 
-const fn = process.argv[2];
+const tokens = yaml.load(fs.readFileSync('.dev-tokens.yaml').toString());
+const samples = yaml.load(fs.readFileSync('packages/node-client/bin/samples.yaml').toString()).samples;
 
-if (typeof fn !== 'string') {
-    console.log('Provided parameter does not correspond to sample test function. Please call: node run sample <sample-test-function-name>');
+const sampleName = process.argv[2];
+
+if (typeof sampleName !== 'string' || samples[sampleName] === undefined) {
+    console.log('Provided parameter does not correspond to valid sample in packages/node-client/binsamples.yaml.');
+} else if (tokens[samples[sampleName].integration] === undefined) {
+    console.log('Missing access token for integration. Please edit the .dev-tokens.yaml file in the Nango project root directory.');
 } else {
-    eval(fn)();
+    loadSample(samples[sampleName]);
 }
 
 closeConnection();

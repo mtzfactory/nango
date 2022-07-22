@@ -16,7 +16,8 @@
         "build-ts": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/node-client packages/server packages/action packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json",
         "build": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/node-client packages/server packages/action packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json && npm run docker-build",
         "docker-build": "docker build -f packages/server/Dockerfile -t nangohq/server .",
-        "docker-run": "docker run -d -it --name nango-server --mount type=bind,source=$(pwd)/nango-integrations,target=/usr/nango-server/src/nango-integrations nangohq/server"
+        "docker-run": "docker run -d -it --name nango-server --mount type=bind,source=$(pwd)/nango-integrations,target=/usr/nango-server/src/nango-integrations nangohq/server",
+        "rabbit": "./packages/server/bin/run-rabbit.sh"
     },
     "devDependencies": {
         "@tsconfig/node18-strictest-esm": "^1.0.0",

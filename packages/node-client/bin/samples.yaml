@@ -1,0 +1,21 @@
+samples:
+    slack:
+        integration: slack
+        action: notify
+        input:
+            channelId: C02MPPQC8FK
+            msg: 'Hello @robin, this is your friendly chat bot post to you through Nango :wave:'
+    github:
+        integration: github
+        action: star
+        input:
+            owner: nodejs
+            repo: node
+    asana:
+        integration: asana
+        action: users
+    hubspot:
+        integration: hubspot
+        action: contacts
+        input:
+            limit: 5
