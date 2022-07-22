@@ -49,7 +49,7 @@ cd /usr/nango-server
 
 ## Available methods
 
-### this.httpRequest
+### this.httpRequest {#httpRequest}
 Signature:
 ```ts
 protected async httpRequest(endpoint: string, method: axios.Method, params?: axios.HttpParams, body?: any, headers?: axios.HttpHeader): Promise<AxiosResponse>

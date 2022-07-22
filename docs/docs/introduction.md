@@ -20,9 +20,11 @@ With Nango you get:
 and much more.
 
 :::tip
-Just want to see Nango in action? Try Nango in **5 minutes** with our [Quickstart Guide](quickstart.md) 🏃‍♂️
+Just want to see Nango in action?
+- Try Nango in **30 seconds** with our [Quickstart](quickstart.md) 🏃‍♂️
+- Or jump straight to our tutorial and [build an integration from scratch](build-integrations) in **15 minutes** 💻
 
-Or read on for more details on why we built Nango
+To learn more about why we built Nango and how it is different from the other systems out there read on 👇
 :::
 
 

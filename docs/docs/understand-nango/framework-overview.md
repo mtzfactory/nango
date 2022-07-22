@@ -52,7 +52,7 @@ Because we know that Blueprints are only helpful when they are maintained and wo
 - We develop tooling that automatically periodically tests all Blueprints to make sure they work and are up to date with the respective APIs
 - We offer community support for all Blueprints on the Nango Slack
 
-## Best-practices on Integrations modelling with Nango
+## Best-practices on Integrations modelling with Nango {#actionBestPractices}
 
 Modelling Integrations in Nango should be easy in most cases and we have found that the framework lends itself well to almost all uses cases for native integrations. If you are just getting started with Nango or native integrations in general we hope these best practices set you on a path of success from day one.
 

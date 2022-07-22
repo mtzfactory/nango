@@ -1,6 +1,6 @@
-# Goal 
+# Let's build your first Nango integration
 
-Within the next **10 minutes**, you will rebuild the Slack integration from the [Quickstart Guide](quickstart.md), but this time from scratch with step-by-step explanations!
+Within the next **10-15 minutes**, you will rebuild the Slack integration from the [Quickstart Guide](quickstart.md), but this time from scratch with step-by-step explanations!
 
  You will learn:
  
