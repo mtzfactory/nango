@@ -1,6 +1,6 @@
 {
     "name": "@nangohq/node-client",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "description": "Nango's NodeJS client.",
     "type": "module",
     "main": "dist/nango.js",
@@ -12,7 +12,7 @@
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
-        "@nangohq/core": "^0.1.11",
+        "@nangohq/core": "^0.1.12",
         "amqplib": "^0.10.0"
     },
     "devDependencies": {

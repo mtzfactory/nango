@@ -1,6 +1,6 @@
 {
     "name": "@nangohq/core",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "description": "Nango's utilities shared across packages.",
     "type": "module",
     "main": "dist/index.js",
