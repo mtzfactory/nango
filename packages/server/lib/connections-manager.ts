@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import type { NangoConnection } from '@nangohq/core';
 import * as uuid from 'uuid';
 import DatabaseConstructor, { Database } from 'better-sqlite3';

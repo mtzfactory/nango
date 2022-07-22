@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import type { NangoMessageHandlerResult, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from '@nangohq/core';
 import { ConnectionsManager } from './connections-manager.js';
 import { IntegrationsManager } from './integrations-manager.js';

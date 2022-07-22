@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 //////////////////////
 // Nango Config (nango-config.yaml)
 //////////////////////

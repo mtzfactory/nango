@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import type { HttpHeader, HttpParams, NangoConfig, NangoConnection, NangoIntegrationConfig } from '@nangohq/core';
 import * as core from '@nangohq/core';
 import type * as winston from 'winston';

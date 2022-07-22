@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 Nango, all rights reserved.
+ */
+
 import Nango from '../dist/nango.js';
 import * as yaml from 'js-yaml';
 import * as fs from 'fs';
