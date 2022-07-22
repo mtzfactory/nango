@@ -51,7 +51,7 @@ Actions are where the work happens: Nango integrations are composed of actions.
 
 An action represents any piece of work that involves one or multiple interactions with the 3rd-party API. In our case here, we want our action to post a message on Slack. 
 
-Later, you might want to create more actions for your slack integration, for instance one to read all public channnels or one to react to messages where your bot gets mentioned. You can have as many actions as you want in one integration, in fact our [best-practices](understand-nango/framework-overview.md#actionBestPractices) advise you keep each action small and focused. For more details on how Actions and Integrations work together check out our [Nango Framework Overview](understand-nango/framework-overview.md).
+Later, you might want to create more actions for your slack integration, for instance one to read all public channels or one to react to messages where your bot gets mentioned. You can have as many actions as you want in one integration, in fact our [best-practices](understand-nango/framework-overview.md#actionBestPractices) advise you keep each action small and focused. For more details on how Actions and Integrations work together check out our [Nango Framework Overview](understand-nango/framework-overview.md).
 
 For now, navigate to the Slack integration directory: 
 ```bash
@@ -97,7 +97,7 @@ From [Slack's API reference](https://api.slack.com/methods/chat.postMessage), th
 - a POST request to https://slack.com/api/chat.postMessage
 - a `channel` (string) body parameter corresponding to a Slack workspace's channel id
 - a `text` (string) body parameter containing the message we want to send to Slack
-- a `mrkdown` (bool) body parameter that indicates if we want our message to be treated as markdown formatted (yes pleae, we do!)
+- a `mrkdown` (bool) body parameter that indicates if we want our message to be treated as markdown formatted (yes please, we do!)
 
 We will pass these details to our action by using the `input` parameter.
 
@@ -117,7 +117,7 @@ Using these we can easily write the logic for our Slack application:
         
         return { status: response.status, statusText: response.statusText };
 ```
-If you are curioys about `this.httpRequest` you can learn more about it in the [NangoAction reference](reference/nango-action-reference.md#httpRequest)
+If you are curious about `this.httpRequest` you can learn more about it in the [NangoAction reference](reference/nango-action-reference.md#httpRequest)
 
 Et voila, if you put everything together your `notify.action.ts` file should now look like this: 
 ```ts title="notify.action.ts"
@@ -175,7 +175,7 @@ Write the message that you want to send to Slack. For example:
 const slackMessage = `<your-name> implemented an integration from scratch 💪`;
 ```
 
-If you haven't already, get a Slack access token as detailed in the [Quickstart Guide](quickstart.md). This token is provided by us for the sake of this tutorial, but would otherwise belong toone of your users. With this token, we can tell Nango that a user has initiate a new connection with your Slack integration:
+If you haven't already, get a Slack access token as detailed in the [Quickstart Guide](quickstart.md). This token is provided by us for the sake of this tutorial, but would otherwise belong to one of your users. With this token, we can tell Nango that a user has initiate a new connection with your Slack integration:
  ```typescript title="run-slack-notify.js"
 await nango.registerConnection('slack', 1, '<Slack-token-goes-here>', {});
 ```
@@ -184,7 +184,7 @@ await nango.registerConnection('slack', 1, '<Slack-token-goes-here>', {});
 A Nango connection represents the link between your end-user and Slack. If 10 of your users wanted to benefit from your product's Slack integration, you would have to obtain 10 different access tokens and initiate 10 different Slack connections (for more details on connections check the [Framework Overview](understand-nango/framework-overview.md#overview)).
 :::
 
-Shwotime, trigger the notify action of your Slack integration: 
+Showtime, trigger the notify action of your Slack integration: 
 ```typescript title="run-slack-notify.js"
 await nango.trigger('slack', 'notify', 1, {
         channelId: 'C03QBJWCWJ1',
