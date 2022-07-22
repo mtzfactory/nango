@@ -22,11 +22,14 @@ You use the node-client by importing the Nango class into your module:
 import Nango from '@nangohq/node-client'
 ```
 
-When you instantiate Nango you need to pass in the connection details for the rabbitMQ instance that runs with the server. If you use our default local development setups you just need to pass in `localhost` as the host:
+When you instantiate Nango you need to pass in the connection details for the rabbitMQ instance that runs with the server. 
 ```ts
-let nango = new Nango('localhost'); // This works if you use our default local development setup
+nango = new Nango('localhost', 5672);
+```
 
-nango = new Nango('localhost', 5672); // Optionally you can also pass a port. If omitted it will default to 5672 which is the default listening port for rabbitMQ
+If you use our default local development setups, you can omit the parameters which will default to `host='localhost'` and `port='5672'`. The previous line can be simplified to:
+```ts
+let nango = new Nango(); // This works if you use our default local development setup
 ```
 
 ## connect method

@@ -42,7 +42,7 @@ async function loadSample(sample) {
 
 /** -------------------- Execution -------------------- */
 
-const nango = new Nango('localhost');
+const nango = new Nango();
 await nango.connect();
 
 const tokens = yaml.load(fs.readFileSync('.dev-tokens.yaml').toString());

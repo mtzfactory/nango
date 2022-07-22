@@ -166,7 +166,7 @@ import Nango from '@nangohq/node-client';
 
 Instantiate and activate the Nango instance: 
 ```typescript title="run-slack-notify.js"
-const nango = new Nango('localhost');
+const nango = new Nango();
 await nango.connect();
 ```
 
@@ -208,7 +208,7 @@ At this point, your complete `run-slack-notify.js` file should look like this:
 ```typescript title="run-slack-notify.js"
 import Nango from '@nangohq/node-client';
 
-const nango = new Nango('localhost');
+const nango = new Nango();
 await nango.connect();
 
 const slackMessage = `<your-name> implemented an integration from scratch 💪`;
