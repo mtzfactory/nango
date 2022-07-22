@@ -1,21 +1,21 @@
 integrations:
-  - slack:
-      base_url: https://slack.com/api/
-      call_auth:
-        mode: AUTH_HEADER_TOKEN
-      log_level: debug
-  - github:
-      base_url: https://api.github.com/
-      call_auth:
-        mode: AUTH_HEADER_TOKEN
-      log_level: debug
-  - asana:
-      base_url: https://app.asana.com/api/
-      call_auth:
-        mode: AUTH_HEADER_TOKEN
-      log_level: debug
-  - hubspot:
-      base_url: https://api.hubapi.com/
-      call_auth:
-        mode: AUTH_HEADER_TOKEN
-      log_level: debug
+    - slack:
+          base_url: https://slack.com/api/
+          call_auth:
+              mode: AUTH_HEADER_TOKEN
+          log_level: debug
+    - github:
+          base_url: https://api.github.com/
+          call_auth:
+              mode: AUTH_HEADER_TOKEN
+          log_level: debug
+    - asana:
+          base_url: https://app.asana.com/api/
+          call_auth:
+              mode: AUTH_HEADER_TOKEN
+          log_level: debug
+    - hubspot:
+          base_url: https://api.hubapi.com/
+          call_auth:
+              mode: AUTH_HEADER_TOKEN
+          log_level: debug
