@@ -15,8 +15,8 @@ export default class Nango {
 
     /** -------------------- Public Methods -------------------- */
 
-    constructor(host: string, port?: number) {
-        this.nangoServerHost = host;
+    constructor(host?: string, port?: number) {
+        this.nangoServerHost = host ? host : 'localhost';
         this.nangoServerPort = port ? port : 5672;
     }
 
