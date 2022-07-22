@@ -18,7 +18,7 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
   <br/>
     <a href="https://doc.nango.dev/quickstart">Quickstart 🚀</a>
     ·
-    <a href="https://github.com/novuhq/novu/issues">Report Bug</a>
+    <a href="https://github.com/nangohq/nango/issues">Report Bug</a>
     ·
     <a href="https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA">Community Slack</a>
 </p>
