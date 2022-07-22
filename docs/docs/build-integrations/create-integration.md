@@ -247,3 +247,19 @@ We would love hear about your experience: We are very actively working on Nango 
 Did you notice that our "notify" action for Slack is generic? You can use it to post any message to any slack channel on any workspace as long as you know the channel ID (and have a valid access token).
 
 This is an example of what we call Blueprints here at Nango, reusable community contributed integrations. If you use Nango for your integrations you can just copy paste our `notify.action.ts` file and use it in your `nango-integrations` folder. This means one less integration to write for you. [Learn more about Blueprints here](understand-nango/framework-overview.md#blueprints).
+
+## Now what?! 
+
+By leveraging Nango for your native integrations as you just did, you get:
+- 📁  A lightweight code framework to standardize integrations development
+- ⏱  Builtin infrastructure for scheduling, queuing and retries
+- 🛠  Local development environment to test integrations and iterate faster
+- 🔍  Powerful logging and debugging
+
+Soon, we plan to support:
+- 👥  Many community-contributed blueprints for common integration use-cases
+- 🔒  OAuth support with (optional) UI components for authenticating end-users
+- 📺  Central dashboard with sync history, API errors, latency, live connections, etc.
+- 🧠  Unified endpoints for multiple 3rd-party APIs & smart data transformation
+- 🚨 Advanced alerting & monitoring, exportable to Datadog, Sentry, etc.
+- ☁️ Cloud-hosted edition
