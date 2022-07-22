@@ -28,27 +28,27 @@ export default class Nango {
         integration: string,
         userId: string,
         oAuthAccessToken: string,
-        additionalConfig: Record<string, unknown>
+        additionalConfig?: Record<string, unknown>
     ): Promise<NangoMessageHandlerResult> {
-        const msg: NangoRegisterConnectionMessage = {
+        const msg = {
             integration: integration,
             userId: userId,
             oAuthAccessToken: oAuthAccessToken,
             additionalConfig: additionalConfig,
             action: NangoMessageAction.REGISTER_CONNECTION
-        };
+        } as NangoRegisterConnectionMessage;
 
         return this.sendMessageToServer(msg);
     }
 
-    public async trigger(integration: string, triggerAction: string, userId: string, input: Record<string, unknown>): Promise<NangoMessageHandlerResult> {
-        const msg: NangoTriggerActionMessage = {
+    public async triggerAction(integration: string, triggerAction: string, userId: string, input: Record<string, unknown>): Promise<NangoMessageHandlerResult> {
+        const msg = {
             integration: integration,
             triggeredAction: triggerAction,
             userId: userId,
             input: input,
             action: NangoMessageAction.TRIGGER_ACTION
-        };
+        } as NangoTriggerActionMessage;
 
         return this.sendMessageToServer(msg);
     }

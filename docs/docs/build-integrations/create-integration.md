@@ -177,7 +177,7 @@ const slackMessage = `<your-name> implemented an integration from scratch 💪`;
 
 If you haven't already, get a Slack access token as detailed in the [Quickstart Guide](quickstart.md). This token is provided by us for the sake of this tutorial, but would otherwise belong to one of your users. With this token, we can tell Nango that a user has initiate a new connection with your Slack integration:
  ```typescript title="run-slack-notify.js"
-await nango.registerConnection('slack', 1, '<Slack-token-goes-here>', {});
+await nango.registerConnection('slack', 1, '<Slack-token-goes-here>');
 ```
 
 :::info
@@ -186,7 +186,7 @@ A Nango connection represents the link between your end-user and Slack. If 10 of
 
 Showtime, trigger the notify action of your Slack integration: 
 ```typescript title="run-slack-notify.js"
-await nango.trigger('slack', 'notify', 1, {
+await nango.triggerAction('slack', 'notify', 1, {
         channelId: 'C03QBJWCWJ1',
         mrkdwn: true,
         msg: slackMessage
@@ -213,9 +213,9 @@ await nango.connect();
 
 const slackMessage = `<your-name> implemented an integration from scratch 💪`;
 
-await nango.registerConnection('slack', 1, '<slack-token-goes-here>', {});
+await nango.registerConnection('slack', 1, '<slack-token-goes-here>');
 
-await nango.trigger('slack', 'notify', 1, {
+await nango.triggerAction('slack', 'notify', 1, {
         channelId: 'C03QBJWCWJ1',
         mrkdwn: true,
         msg: slackMessage

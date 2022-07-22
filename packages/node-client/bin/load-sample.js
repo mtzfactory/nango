@@ -28,7 +28,7 @@ async function slack() {
         console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
     });
 
-    let result = await nango.trigger(integration, action, userId, {
+    let result = await nango.triggerAction(integration, action, userId, {
         channelId: channelId,
         msg: msg
     });
@@ -50,7 +50,7 @@ async function github() {
         console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
     });
 
-    let result = await nango.trigger(integration, action, userId, {
+    let result = await nango.triggerAction(integration, action, userId, {
         owner: owner,
         repo: repo
     });
@@ -69,7 +69,7 @@ async function asana() {
         console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
     });
 
-    let result = await nango.trigger(integration, action, userId, {});
+    let result = await nango.triggerAction(integration, action, userId, {});
 
     logResponse(integration, action, userId, result);
 }
@@ -85,7 +85,7 @@ async function hubspot() {
         console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
     });
 
-    let result = await nango.trigger(integration, action, userId, { limit: 5 });
+    let result = await nango.triggerAction(integration, action, userId, { limit: 5 });
 
     logResponse(integration, action, userId, result);
 }

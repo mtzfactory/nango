@@ -24,7 +24,7 @@ export class ConnectionsManager {
         }
     }
 
-    public registerConnection(userId: string, integration: string, oAuthAccessToken: string, additionalConfig?: object) {
+    public registerConnection(userId: string, integration: string, oAuthAccessToken: string, additionalConfig?: Record<string, unknown>) {
         this.db
             .prepare(
                 `

@@ -67,7 +67,7 @@ export interface NangoRegisterConnectionMessage extends NangoMessage {
     integration: string;
     userId: string;
     oAuthAccessToken: string;
-    additionalConfig: object;
+    additionalConfig?: Record<string, unknown>;
 }
 
 export interface NangoMessageHandlerResult {
@@ -85,7 +85,7 @@ export interface NangoConnection {
     integration: string;
     userId: string;
     oAuthAccessToken: string;
-    additionalConfig: object;
+    additionalConfig: Record<string, unknown> | undefined;
 }
 
 export interface HttpHeader {
