@@ -5,7 +5,7 @@ sidebar_position: 1
 
 # Initialize Nango
 
-As the first step of this [Tutorila](README.md) we will add Nango to your existing application.
+As the first step of this [Tutorial](README.md) we will add Nango to your existing application.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ You don't need much to get started with Nango, but please make sure the followin
 :::info
 Nango is conceptually agnostic to your project's programming language and stack: This means it works with any language and project.
 
-That being said, Nango uses a client SDK to make interacting with it from your application super easy and native to your language and environment. We are working on adding client SDKs for all major programming languages (PHP, Ruby, Python and Java are all planned), but currenly we unfortunately only offer a client for NodeJS projects.
+That being said, Nango uses a client SDK to make interacting with it from your application super easy and native to your language and environment. We are working on adding client SDKs for all major programming languages (PHP, Ruby, Python and Java are all planned), but currently we unfortunately only offer a client for NodeJS projects.
 :::
 
 ## Initializing Nango in your project

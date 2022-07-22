@@ -5,10 +5,10 @@ sidebar_position: 1
 
 # Nango configuration reference
 
-Here you can find every configuration parameter of Nango along with default values and a description of the behaviour.
+Here you can find every configuration parameter of Nango along with default values and a description of the behavior.
 
 ## `nango-config.yaml` file (Global configuration & defaults) {#nangoConfigYaml}
-Note that at this point all configuratin keys in this file are mandatory. The default value mentioned here refers to the default value with which Nango ships in a fresh installation.
+Note that at this point all configuration keys in this file are mandatory. The default value mentioned here refers to the default value with which Nango ships in a fresh installation.
 
 | Key | Allowed Values | Default value | Description |
 |---|---|---|---|

@@ -52,18 +52,18 @@ Because we know that Blueprints are only helpful when they are maintained and wo
 - We develop tooling that automatically periodically tests all Blueprints to make sure they work and are up to date with the respective APIs
 - We offer community support for all Blueprints on the Nango Slack
 
-## Best-practices on Integrations modelling with Nango {#actionBestPractices}
+## Best-practices on Integrations modeling with Nango {#actionBestPractices}
 
-Modelling Integrations in Nango should be easy in most cases and we have found that the framework lends itself well to almost all uses cases for native integrations. If you are just getting started with Nango or native integrations in general we hope these best practices set you on a path of success from day one.
+Modeling Integrations in Nango should be easy in most cases and we have found that the framework lends itself well to almost all uses cases for native integrations. If you are just getting started with Nango or native integrations in general we hope these best practices set you on a path of success from day one.
 
 ### Keep Actions short and focused
 [Actions are written in Typescript](nango-integrations-folder.md#actionFiles) and the vast majority of Actions are less than 200 lines of code. They should focus on the data exchange with the external system and focus on one specific interaction with it. Good examples are:
 - Import all contacts from a CRM (which may mean dealing with pagination etc.)
 - Post a message to a slack channel (where the message and channel ID get passed in as inputs)
-- Load the X last commmits of a GitHub repo (where X and the repo identifier are passed in as inputs)
+- Load the X last commits of a GitHub repo (where X and the repo identifier are passed in as inputs)
 
 And here are some counter examples, avoid these:
-- A generic "contacts" action that takes an input parameter on whether a contact should be created, updated or deleted => Use 3 separacte actions instead
+- A generic "contacts" action that takes an input parameter on whether a contact should be created, updated or deleted => Use 3 separate actions instead
 - An Action that posts a message to a Slack channel with a specific id => Channel ids are account specific and should thus be passed in as an input (or get stored on the user's Connection object, see below)
 - Including business logic that interacts with other parts of your application: Actions execute within the Nango runtime and do not have access to the other parts of your application (such as your database, other services etc.)
 
