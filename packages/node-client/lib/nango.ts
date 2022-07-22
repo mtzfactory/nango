@@ -24,7 +24,12 @@ export default class Nango {
         await this.connectRabbit();
     }
 
-    public async registerConnection(integration: string, userId: string, oAuthAccessToken: string, additionalConfig: Record<string, unknown>) {
+    public async registerConnection(
+        integration: string,
+        userId: string,
+        oAuthAccessToken: string,
+        additionalConfig: Record<string, unknown>
+    ): Promise<NangoMessageHandlerResult> {
         const msg: NangoRegisterConnectionMessage = {
             integration: integration,
             userId: userId,
@@ -36,7 +41,7 @@ export default class Nango {
         return this.sendMessageToServer(msg);
     }
 
-    public async trigger(integration: string, triggerAction: string, userId: string, input: Record<string, unknown>) {
+    public async trigger(integration: string, triggerAction: string, userId: string, input: Record<string, unknown>): Promise<NangoMessageHandlerResult> {
         const msg: NangoTriggerActionMessage = {
             integration: integration,
             triggeredAction: triggerAction,
@@ -54,9 +59,9 @@ export default class Nango {
 
     /** -------------------- Private Methods -------------------- */
 
-    private async sendMessageToServer(nangoMsg: NangoMessage) {
+    private async sendMessageToServer(nangoMsg: NangoMessage): Promise<NangoMessageHandlerResult> {
         let correlationId = core.makeId(8);
-        let promise = new Promise((resolve, reject) => {
+        let promise = new Promise<NangoMessageHandlerResult>((resolve, reject) => {
             this.receiveChannel?.consume(
                 this.receiveQueueId,
                 (msg) => {
