@@ -6,6 +6,6 @@
     "keywords": [],
     "license": "SEE LICENSE IN LICENSE.md",
     "dependencies": {
-        "@nangohq/action": "^0.1.10"
+        "@nangohq/action": "^0.1.11"
     }
 }
