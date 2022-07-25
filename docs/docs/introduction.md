@@ -28,6 +28,10 @@ To learn more about why we built Nango and how it is different from the other sy
 :::
 
 
+More the visual type? Here is Nango in a picture:
+![A high level overview of Nango](/img/nango-highlevel-overview.png)
+
+
 ## ⭐ Why Nango
 
 Building native integrations becomes harder as you support more integrations, deeper integrations and higher traffic.
@@ -51,6 +55,12 @@ This is why we built Nango, an open-source framework built on 3 core principles:
 - **Reliability:** Robust in every way, no matter how many integrations and traffic you throw at it
 - **Extensibility:** Nango will never stand in your way to build deep, native integrations with unlimited customizations
 
+## Discover Nango
+Learn more about how Nango works and how it can be helpful for you:
+
+- See Nango in action with our 30 seconds [Quickstart](quickstart.md)
+- Learn how easy it is to add Nango to your project and write integrations by following our 15min [Tutorial](/build-integrations)
+- Develop an in-depth understanding with the [Framework Overview](understand-nango/framework-overview.md)
 
 ## State of development
 
