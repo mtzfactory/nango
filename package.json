@@ -13,7 +13,7 @@
         "server": "sh -c 'set -a; source .env-local-dev; node packages/server/dist/server.js'",
         "prepublish-module": "node packages/cli/dist/cli.js prepublish-module",
         "sample": "node packages/node-client/bin/load-sample.js",
-        "build-ts": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/node-client packages/server packages/action packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json",
+        "build-ts": "./node_modules/typescript/bin/tsc -b --clean nango-integrations packages/core packages/node-client packages/server packages/action packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json",
         "build": "npm run build-ts && npm run docker-build",
         "docker-build": "docker build -f packages/server/Dockerfile -t nangohq/server .",
         "docker-run": "docker run -d -it --name nango-server --mount type=bind,source=$(pwd)/nango-integrations,target=/usr/nango-server/src/nango-integrations nangohq/server",
