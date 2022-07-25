@@ -16,6 +16,7 @@ export default class Nango {
     private receiveChannel?: Channel;
     private nangoServerHost?: string;
     private nangoServerPort?: number;
+    private correlationIdToPromise?: any = {};
 
     /** -------------------- Public Methods -------------------- */
 
@@ -63,30 +64,37 @@ export default class Nango {
 
     /** -------------------- Private Methods -------------------- */
 
-    private async sendMessageToServer(nangoMsg: NangoMessage): Promise<NangoMessageHandlerResult> {
-        let correlationId = core.makeId(8);
-        let promise = new Promise<NangoMessageHandlerResult>((resolve, reject) => {
-            this.receiveChannel?.consume(
-                this.receiveQueueId,
-                (msg) => {
-                    if (msg === null) {
-                        return;
-                    }
-
-                    if (msg?.properties.correlationId == correlationId) {
-                        const nangoMsg = JSON.parse(msg.content.toString()) as NangoMessageHandlerResult;
-
-                        if (nangoMsg.success) {
-                            resolve(nangoMsg.returnValue);
-                        } else {
-                            reject(nangoMsg.errorMsg);
-                        }
-                    }
-                },
-                {
-                    noAck: true
+    private listenToReceiveQueue() {
+        this.receiveChannel?.consume(
+            this.receiveQueueId,
+            (msg) => {
+                if (msg === null) {
+                    return;
                 }
-            );
+
+                if (msg.properties.correlationId in this.correlationIdToPromise) {
+                    const nangoMsg = JSON.parse(msg.content.toString()) as NangoMessageHandlerResult;
+                    const resolveRejectObj = this.correlationIdToPromise[msg.properties.correlationId];
+                    delete this.correlationIdToPromise[msg.properties.correlationId];
+
+                    if (nangoMsg.success) {
+                        resolveRejectObj.resolve(nangoMsg.returnValue);
+                    } else {
+                        resolveRejectObj.reject(nangoMsg.errorMsg);
+                    }
+                }
+            },
+            {
+                noAck: true
+            }
+        );
+    }
+
+    private async sendMessageToServer(nangoMsg: NangoMessage): Promise<NangoMessageHandlerResult> {
+        let correlationId: string = core.makeId(8);
+
+        let promise = new Promise<NangoMessageHandlerResult>((resolve, reject) => {
+            this.correlationIdToPromise[correlationId] = { resolve: resolve, reject: reject };
 
             this.sendChannel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(nangoMsg), 'utf8'), {
                 correlationId: correlationId,
@@ -105,5 +113,7 @@ export default class Nango {
 
         this.receiveChannel = await this.connection.createChannel();
         await this.receiveChannel.assertQueue(this.receiveQueueId);
+
+        this.listenToReceiveQueue();
     }
 }
