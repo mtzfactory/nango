@@ -6,6 +6,6 @@
     "keywords": [],
     "license": "SEE LICENSE IN LICENSE.md",
     "dependencies": {
-        "@nangohq/node-client": "^0.1.12"
+        "@nangohq/node-client": "^0.1.13"
     }
 }

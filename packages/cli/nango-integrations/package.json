@@ -5,6 +5,6 @@
     "type": "module",
     "keywords": [],
     "dependencies": {
-        "@nangohq/action": "^0.1.12"
+        "@nangohq/action": "^0.1.13"
     }
 }
