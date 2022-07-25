@@ -51,7 +51,7 @@ const config = {
           priority: 0.8,
         },
         gtag: {
-          trackingID: 'G-CSQ5BJJXCR',
+          trackingID: 'GTM-N4KVPWR',
         },
       }),
     ],
