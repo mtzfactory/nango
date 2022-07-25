@@ -20,7 +20,7 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
     ·
     <a href="https://github.com/nangohq/nango/issues">Report Bug</a>
     ·
-    <a href="https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA">Community Slack</a>
+    <a href="https://nango.dev/slack">Community Slack</a>
 </p>
 
 ## ⭐ Why
@@ -93,4 +93,4 @@ nango.triggerAction('slack', 'notify', userId, {
 
 -   Create an integration from scratch with our step-by-step [step-by-step tutorial](https://docs.nango.dev/build-integrations/)
 -   Understand Nango with the [Framework Overview](https://docs.nango.dev/understand-nango/framework-overview)
--   Please share your feedback on the [Slack community](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA)!
+-   Please share your feedback on the [Slack community](https://nango.dev/slack)!

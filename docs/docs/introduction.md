@@ -54,9 +54,9 @@ This is why we built Nango, an open-source framework built on 3 core principles:
 
 ## State of development
 
-Nango is currently **alpha software**.
+Nango is currently at an **alpha** stage: Give it a try and let us know what is missing for you to use it in your project.
 
 Many core features are still missing, but the framework and core APIs documented here all work. Nango is under very active development, you can expect progress every week.
-We welcome any contributions towards Nango, to get involved please join our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA) and join the discussions there.
+We welcome any contributions towards Nango, to get involved please join our [community Slack](https://nango.dev/slack) and join the discussions there.
 
 We also welcome any and all feedback on Nango: Your ideas, thoughts and reports on issues and annoyances will help us make Nango better for everybody. Please don't be shy to share your views in the [#general channel](https://nango-community.slack.com/archives/C03QBHSMPUM) or by pinging the founders directly at @robin or @bastien. Thank you! ❤️
