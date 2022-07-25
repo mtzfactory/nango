@@ -82,7 +82,7 @@ const config = {
           },
           {
             label: 'Community Slack',
-            href: 'https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA',
+            href: 'https://nango.dev/slack',
             position: 'left',
           },
           {
@@ -117,7 +117,7 @@ const config = {
               },
               {
                 label: 'Slack',
-                href: 'https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA',
+                href: 'https://nango.dev/slack',
               },
               {
                 label: 'Twitter',

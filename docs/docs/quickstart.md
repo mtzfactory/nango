@@ -35,10 +35,10 @@ Open a new terminal, `cd` back to the example folder and run `run-quickstart.js`
 node run-quickstart.js
 ```
 
-Finally, go check that your greeting message was sent to the **#welcome** channel of our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA) 🎉
+Finally, go check that your greeting message was sent to the **#welcome** channel of our [community Slack](https://nango.dev/slack) 🎉
 
 :::tip
-Not working as expected? Just ask in the [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA), we are very active there and will be glad to assist you!
+Not working as expected? Just ask in the [community Slack](https://nango.dev/slack), we are very active there and will be glad to assist you!
 :::
 
 ## Where to go from here

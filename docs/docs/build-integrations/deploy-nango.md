@@ -8,7 +8,7 @@ sidebar_position: 4
 :::caution
 Nango is Alpha software and not ready for production.
 
-We have included this section here to give you an overview of the deployment process and how it will work, but deploying the current version is at your own risk. If you want to deploy Nango to a server for staging or testing please reach out on our [community Slack](https://join.slack.com/t/nango-community/shared_invite/zt-1cvpdflmb-TMrjJJ_AZJeMivOgt906HA) and we will be glad to assist you!
+We have included this section here to give you an overview of the deployment process and how it will work, but deploying the current version is at your own risk. If you want to deploy Nango to a server for staging or testing please reach out on our [community Slack](https://nango.dev/slack) and we will be glad to assist you!
 :::
 
 ## Deployment process overview
