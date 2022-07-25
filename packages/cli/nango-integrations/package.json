@@ -5,6 +5,7 @@
     "type": "module",
     "keywords": [],
     "dependencies": {
-        "@nangohq/action": "^0.1.13"
+        "@nangohq/action": "^0.1.14",
+        "typescript": "^4.7.4"
     }
 }

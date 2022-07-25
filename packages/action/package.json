@@ -1,6 +1,6 @@
 {
     "name": "@nangohq/action",
-    "version": "0.1.13",
+    "version": "0.1.16",
     "description": "Nango's framework for developing native integrations, deployed to the runtime to be executed on Nango's server.",
     "type": "module",
     "main": "dist/action.js",
@@ -12,7 +12,7 @@
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
-        "@nangohq/core": "^0.1.13",
+        "@nangohq/core": "^0.1.14",
         "axios": "^0.27.2",
         "winston": "^3.8.1"
     },
