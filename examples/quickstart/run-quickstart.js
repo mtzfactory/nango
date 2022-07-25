@@ -15,6 +15,6 @@ await nango.triggerAction('slack', 'notify', 1, {
         msg: slackMessage
 });
 
-console.log('Message sent, check the #welcome channel in our community Slack!');
+console.log('Message sent, check the #welcome channel in our community Slack -> https://nango.dev/slack');
 
 nango.close();
