@@ -11,22 +11,22 @@ As the first step of this [Tutorial](README.md) we will add Nango to your existi
 
 You don't need much to get started with Nango, but please make sure the following is present:
 
-- A recent version of [nodeJS](https://nodejs.org/en/) and the NPM package manager, we recommend >18 for node and >8 for NPM
-- [Docker](https://www.docker.com/)
-- A project to which you can add Nango (this could also be a toy project or just an empty folder). If you need some inspiration, why not use this [sample project with nodeJS and TypeScript](https://www.digitalocean.com/community/tutorials/setting-up-a-node-project-with-typescript)
+- A recent version of `NPM` (>= 8.6.0) and `NodeJS` (>= 18.0.0) ([instructions](https://nangohq.notion.site/Prerequisites-Sample-Project-398e9314196b44cb8950132df15c8752) to check and install prerequisites)
+- Docker (installation instructions [here](https://www.docker.com/products/docker-desktop/))
+- A project to which you can add Nango (or you can use this [sample NodeJS project](https://nangohq.notion.site/Prerequisites-Sample-Project-398e9314196b44cb8950132df15c8752))
 
 
 :::info
-Nango is conceptually agnostic to your project's programming language and stack: This means it works with any language and project.
+Nango is conceptually agnostic to your project's programming language and stack: it will work with any language and project.
 
-That being said, Nango uses a client SDK to make interacting with it from your application super easy and native to your language and environment. We are working on adding client SDKs for all major programming languages (PHP, Ruby, Python and Java are all planned), but currently we only offer a client for NodeJS projects.
+That being said, Nango uses a client SDK to make interacting with it from your application super easy and native to your language and environment. We are working on adding client SDKs for all major programming languages (PHP, Ruby, Python and Java are all planned), but **currently we only offer a client for NodeJS projects**.
 :::
 
 ## Initializing Nango in your project
 
-You add Nango to your project by adding a `nango-integrations` folder in your repository. This is where all things Nango, such as the integrations that you build and their configuration, will live.
+To add Nango to your project, you need to fetch a `nango-integrations` folder in your repository. This is where all things Nango will live, such as the integrations that you build and their configuration.
 
-Using the command line, navigate to the project where you want to add Nango. Inside your project, initialize the `nango-integrations` folder by running this command with the Nango CLI:
+Using the command line, navigate to the project where you want to add Nango. Then run this command:
 ```bash
 npx nango init
 ```
