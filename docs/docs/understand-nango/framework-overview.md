@@ -3,11 +3,25 @@ sidebar_label: Framework Overview
 sidebar_position: 1
 ---
 
-# Nango integrations framework overview {#overview}
+# Nango framework overview {#overview}
 
 At the heart of Nango is a simple, but powerful framework for integrations. It ensures that Nango can provide powerful infrastructure and solve many development and runtime issues around native integrations for you.
 
-## Framework by example: A simple integration
+## High level architecture of Nango
+Let's take a look at this high level diagram of Nango's architecture:
+
+![High level architecture of Nango](/img/nango-architecture.png)
+
+Nango consists of a few pieces that all work together to give you reliable, native integrations that are a joy to work with:
+- The nango server, which is a docker container that runs your integrations and makes the external API calls. It can be run locally, self-hosted or managed by us with the Nango Cloud.
+- The [`nango-integrations`](nango-integrations-folder.md) folder which contains all your integrations along with their configuration. At runtime this folder is read by the server and fully determines its behavior. You can learn more about this special folder [here](nango-integrations-folder.md).
+- The Nango CLI, which helps you with managing your `nango-integrations` folder, local development and packaging your integrations for deployment
+- The Nango client SDK, which makes it easy for your app to communicate with the server in a way that feels native to your programming language of choice. As an example, you can find all the details on our [node-client here](/reference/node-client-reference.md).
+
+
+## The integrations Framework: A simple example
+Let's take a closer look at how Nango models native integrations with its framework.
+
 As an example, imagine you are a new startup and want to integrate with Salesforce so your customers can load their contacts from Salesforce into your system.
 
 You also want to write data back into Salesforce, for instance whenever a contact opens an email that was sent through your system:

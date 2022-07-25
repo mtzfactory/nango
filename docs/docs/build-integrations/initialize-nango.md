@@ -11,7 +11,7 @@ As the first step of this [Tutorial](README.md) we will add Nango to your existi
 
 You don't need much to get started with Nango, but please make sure the following is present:
 
-- A recent version of `NPM` (>= 8.6.0) and `NodeJS` (>= 18.0.0) ([instructions](https://nangohq.notion.site/Prerequisites-Sample-Project-398e9314196b44cb8950132df15c8752) to check and install prerequisites)
+- A recent version of `NPM` (>= 7.20.0) and `NodeJS` (>= 16.7.0) ([instructions](https://nangohq.notion.site/Prerequisites-Sample-Project-398e9314196b44cb8950132df15c8752) to check and install prerequisites)
 - Docker (installation instructions [here](https://www.docker.com/products/docker-desktop/))
 - A project to which you can add Nango (or you can use this [sample NodeJS project](https://nangohq.notion.site/Prerequisites-Sample-Project-398e9314196b44cb8950132df15c8752))
 
