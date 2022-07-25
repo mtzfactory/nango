@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Nango Docs',
   tagline: 'Documentation for the Nango framework',
-  url: 'https://nangohq.github.io',
+  url: 'https://docs.nango.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -48,7 +48,7 @@ const config = {
         },
         sitemap: {
           changefreq: 'weekly',
-          priority: 0.5,
+          priority: 0.8,
         },
         gtag: {
           trackingID: 'G-CSQ5BJJXCR',
@@ -60,6 +60,13 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      metadata: [{
+        name: 'keywords',
+        content: 'nango, documentation, native integrations, integrations framework, integrations, customer-facing integrations, open-source framework, open-source, nango docs, nango documentation'
+      }, {
+        name: 'description',
+        content: 'The documentation for the native integrations framework Nango'
+      }],
       navbar: {
         title: 'Nango Docs',
         logo: {
