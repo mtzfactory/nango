@@ -24,7 +24,7 @@ await nango.registerConnection('slack', 1, '<token-goes-here>'); // TODO: fill i
 ...
 ```
 
-Start the Nango server docker container:
+Start the Nango server docker container (if you haven't already, [install Docker](https://www.docker.com/products/docker-desktop/) first):
 ```bash
 cd nango-integrations
 docker compose up # or docker-compose up
