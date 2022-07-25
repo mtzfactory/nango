@@ -16,7 +16,7 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
     <br />
 
   <br/>
-    <a href="https://doc.nango.dev/quickstart">Quickstart 🚀</a>
+    <a href="https://docs.nango.dev/quickstart">Quickstart 🚀</a>
     ·
     <a href="https://github.com/nangohq/nango/issues">Report Bug</a>
     ·
@@ -44,8 +44,6 @@ This is why we built Nango, an open-source framework built on 3 core principles:
 -   **Reliability:** Robust in every way, no matter how many integrations and traffic you throw at it
 -   **Extensibility:** Nango will never stand in your way to build deep, native integrations with unlimited customization
 
-
-
 ## ✅ Features
 
 Nango is a full-featured framework that provides an end-to-end solution for native integrations:
@@ -69,11 +67,7 @@ Soon, we plan to support:
 
 …and many more capabilities.
 
-
-
-
 ## 🚀 Quickstart
-
 
 Follow our [Quickstart guide](https://docs.nango.dev/quickstart) to **build a Slack integration is 30 seconds**!
 
@@ -92,9 +86,6 @@ nango.triggerAction('slack', 'notify', userId, {
     msg: 'Hello @channel, this is a notification triggered by Nango :tada:'
 });
 ```
-
-
-
 
 ## 🔍 Learn more
 
