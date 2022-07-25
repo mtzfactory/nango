@@ -20,24 +20,21 @@ function closeConnection() {
 }
 
 async function registerConnection(integration) {
-    let registerConnectionPromise = nango.registerConnection(integration, 1, tokens[integration]);
-    registerConnectionPromise.catch((errorMsg) => {
+    await nango.registerConnection(integration, 1, tokens[integration]).catch((errorMsg) => {
         console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
     });
 }
 
 async function triggerAction(integration, action, input) {
-    let result = await nango.triggerAction(integration, action, 1, input);
+    let result = await nango.triggerAction(integration, action, 1, input).catch((errorMsg) => {
+        console.log(`Uh oh, got error message on triggerAction: ${errorMsg}`);
+    });
     logResponse(integration, action, result);
 }
 
 async function loadSample(sample) {
-    try {
-        await registerConnection(sample.integration);
-        await triggerAction(sample.integration, sample.action, sample.input);
-    } catch (e) {
-        console.log(e);
-    }
+    await registerConnection(sample.integration);
+    await triggerAction(sample.integration, sample.action, sample.input);
 }
 
 /** -------------------- Execution -------------------- */
@@ -55,7 +52,7 @@ if (typeof sampleName !== 'string' || samples[sampleName] === undefined) {
 } else if (tokens[samples[sampleName].integration] === undefined) {
     console.log('Missing access token for integration. Please edit the .dev-tokens.yaml file in the Nango project root directory.');
 } else {
-    loadSample(samples[sampleName]);
+    await loadSample(samples[sampleName]);
 }
 
 closeConnection();
