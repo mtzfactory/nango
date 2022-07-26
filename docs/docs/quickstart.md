@@ -30,7 +30,7 @@ cd nango-integrations
 docker compose up # or docker-compose up
 ```
 
-Open a new terminal, `cd` back to the example folder and run `run-quickstart.js`:
+Open a new terminal, navigate to the sample app folder (`nango/examples/quickstart`) and run:
 ```bash
 node run-quickstart.js
 ```
