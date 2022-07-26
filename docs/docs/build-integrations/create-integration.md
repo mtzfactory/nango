@@ -140,11 +140,7 @@ class SlackNotifyAction extends NangoAction {
 export { SlackNotifyAction };
 ```
 
-Because we have started the Nango file watcher in the last step of the tutorial our Typescript file should also already have been picked up by the compiler and gotten compiled. You can check that this succeeded by looking at the `nango-integrations/dist/slack/notify.action.js` file or checking the console output of your `npx nango watch` command (empty means all is well).
-
-:::caution
-Saving with some code editors (e.g. Sublime Text) is not detected by the file watcher. If the `dist/` folder is not created and updated automatically with the compiled files inside it (here `notify.action.js`), you can restart the watcher. To do this, go back to the terminal window where you ran `npx nango watch`, hit Ctrl + C on your keyboard then run `npx nango watch` again. The `/dist` folder should now be properly updated.
-:::
+Because we have started the Nango file watcher in the last step of the tutorial our Typescript file should also already have been picked up by the compiler and gotten compiled. You can check that this succeeded by looking at the `nango-integrations/dist/slack/notify.action.js` file or checking the console output of your `tsc -w --project tsconfig.json` command (empty means all is well).
 
 ## Using Nango in your application to trigger the action 
 

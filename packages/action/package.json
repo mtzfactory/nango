@@ -1,6 +1,6 @@
 {
     "name": "@nangohq/action",
-    "version": "0.1.16",
+    "version": "0.1.17",
     "description": "Nango's framework for developing native integrations, deployed to the runtime to be executed on Nango's server.",
     "type": "module",
     "main": "dist/action.js",
