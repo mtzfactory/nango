@@ -52,12 +52,12 @@ npm install
 ## Set up the Typescript environment
 Nango leverages the [typescript](https://www.typescriptlang.org/) programming language to write integrations. Unfortunately we cannot directly run Typescript on nodeJS but need to compile it to javascript. To keep development convenient we need to make sure that this compilation happens every time we modify a typescript file. 
 
-The nango CLI includes a small utility which does just that for you, activate it by running the command:
+The following command does just that for you:
 ```bash
-npx nango watch
+tsc -w --project tsconfig.json
 ```
 
-Recompiles happen on every file save and any compilation error will show up in the terminal window where you just ran `npx nango watch`.
+Recompiles happen on every file save and any compilation error will show up in the terminal window where you just ran `tsc -w --project tsconfig.json`.
 
 :::caution
 If your main project is a typescript project, you need to [exclude](https://www.typescriptlang.org/tsconfig#exclude) the `nango-integrations` folder in your `tsconfig.json` file. Since `nango-integrations` handles Typescript compilation independently (we need to make sure the compilation matches what the server expects), you do not want your main project to interfere with its compilation process.
