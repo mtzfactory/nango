@@ -29,6 +29,13 @@ const config = {
     locales: ['en'],
   },
 
+  plugins: [
+    ['docusaurus-gtm-plugin',
+    {
+      id: 'GTM-N4KVPWR'
+    }],
+  ],
+
   presets: [
     [
       'classic',
@@ -49,9 +56,6 @@ const config = {
         sitemap: {
           changefreq: 'weekly',
           priority: 0.8,
-        },
-        gtag: {
-          trackingID: 'GTM-N4KVPWR',
         },
       }),
     ],
