@@ -41,5 +41,5 @@ function initCommand() {
 
 function watchCommand() {
     console.log('\n👀 Compiling on save. Please keep this terminal window open.\n');
-    child_process.execSync('./node_modules/typescript/bin/tsc ./**/*.ts --outDir ./dist --rootDir . -t es2022 --moduleResolution node --watch');
+    child_process.execSync('./node_modules/typescript/bin/tsc -w --project tsconfig.json');
 }

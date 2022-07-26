@@ -1,6 +1,6 @@
 {
     "name": "@nangohq/nango-integrations",
-    "version": "0.1.16",
+    "version": "0.1.17",
     "description": "Package hosting Nango's integration blueprints.",
     "type": "module",
     "keywords": [],
