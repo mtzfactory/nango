@@ -8,7 +8,8 @@
     "keywords": [],
     "repository": {
         "type": "git",
-        "url": "https://github.com/NangoHQ/nango"
+        "url": "https://github.com/NangoHQ/nango",
+        "directory": "packages/node-client"
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
@@ -17,6 +18,9 @@
     },
     "devDependencies": {
         "@types/amqplib": "^0.8.2"
+    },
+    "engines": {
+        "node": ">=16.7"
     },
     "files": [
         "dist/**/*",

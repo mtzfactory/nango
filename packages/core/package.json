@@ -8,9 +8,13 @@
     "keywords": [],
     "repository": {
         "type": "git",
-        "url": "https://github.com/NangoHQ/nango"
+        "url": "https://github.com/NangoHQ/nango",
+        "directory": "packages/core"
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
+    "engines": {
+        "node": ">=16.7"
+    },
     "files": [
         "dist/**/*",
         "!**/*.json",

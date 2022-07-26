@@ -9,11 +9,15 @@
     "author": "",
     "repository": {
         "type": "git",
-        "url": "https://github.com/NangoHQ/nango"
+        "url": "https://github.com/NangoHQ/nango",
+        "directory": "packages/cli"
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
         "commander": "^9.4.0"
+    },
+    "engines": {
+        "node": ">=16.7"
     },
     "files": [
         "dist/**/*",
