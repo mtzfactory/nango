@@ -7,7 +7,8 @@
     "keywords": [],
     "repository": {
         "type": "git",
-        "url": "https://github.com/NangoHQ/nango"
+        "url": "https://github.com/NangoHQ/nango",
+        "directory": "packages/server"
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
@@ -23,5 +24,8 @@
         "@types/better-sqlite3": "^7.5.0",
         "@types/js-yaml": "^4.0.5",
         "@types/uuid": "^8.3.4"
+    },
+    "engines": {
+        "node": ">=16.7"
     }
 }
