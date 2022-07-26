@@ -204,7 +204,7 @@ The `channelId` parameter is provided by us and corresponds to a Slack channel i
 
 Finally, log the completion of the script and terminate the nango instance: 
 ```typescript {3-4,6} title="run-slack-notify.js"
-console.log('Message sent, check the #welcome channel in our community Slack!');
+console.log('Message sent, check the #welcome channel in our community Slack -> https://nango.dev/slack');
 nango.close();
 ```
 
@@ -225,7 +225,7 @@ await nango.triggerAction('slack', 'notify', 1, {
         msg: slackMessage
 });
 
-console.log('Message sent, check the #welcome channel in our community Slack!');
+console.log('Message sent, check the #welcome channel in our community Slack -> https://nango.dev/slack');
 
 nango.close();
 ```
