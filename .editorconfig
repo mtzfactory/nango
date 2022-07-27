@@ -17,6 +17,7 @@
 # No .editorconfig files above the root directory
 root = true
 
+
 [*]
 charset = utf-8
 end_of_line = lf
