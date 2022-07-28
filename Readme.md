@@ -93,5 +93,5 @@ nango.triggerAction('slack', 'notify', userId, {
 ⭐  Like Nango? Follow our development by starring us here on GitHub ⭐
 
 -   Create an integration from scratch with our step-by-step [step-by-step tutorial](https://docs.nango.dev/build-integrations/)
--   Understand Nango with the [Framework Overview](https://docs.nango.dev/understand-nango/framework-overview)
+-   Understand Nango with the [Framework Overview](https://docs.nango.dev/architecture)
 -   Please share your feedback on the [Slack community](https://nango.dev/slack)!

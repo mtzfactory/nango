@@ -1,16 +1,16 @@
 ---
-sidebar_label: NangoAction Reference
+sidebar_label: Actions
 sidebar_position: 2
 ---
 
-# NangoAction reference
+# Actions
 
-NangoAction is the name of the base class of all Actions in your `nango-integrations` folder. This page contains the reference of all attributes and methods offered by NangoAction for your actions.
+`NangoAction` is the name of the base class of all Actions in your `nango-integrations` folder. This page contains the reference of all attributes and methods offered by NangoAction for your actions.
 
 Need even more details? Nango is open source, so you can inspect the current [NangoAction in our GitHub repo](https://github.com/NangoHQ/nango/blob/main/packages/action/lib/action.ts)
 
 ## executeAction input and return values {#inputReturnValues}
-The `executeAction` method, which you implement in your NangoAction subclass, receives an input value from the [`triggerAction` call](node-client-reference.md#triggerAction) in the client SDK. This input **must be JSON serializable** otherwise you will encounter a runtime error.
+The `executeAction` method, which you implement in your NangoAction subclass, receives an input value from the [`triggerAction` call](reference/SDKs/node-client-reference.md#triggerAction) in the client SDK. This input **must be JSON serializable** otherwise you will encounter a runtime error.
 
 It's return value will also be passed back as the return value of the `triggerAction` call in the client SDK, but this again means that whatever you return from the execution of `executeAction` **must be JSON serializable**. Otherwise you will also encounter a runtime error.
 

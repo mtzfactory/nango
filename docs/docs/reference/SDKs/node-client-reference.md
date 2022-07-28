@@ -1,9 +1,9 @@
 ---
-sidebar_label: node-client reference
-sidebar_position: 3
+sidebar_label: 'SDK: Node'
+sidebar_position: 1
 ---
 
-# Nango node.js client reference
+# SDK: Node
 
 This is the reference for the Nango node.js client SDK, which we call node-client and is published on npm as [@nangohq/node-client](https://www.npmjs.com/package/@nangohq/node-client).
 
@@ -52,9 +52,7 @@ await nango.connect();
 After connect has succeeded you Nango client is ready to start sending commands to the server. If you send commands before `connect` has succeeded you may get exceptions and messages will be lost.
 
 ## registerConnection method
-You use the `registerConnection` method to create a new connection object on the server. If you are not familiar with the concept of a connection in Nango please check the [Framework Overview](understand-nango/framework-overview.md).
-
-You must register a connection for the (user id, integration) pair before you can trigger an action for it.
+You must register a connection, with the `registerConnection` method, for a user/Integration combination before you can trigger an action for it. In particular, the connection stores information such as the credentials of the user to access the 3rd-party system.
 
 The registerConnection method takes a number of parameters:
 ```ts
@@ -108,7 +106,7 @@ Let's look at each parameter:
 - `userId` is the id of the user for which the action should be called. This must be an id for which a connection was registered for this integration prior to calling `triggerAction`
 - `input` is any input that should be passed to the action for its execution. Note that the object you pass in here **must be JSON serializable**.
 
-When the promise resolves it does so with a [`NangoMessageHandlerResult` object](#nangoMessageHandlerResult). In case of success, the `returnValue` of this object will be whatever has been [returned by the `executeAction` method](nango-action-reference.md#inputReturnValues).
+When the promise resolves it does so with a [`NangoMessageHandlerResult` object](#nangoMessageHandlerResult). In case of success, the `returnValue` of this object will be whatever has been [returned by the `executeAction` method](reference/nango-action-reference.md#inputReturnValues).
 
 ```ts
 // Usual shorthand form

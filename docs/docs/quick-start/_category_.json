@@ -1,0 +1,8 @@
+{
+    "label": "Quickstart",
+    "position": 5,
+    "link": {
+        "type": "generated-index",
+        "description": "Start using Nango in minutes."
+    }
+}

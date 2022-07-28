@@ -71,6 +71,11 @@ const config = {
         name: 'description',
         content: 'The documentation for the native integrations framework Nango'
       }],
+      docs: {
+        sidebar: {
+          autoCollapseCategories: false,
+        },
+      },
       navbar: {
         title: 'Nango Docs',
         logo: {
@@ -87,7 +92,7 @@ const config = {
           {
             label: 'Community Slack',
             href: 'https://nango.dev/slack',
-            position: 'left',
+            position: 'right',
           },
           {
             href: 'https://github.com/nangohq/nango',
