@@ -54,6 +54,7 @@ Nango is a full-featured framework that provides an end-to-end solution for nati
 -   🔍 Powerful logging and debugging
 -   ❤️  Simple setup with a CLI and native SDKs
 -   ⛔️ Fine-grained rate-limit configuration
+-   🧩 Universal: Works with any programming language & framework, e.g. nodeJS, Ruby, Python, PHP, Java etc.
 -   💻  Self-hostable, single docker container for easy local development
 
 Soon, we plan to support:
@@ -71,7 +72,7 @@ Soon, we plan to support:
 
 Follow our [Quickstart guide](https://docs.nango.dev/quickstart) to **build a Slack integration is 30 seconds**!
 
-With Nango, your integration code will look like this:
+With Nango, your integration code will look like this (nodeJS example, Nango also works with Python, PHP, Ruby, Java etc.):
 
 ```ts
 import { Nango } from '@nangohq/node-client';
