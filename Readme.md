@@ -57,9 +57,9 @@ Soon, we plan to support:
 
 ## 🚀 Quickstart
 
-Follow our [Quickstart guide](https://docs.nango.dev/quickstart/node) to **build a Slack integration for scratch**!
+Follow our [Quickstart guide](https://docs.nango.dev/quickstart/node) to **build a Slack integration from scratch**!
 
-With Nango, your integration code will look like this:
+With Nango, your integration code will look like this (node.JS example, [see other languages](https://docs.nango.dev/quickstart/other)):
 
 ```ts
 import { Nango } from '@nangohq/node-client';
