@@ -17,7 +17,7 @@ import { handleRegisterConnection, handleTriggerAction } from './message-handler
 
 const inboundSeverQueue = 'server_inbound';
 let rabbitConnection: Connection;
-let inboundRabbitChannel: Channel | null = null;
+let rabbitChannel: Channel | null = null;
 
 let logger: winston.Logger;
 
@@ -55,13 +55,11 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
         }
     }
 
-    inboundRabbitChannel?.ack(msg);
-
-    const outboundRabbitChannel = await rabbitConnection.createChannel();
-    await outboundRabbitChannel.assertQueue(msg.properties.replyTo);
-    outboundRabbitChannel?.sendToQueue(msg.properties.replyTo, Buffer.from(JSON.stringify(result), 'utf8'), {
+    rabbitChannel?.sendToQueue(msg.properties.replyTo, Buffer.from(JSON.stringify(result), 'utf8'), {
         correlationId: msg.properties.correlationId
     });
+
+    rabbitChannel?.ack(msg);
 }
 
 function bootstrapServer() {
@@ -109,10 +107,10 @@ async function connectRabbit() {
         .then(async (connection) => {
             rabbitConnection = connection;
 
-            inboundRabbitChannel = await rabbitConnection.createChannel();
-            await inboundRabbitChannel.assertQueue(inboundSeverQueue);
+            rabbitChannel = await rabbitConnection.createChannel();
+            await rabbitChannel.assertQueue(inboundSeverQueue);
 
-            inboundRabbitChannel.consume(inboundSeverQueue, handleInboundMessage);
+            rabbitChannel.consume(inboundSeverQueue, handleInboundMessage);
 
             logger!.info('✅ Nango Server is ready!');
         })

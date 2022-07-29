@@ -10,10 +10,9 @@ export default class Nango {
     /** -------------------- Private Properties -------------------- */
 
     private sendQueueId = 'server_inbound';
-    private receiveQueueId = 'server_outbound';
     private connection?: Connection;
-    private sendChannel?: Channel;
-    private receiveChannel?: Channel;
+    private channel?: Channel;
+    private receiveQueue?: string;
     private nangoServerHost?: string;
     private nangoServerPort?: number;
     private correlationIdToPromise?: any = {};
@@ -65,8 +64,8 @@ export default class Nango {
     /** -------------------- Private Methods -------------------- */
 
     private listenToReceiveQueue() {
-        this.receiveChannel?.consume(
-            this.receiveQueueId,
+        this.channel?.consume(
+            this.receiveQueue!,
             (msg) => {
                 if (msg === null) {
                     return;
@@ -96,9 +95,9 @@ export default class Nango {
         let promise = new Promise<NangoMessageHandlerResult>((resolve, reject) => {
             this.correlationIdToPromise[correlationId] = { resolve: resolve, reject: reject };
 
-            this.sendChannel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(nangoMsg), 'utf8'), {
+            this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(nangoMsg), 'utf8'), {
                 correlationId: correlationId,
-                replyTo: this.receiveQueueId
+                replyTo: this.receiveQueue
             });
         });
 
@@ -108,11 +107,12 @@ export default class Nango {
     private async connectRabbit() {
         this.connection = await connect('amqp://' + this.nangoServerHost + ':' + this.nangoServerPort);
 
-        this.sendChannel = await this.connection.createChannel();
-        await this.sendChannel.assertQueue(this.sendQueueId);
-
-        this.receiveChannel = await this.connection.createChannel();
-        await this.receiveChannel.assertQueue(this.receiveQueueId);
+        this.channel = await this.connection.createChannel();
+        await this.channel.assertQueue(this.sendQueueId);
+        const queueResponse = await this.channel.assertQueue('', {
+            exclusive: true
+        });
+        this.receiveQueue = queueResponse.queue;
 
         this.listenToReceiveQueue();
     }
