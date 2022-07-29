@@ -26,7 +26,7 @@ It's return value will also be passed back as the return value of the `triggerAc
 
 ## Available properties
 
-### this.logger
+### this.logger {#logger}
 Signature:
 ```ts
 protected logger: winston.Logger;
