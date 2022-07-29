@@ -3,6 +3,7 @@
     "position": 5,
     "link": {
         "type": "generated-index",
-        "description": "Start using Nango in minutes."
+        "description": "Start using Nango in minutes.",
+        "slug": "/quickstart"
     }
 }

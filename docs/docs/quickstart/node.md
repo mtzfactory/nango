@@ -68,6 +68,10 @@ Nango leverages the [typescript](https://www.typescriptlang.org/) programming la
 tsc -w --project tsconfig.json
 ```
 
+:::tip
+You will see an error in the terminal at first because there is no Typescript file to compile just yet. This will be resolved with the next steps.
+:::
+
 Compilation happens on every file save and compilation errors will show up in the terminal window where you just ran the previous command.
 
 ### Create an Integration
@@ -161,11 +165,11 @@ npm install @nangohq/node-client
 
 Create a file that will trigger the Slack Notify Action: 
 ```bash
-touch run-slack-notify.js
+touch app.js
 ```
 
-Open `run-slack-notify.js` and copy/paste: 
-```typescript title="run-slack-notify.js"
+Open `app.js` and copy/paste: 
+```typescript title="app.js"
 import Nango from '@nangohq/node-client';
 
 const nango = new Nango();
@@ -197,9 +201,9 @@ Navigate to the sample project:
 cd [...]/node-sample
 ```
 
-Run your script: 
+Run your app: 
 ```bash
-node run-slack-notify.js
+node spp.js
 ```
 
 You should see a success message in the console!
