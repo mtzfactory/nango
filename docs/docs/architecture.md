@@ -19,7 +19,7 @@ Nango comes with bullet-proof infrastructure focused on native integrations desc
 
 ## Nango Integrations & Actions
 
-Nango's flexible **Integrations** and **Actions** support arbitrary complex use-cases:
+Nango's flexible **Integrations** and **Actions** support arbitrarily complex use-cases:
 
 ![Nango's Integrations and Actions](/img/integration.png)
 

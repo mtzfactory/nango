@@ -13,3 +13,6 @@ In particular, **alpha** stage means that:
 - Nango Cloud is not yet available
 - Some advertised features are still unstable
 
+You can follow our progress and get involved by checking our [GitHub issues](https://github.com/NangoHQ/nango/issues) and the [public Roadmap](https://github.com/orgs/NangoHQ/projects/1/views/1).
+
+

@@ -51,7 +51,7 @@ await nango.connect();
 
 After connect has succeeded you Nango client is ready to start sending commands to the server. If you send commands before `connect` has succeeded you may get exceptions and messages will be lost.
 
-## registerConnection method
+## registerConnection method {#registerConnection}
 You must register a connection, with the `registerConnection` method, for a user/Integration combination before you can trigger an action for it. In particular, the connection stores information such as the credentials of the user to access the 3rd-party system.
 
 The registerConnection method takes a number of parameters:

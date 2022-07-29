@@ -7,7 +7,7 @@ sidebar_position: 1
 
 ### Intro
 
-This tutorial will make you build a Slack Integration from scratch in **10 minutes**. Ready? Let's go!
+With this tutorial you will build a Slack Integration from scratch in **10 minutes**. Ready? Let's go!
 
 ### Prerequisites
 
@@ -16,7 +16,7 @@ This tutorial will make you build a Slack Integration from scratch in **10 minut
 
 ### Start a new project
 
-Fetch this empty Node app (or use your own):
+Fetch this [empty Node app](https://github.com/NangoHQ/node-sample) (or use your own):
 ```bash
 git clone https://github.com/NangoHQ/node-sample.git
 ```
@@ -58,14 +58,14 @@ In a new terminal, navigate to the Nango Folder again:
 cd [...]/node-sample/nango-integrations
 ```
 
-The Nango Folder is configured as an [npm](https://docs.npmjs.com/packages-and-modules) package, so you can install dependencies by running:
+The Nango Folder is configured as an [npm](https://docs.npmjs.com/packages-and-modules) package, let's install its dependencies by running:
 ```bash
 npm install
 ```
 
 Nango leverages the [typescript](https://www.typescriptlang.org/) programming language to write Integrations. To be able to run our code, enable continuous compilation of Typescript: 
 ```bash
-tsc -w --project tsconfig.json
+node_modules/typescript/bin/tsc -w --project tsconfig.json
 ```
 
 :::tip
@@ -101,7 +101,7 @@ cd slack
 
 ### Create an Action
 
-Actions (cf. [Architecture](architecture.md)) contain the business logic that is specific to each integration. They can be customized at will. Here, we want our Action to post a message on Slack. Naturally, Actions may be much more complex than this (cf. [Best Practices](guides/best-practices.md)).
+Actions (cf. [Architecture](architecture.md)) contain the business logic that is specific to each integration. They can be customized at will. Here, we want our Action to post a message on Slack. Naturally, Actions may be more complex than this simple example here (cf. [Best Practices](guides/best-practices.md)).
 
 Create a file for our new `notify` Action which will post a message to Slack: 
 ```bash
@@ -136,7 +136,7 @@ From [Slack's API reference](https://api.slack.com/methods/chat.postMessage), th
 
 Nango provides us with some helpers that we can (and should) use in our Action:
 - For HTTP requests, use the built-in `this.httpRequest` method (cf. [reference](reference/actions.md#httpRequest)), which takes care of auth parameters, retries,  etc.
-- For logging, use the built-in logger `this.logger` (cf. [reference](reference/logging.md))
+- For logging, use the built-in logger `this.logger` (cf. [reference](reference/actions.md#logger))
 
 We can now easily write the logic for our Slack Action:
 ```ts title="notify.action.ts"
@@ -191,9 +191,8 @@ nango.close();
 
 Replace your `<your-name>` with your actual name, and `<slack-token-goes-here>` with [this token](https://nangohq.notion.site/Quickstart-Slack-access-token-f41c7cc291c74fbd9b1110af6d631d01).
 
-:::info
-A Nango Connection represents the link between an end-user and Slack. If 10 of your users wanted to benefit from your product's Slack Integration, you would have to obtain 10 different access tokens and initiate 10 different Slack connections (cf. [Architecture](architecture.md#overview)).
-:::
+If you are curious about the `registerConnection` call, this is how we tell Nango that a user has installed an Integration. You can learn more about it in the [Architecture](architecture.md#nango-integrations--actions) and the [client SDK reference](reference/SDKs/node.md#registerConnection).
+
 
 ### Test your Action
 
