@@ -70,7 +70,7 @@ Soon, we plan to support:
 
 ## 🚀 Quickstart
 
-Follow our [Quickstart guide](https://docs.nango.dev/quickstart) to **build a Slack integration is 30 seconds**!
+Follow our [Quickstart guide](https://docs.nango.dev/quickstart) to **build a Slack integration in 30 seconds**!
 
 With Nango, your integration code will look like this (nodeJS example, Nango also works with Python, PHP, Ruby, Java etc.):
 
