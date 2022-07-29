@@ -65,7 +65,7 @@ npm install
 
 Nango leverages the [typescript](https://www.typescriptlang.org/) programming language to write Integrations. To be able to run our code, enable continuous compilation of Typescript: 
 ```bash
-tsc -w --project tsconfig.json
+node_modules/typescript/bin/tsc -w --project tsconfig.json
 ```
 
 :::tip
