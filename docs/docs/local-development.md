@@ -16,4 +16,4 @@ Nango is purposely built to optimize your local development experience:
 
 Nango also provides a CLI to simplify common workflows such as initializing Nango, etc. 
 
-Get started with local development with the [Quickstart](quickstart/quickstart-node.md).
+Get started with local development with the [Quickstart](quickstart/node.md).

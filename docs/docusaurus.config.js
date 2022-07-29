@@ -113,7 +113,7 @@ const config = {
               },
               {
                 label: 'Quickstart 🚀',
-                to: '/quickstart',
+                to: '/quickstart/node',
               },
             ],
           },
