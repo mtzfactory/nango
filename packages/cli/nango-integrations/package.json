@@ -2,10 +2,13 @@
     "name": "my-nango-integrations",
     "version": "0.1.0",
     "description": "Package hosting your native integrations.",
+    "private": true,
     "type": "module",
     "keywords": [],
     "dependencies": {
-        "@nangohq/action": "^0.1.14",
+        "@nangohq/action": "^0.1.14"
+    },
+    "devDependencies": {
         "typescript": "^4.7.4"
     }
 }
