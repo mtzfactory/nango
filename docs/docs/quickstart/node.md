@@ -74,7 +74,7 @@ You will see an error in the terminal at first because there is no Typescript fi
 
 Compilation happens on every file save and compilation errors will show up in the terminal window where you just ran the previous command.
 
-### Create an Integration
+### Create an Integration {#create-an-integration}
 
 In a new terminal, navigate to the Nango Folder:
 ```bash
@@ -101,7 +101,7 @@ cd slack
 
 ### Create an Action
 
-Actions (cf. [Architecture](architecture.md)) contain the business logic that is specific to each integration. They can be customized at will. Here, we want our Action to post a message on Slack. Naturally, Actions may be much more complex than this (cf. [Best Practices](reference/best-practices.md)).
+Actions (cf. [Architecture](architecture.md)) contain the business logic that is specific to each integration. They can be customized at will. Here, we want our Action to post a message on Slack. Naturally, Actions may be much more complex than this (cf. [Best Practices](guides/best-practices.md)).
 
 Create a file for our new `notify` Action which will post a message to Slack: 
 ```bash
