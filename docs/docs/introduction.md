@@ -14,7 +14,7 @@ Building native integrations is costly, particularly as you support more integra
 
 ## A packaged micro-service for native integrations {#server}
 
-Nango is an independent micro-service that centralizes interactions with external APIs. It can be run [locally](local-development.md), [self-hosted](deploy-nango.md) or managed by [Nango Cloud](cloud-edition.md). Nango runs your own integration-specific code, abstracting away the common infrastructure across integrations. It supports integrations of arbitrary complexity and scale, while remaining simple to use, reliable and extensible.
+Nango is an independent micro-service that centralizes interactions with external APIs. It can be run [locally](local-development.md), [self-hosted](nango-hosted.md) or managed by [Nango Cloud](nango-cloud.md). Nango runs your own integration-specific code, abstracting away the common infrastructure across integrations. It supports integrations of arbitrary complexity and scale, while remaining simple to use, reliable and extensible.
 
 ![Nango Server](/img/introduction.png)
 

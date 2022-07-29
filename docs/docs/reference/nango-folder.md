@@ -9,7 +9,7 @@ Integrations and Actions that you use with Nango as part of your product live in
 
 The Nango Folder folder contains all the details, configuration and code of the Integrations and Actions that you defined in Nango. As such, it fully defines the behavior of Nango at runtime: You are guaranteed that a Nango server which loads your Nango Folder always behaves the same way, which makes deployments across different environments easy and painless.
 
-Usually the Nango Folder lives in the root directory of your application which uses Nango for its native integrations, but you could place it anywhere in your code base where you see fit. In all cases we highly recommend that you version control it as part of the main repo of your application so it gets deployed together with the rest of your application (see also [deploying Nango](deploy-nango.md).
+Usually the Nango Folder lives in the root directory of your application which uses Nango for its native integrations, but you could place it anywhere in your code base where you see fit. In all cases we highly recommend that you version control it as part of the main repo of your application so it gets deployed together with the rest of your application (see also [deploying Nango](nango-hosted.md).
 
 :::info
 Nango can be used with any language or application framework, it is completely language agnostic.
@@ -27,7 +27,7 @@ The Nango Folder contains at least 3 files and should look like this:
 
 If you are familiar with the JavaScript/Node ecosystem you might have recognized the `package.json` file: Indeed, your Nango Folder is just an npm package and acts like one in many ways. You can package your Nango Folder, version it, add additional dependencies from npm and publish it on any private (or public) npm registry such as the ones that are provided by GitHub and GitLab.
 
-In practice this makes it easy to have your Nango Folder versioned along with your main application and deployed by version number in production or any other environment. This gives you fully reproducible builds and behavior across all environments. For more information on how to deploy to production or a staging environment please read our guide on [deploying Nango](deploy-nango.md).
+In practice this makes it easy to have your Nango Folder versioned along with your main application and deployed by version number in production or any other environment. This gives you fully reproducible builds and behavior across all environments. For more information on how to deploy to production or a staging environment please read our guide on [deploying Nango](nango-hosted.md).
 
 Now let's take a closer look of what is inside the Nango Folder (`/nango-integrations`):
 
@@ -38,7 +38,7 @@ Besides the folder there are three top level files:
 ### `nango-config.yaml`
 This YAML file contains all the global configuration for Nango. Many of these configuration parameters relate to how Nango executes Actions, interacts with 3rd party APIs and treats response data: These configuration keys can usually be overwritten for specific Integrations by specifying them in the iItegration's `integrations.yaml` config.
 
-For a list of all possible keys currently supported please check the [`nango-config.yaml` reference](/reference/config-reference.md#nangoConfigYaml).
+For a list of all possible keys currently supported please check the [`nango-config.yaml` reference](/reference/configuration.md#nangoConfigYaml).
 
 ### `integrations.yaml`
 Contains the integration-specific configuration for each Integration. Because this file lists all the available Integrations in your Nango installation it is also a good lookup place for that.
@@ -55,7 +55,7 @@ integrations:
       log_level: debug
 ```
 
-Many keys here are optional, for all the details and possibilities please consult the [`integrations.yaml` reference](/reference/config-reference.md#integrationsYaml).
+Many keys here are optional, for all the details and possibilities please consult the [`integrations.yaml` reference](/reference/configuration.md#integrationsYaml).
 
 ### `package.json`
 This file makes Nango Folder an npm package, if you are familiar with npm packages and the `package.json` format you will find all the usual keys in here. If not don't worry: To use Nango you don't need to understand its content and we have guides with step by step commands for the few occasions where you do need to interact with it.
@@ -99,7 +99,7 @@ Nango will help you generate these scaffolds with our CLI.
 
 ## Optional content: `docker-compose.yaml` and `.env`
 
-When you [initialize a new Nango Folder](/quick-start/quickstart-node) with our CLI Nango adds two additional files by default:
+When you [initialize a new Nango Folder](/quickstart/node) with our CLI Nango adds two additional files by default:
 - a `.env` file that specifies a single environment variable
 - a `docker-compose.yaml` file which specifies a simple docker compose configuration
 

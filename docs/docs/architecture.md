@@ -12,7 +12,7 @@ Nango provides powerful infrastructure for developing native integrations. It fo
 ![Nango in production](/img/nango-architecture.png)
 
 Nango consists of:
-- The **Nango Server**, containerized with Docker, which runs your integrations and makes the external API calls. It can be run [locally](local-development.md), [self-hosted](deploy-nango.md) or managed by [Nango Cloud](cloud-edition.md).
+- The **Nango Server**, containerized with Docker, which runs your integrations and makes the external API calls. It can be run [locally](local-development.md), [self-hosted](nango-hosted.md) or managed by [Nango Cloud](nango-cloud.md).
 - The **Nango Folder**, which contains your integration-specific code. At runtime this folder is deployed to the Nango Server to run your integrations.
 
 Nango comes with bullet-proof infrastructure focused on native integrations described [here](introduction.md#server).

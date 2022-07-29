@@ -16,7 +16,7 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
     <br />
 
   <br/>
-    <a href="https://docs.nango.dev/quickstart">Quickstart 🚀</a>
+    <a href="https://docs.nango.dev/quickstart/node">Quickstart 🚀</a>
     ·
     <a href="https://github.com/nangohq/nango/issues">Report Bug</a>
     ·
@@ -69,7 +69,7 @@ Soon, we plan to support:
 
 ## 🚀 Quickstart
 
-Follow our [Quickstart guide](https://docs.nango.dev/quickstart) to **build a Slack integration is 30 seconds**!
+Follow our [Quickstart guide](https://docs.nango.dev/quickstart/node) to **build a Slack integration is 30 seconds**!
 
 With Nango, your integration code will look like this:
 

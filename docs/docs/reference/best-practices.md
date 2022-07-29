@@ -10,7 +10,7 @@ sidebar_position: 6
 Modeling integrations in Nango should be easy in most cases and we have found that the framework lends itself well to almost all uses cases for native integrations. If you are just getting started with Nango or native integrations in general we hope these best practices set you on a path of success from day one.
 
 ### Keep Actions short and focused
-[Actions are written in Typescript](nango-integrations-folder.md#actionFiles) and the vast majority of actions are less than 200 lines of code. They should focus on the data exchange with the external system and focus on one specific interaction with it. Good examples are:
+[Actions are written in Typescript](reference/nango-folder.md#actionFiles) and the vast majority of actions are less than 200 lines of code. They should focus on the data exchange with the external system and focus on one specific interaction with it. Good examples are:
 - Import all contacts from a CRM (which may mean dealing with pagination etc.)
 - Post a message to a slack channel (where the message and channel ID get passed in as inputs)
 - Load the X last commits of a GitHub repo (where X and the repo identifier are passed in as inputs)

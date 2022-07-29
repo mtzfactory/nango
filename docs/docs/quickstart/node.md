@@ -77,7 +77,7 @@ In a new terminal, navigate to the Nango Folder:
 cd [...]/node-sample/nango-integrations
 ```
 
-Open the `integrations.yaml` file (cf. [reference](reference/config-reference.md#integrationsYaml)) and copy/paste the configuration for our new Slack Integration:
+Open the `integrations.yaml` file (cf. [reference](reference/configuration.md#integrationsYaml)) and copy/paste the configuration for our new Slack Integration:
 ```yaml title="integrations.yaml"
 integrations:
   - slack:
@@ -131,7 +131,7 @@ From [Slack's API reference](https://api.slack.com/methods/chat.postMessage), th
 - a `mrkdown` (bool) body parameter, i.e. the format type of the message
 
 Nango provides us with some helpers that we can (and should) use in our Action:
-- For HTTP requests, use the built-in `this.httpRequest` method (cf. [reference](reference/nango-action-reference.md#httpRequest)), which takes care of auth parameters, retries,  etc.
+- For HTTP requests, use the built-in `this.httpRequest` method (cf. [reference](reference/actions.md#httpRequest)), which takes care of auth parameters, retries,  etc.
 - For logging, use the built-in logger `this.logger` (cf. [reference](reference/logging.md))
 
 We can now easily write the logic for our Slack Action:

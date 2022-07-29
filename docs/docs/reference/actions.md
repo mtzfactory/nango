@@ -10,7 +10,7 @@ sidebar_position: 2
 Need even more details? Nango is open source, so you can inspect the current [NangoAction in our GitHub repo](https://github.com/NangoHQ/nango/blob/main/packages/action/lib/action.ts)
 
 ## executeAction input and return values {#inputReturnValues}
-The `executeAction` method, which you implement in your NangoAction subclass, receives an input value from the [`triggerAction` call](reference/SDKs/node-client-reference.md#triggerAction) in the client SDK. This input **must be JSON serializable** otherwise you will encounter a runtime error.
+The `executeAction` method, which you implement in your NangoAction subclass, receives an input value from the [`triggerAction` call](reference/SDKs/node.md#triggerAction) in the client SDK. This input **must be JSON serializable** otherwise you will encounter a runtime error.
 
 It's return value will also be passed back as the return value of the `triggerAction` call in the client SDK, but this again means that whatever you return from the execution of `executeAction` **must be JSON serializable**. Otherwise you will also encounter a runtime error.
 
@@ -34,7 +34,7 @@ protected logger: winston.Logger;
 
 As the signature reveals, the logger is an instance of the popular logger library [Winston](https://github.com/winstonjs/winston). For a full documentation please check the winston website, although you will typically not need to interact with it apart from logging messages.
 
-Nango supports [several log levels](config-reference.md#logLevels) which are all directly accessible on the logger as methods:
+Nango supports [several log levels](reference/configuration.md#logLevels) which are all directly accessible on the logger as methods:
 ```ts
 this.logger.error('I am an error message');
 this.logger.warn('I am an warning');
@@ -77,22 +77,22 @@ Because Nango will possibly queue and retry your HTTP request (e.g. if it detect
 :::
 
 #### Authentication of the API call
-When you make an HTTP request through this method Nango will automatically add authentication to the request. How it does this is dictated by the [`call_auth -> mode` setting](config-reference.md#integrationsYaml) in the integration's config.
+When you make an HTTP request through this method Nango will automatically add authentication to the request. How it does this is dictated by the [`call_auth -> mode` setting](reference/configuration.md#integrationsYaml) in the integration's config.
 
 #### Parameter reference
 | Parameter | Example value | Description |
 |---|---|---|
-| endpoint | 'example/endpoint' | Relative endpoint to call, Nango will automatically prepend the [`base_url`](config-reference.md#integrationsYaml) specified in the integration configuration.|
+| endpoint | 'example/endpoint' | Relative endpoint to call, Nango will automatically prepend the [`base_url`](reference/configuration.md#integrationsYaml) specified in the integration configuration.|
 | method | 'POST' | The HTTP Method, Nango supports `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `OPTIONS`, and `HEAD` |
 | params | `{q: 'searchstring'}` | Query parameters to be appended to the URL in the format `{key: value}`. This parameter is optional. |
 | body | `{key: aValue }` or `'{"serialized": "JSON"}'` | The data to be passed into the body of the request. If the type of this parameter is `string` it will be passed as-is to the request body (and no headers are set), if it is of type `object` Nango will attempt to serialize the object to JSON and add a `Content-Type` header with value `application/json`. This parameter is optional. |
 | headers | `{headerKey: 'headerValue'}` | Additional headers to be added to the HTTP requests. By default Nango will add an appropriate `Authorization` header if required. This parameter is optional.|
 
 #### Debugging HTTP calls
-Nango will automatically log details of every HTTP request sent and responses received if the [`log_level` of the action](config-reference.md#integrationsYaml) is set to `debug` or lower. To track 
+Nango will automatically log details of every HTTP request sent and responses received if the [`log_level` of the action](reference/configuration.md#integrationsYaml) is set to `debug` or lower. To track 
 
 #### Timeouts
-Nango automatically sets a timeout on every HTTP request based on the timeout configuration you specify. If a request fails due to a timeout it's promise will be rejected. Please check the documentation on [`default_http_request_timeout_seconds` in `nango-config.yaml`](config-reference.md#nangoConfigYaml) as well the documentation on [`http_request_timeout_seconds` in the integration config](config-reference.md#integrationsYaml) for details on how to set the timeout.
+Nango automatically sets a timeout on every HTTP request based on the timeout configuration you specify. If a request fails due to a timeout it's promise will be rejected. Please check the documentation on [`default_http_request_timeout_seconds` in `nango-config.yaml`](reference/configuration.md#nangoConfigYaml) as well the documentation on [`http_request_timeout_seconds` in the integration config](reference/configuration.md#integrationsYaml) for details on how to set the timeout.
 
 #### Returned promise & response object
 Calling `httpRequest` returns a promise that resolves when the HTTP request finishes. Nango will only reject the promise if the HTTP request failed, e.g. due to a network issue. So even a 404 or 500 response will lead to a resolved promise.

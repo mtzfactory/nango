@@ -4,7 +4,7 @@
 
 </div>
 
-<h1 align="center">The native integrations framework</h1>
+<h1 align="center">Open-source infrastructure for native integrations</h1>
 
 <div align="center">
 Native, customer-facing integrations for your B2B SaaS made simple, reliable and extensible.
@@ -16,7 +16,7 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
     <br />
 
   <br/>
-    <a href="https://docs.nango.dev/quickstart">Quickstart 🚀</a>
+    <a href="https://docs.nango.dev/quickstart/node">Quickstart 🚀</a>
     ·
     <a href="https://github.com/nangohq/nango/issues">Report Bug</a>
     ·
@@ -25,42 +25,29 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
 
 ## ⭐ Why
 
-Building native integrations becomes harder as you support more integrations, deeper integrations and higher traffic.
+Building native integrations is costly, particularly as you support more integrations, deeper integrations and higher traffic. Most companies end up building the same infrastructure: scheduling, queueing, error handling, retries, authentication, logging, local development environment, CI/CD, etc. Nango's goal is to make integration developers 10x more productive by providing them with this common infrastructure.
 
-Most teams today are building native integrations in their main application code, with or without an internal framework, and quickly face serious issues regarding:
+## 🎁 A packaged micro-service for native integrations
 
--   Scheduling, queuing and retries
--   Error handling, logging & debugging
--   Local development & testing
--   Data modeling & merging different schemas
--   Authentication & rate limiting
--   3rd party API limitations: missing docs, down-time, migrations, etc.
-
-Our team built dozens of integrations, spent hundreds of hours on maintenance, and we have had enough! It’s time to 10x the productivity of any developer building native integrations.
-
-This is why we built Nango, an open-source framework built on 3 core principles:
-
--   **Simplicity:** A simple yet powerful abstraction that makes common use cases easy and the difficult ones possible
--   **Reliability:** Robust in every way, no matter how many integrations and traffic you throw at it
--   **Extensibility:** Nango will never stand in your way to build deep, native integrations with unlimited customization
+Nango is an independent micro-service that centralizes interactions with external APIs. It can be run locally, self-hosted or managed by Nango Cloud. Nango runs your own integration-specific code, abstracting away the common infrastructure across integrations. It supports integrations of arbitrary complexity and scale, while remaining simple to use, reliable and extensible.
 
 ## ✅ Features
 
-Nango is a full-featured framework that provides an end-to-end solution for native integrations:
+Nango comes with bullet-proof infrastructure focused on native integrations:
 
--   📁  A lightweight code framework to standardize integrations development
--   ⏱ Builtin infrastructure for scheduling, queuing and retries
--   🛠  Local development environment to test integrations and iterate faster
--   🔍 Powerful logging and debugging
+-   📁 A lightweight code framework to standardize integrations development
+-   ⏱ Built-in infrastructure for scheduling, queuing and retries
+-   🔒 OAuth support with UI components for authenticating end-users + token refresh
+-   🛠 Delightful local development to test integrations as you code
+-   🔍 Powerful logging, monitoring and debugging
 -   ❤️  Simple setup with a CLI and native SDKs
 -   ⛔️ Fine-grained rate-limit configuration
--   🧩 Universal: Works with any programming language & framework, e.g. nodeJS, Ruby, Python, PHP, Java etc.
+-   👥 Community-contributed blueprints for common integration use-cases
+-   🧩 Universal: Works with any programming language & framework
 -   💻  Self-hostable, single docker container for easy local development
 
 Soon, we plan to support:
 
--   👥  Community-contributed blueprints for common integration use-cases
--   🔒  OAuth support with (optional) UI components for authenticating end-users
 -   📺  Central dashboard with sync history, API errors, latency, live connections, etc.
 -   🧠  Unified endpoints for multiple 3rd-party APIs & smart data transformation
 -   🚨 Advanced alerting & monitoring, exportable to Datadog, Sentry, etc.
@@ -70,9 +57,9 @@ Soon, we plan to support:
 
 ## 🚀 Quickstart
 
-Follow our [Quickstart guide](https://docs.nango.dev/quickstart) to **build a Slack integration is 30 seconds**!
+Follow our [Quickstart guide](https://docs.nango.dev/quickstart/node) to **build a Slack integration for scratch**!
 
-With Nango, your integration code will look like this (nodeJS example, Nango also works with Python, PHP, Ruby, Java etc.):
+With Nango, your integration code will look like this:
 
 ```ts
 import { Nango } from '@nangohq/node-client';
@@ -92,6 +79,5 @@ nango.triggerAction('slack', 'notify', userId, {
 
 ⭐  Like Nango? Follow our development by starring us here on GitHub ⭐
 
--   Create an integration from scratch with our step-by-step [step-by-step tutorial](https://docs.nango.dev/build-integrations/)
--   Understand Nango with the [Framework Overview](https://docs.nango.dev/architecture)
+-   Understand Nango with the [Architecture](https://docs.nango.dev/architecture)
 -   Please share your feedback on the [Slack community](https://nango.dev/slack)!
