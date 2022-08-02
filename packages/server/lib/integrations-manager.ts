@@ -93,7 +93,16 @@ export class IntegrationsManager {
     }
 
     public async getActionModule(integration: string, action: string) {
-        const actionModule = await import(this.getActionFilePath(integration, action));
+        // If we are not in prod append a random query string to make sure import does not cache the module
+        // Currently this is the only way to invalidate the import cache in node and is required for our hot-reloading to work.
+        // Otherwise node will cache the imported module and use the cached version instead of the recompiled one
+        // See issue here: https://github.com/nodejs/modules/issues/307
+        let actionFilePath = this.getActionFilePath(integration, action);
+        if (process.env['NODE_ENV'] !== 'production') {
+            actionFilePath = actionFilePath + `?v=${Math.random().toString(36).substring(3)}`;
+        }
+
+        const actionModule = await import(actionFilePath);
         const key = Object.keys(actionModule)[0] as string;
         return actionModule[key];
     }
