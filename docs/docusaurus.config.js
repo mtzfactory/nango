@@ -155,9 +155,9 @@ const config = {
         darkTheme: darkCodeTheme,
       },
       algolia: {
-      appId: '8371GL7KV8',
-      apiKey: '17bc63b70c9c3b047df5ef1cd41a7732',
-      indexName: 'nango',
+        appId: '8371GL7KV8',
+        apiKey: '17bc63b70c9c3b047df5ef1cd41a7732',
+        indexName: 'nangonango',
       },
     }), 
 };
