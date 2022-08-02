@@ -25,6 +25,7 @@ Nango's flexible **Integrations** and **Actions** support arbitrarily complex us
 
 - An **Integration** in Nango represents a connection between your product and an external system (e.g. Salesforce)
 - An **Action** in Nango represents an individual workflow within the scope of an Integration (e.g. "Import all contacts" from Salesforce, "Log an email opened event" to Salesforce, etc.). Actions contain the business logic that is specific to each Integration. It can be customized at will and its code lives in the Nango Folder.
+- A **Connection** in Nango represents an Integration that a specific user has setup in your application. It always ties together an Integration and a user id.
 
 ## Supported Stacks
 

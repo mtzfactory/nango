@@ -1,9 +1,9 @@
 ---
-sidebar_label: Actions
+sidebar_label: Actions (NangoAction class)
 sidebar_position: 2
 ---
 
-# Actions
+# Actions & the NangoAction base class
 
 `NangoAction` is the name of the base class of all Actions in your `nango-integrations` folder. This page contains the reference of all attributes and methods offered by NangoAction for your actions.
 
