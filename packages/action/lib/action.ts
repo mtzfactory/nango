@@ -55,18 +55,28 @@ class NangoAction {
     }
 
     protected async httpRequest(endpoint: string, method: Method, params?: HttpParams, body?: any, headers?: HttpHeader): Promise<AxiosResponse> {
-        if (this.integrationConfig.base_url.slice(-1) !== '/') {
-            this.integrationConfig.base_url += '/';
+        if (this.integrationConfig.requests.base_url.slice(-1) !== '/') {
+            this.integrationConfig.requests.base_url += '/';
         }
         if (endpoint.slice(0, 1) === '/') {
             endpoint = endpoint.substring(1);
         }
 
-        const fullURL = new URL(endpoint, this.integrationConfig.base_url).href;
+        const fullURL = new URL(endpoint, this.integrationConfig.requests.base_url).href;
+
+        const interpolationVariables = {
+            accessToken: this.userConnection.oAuthAccessToken
+        };
 
         let finalHeaders: HttpHeader = {};
         if (headers !== undefined) {
             finalHeaders = headers;
+        }
+
+        if (this.integrationConfig.requests.headers) {
+            for (const headerKey of Object.keys(this.integrationConfig.requests.headers)) {
+                finalHeaders[headerKey] = core.interpolateString(this.integrationConfig.requests.headers[headerKey]!, interpolationVariables);
+            }
         }
 
         let finalParams: HttpParams = {};
@@ -74,8 +84,10 @@ class NangoAction {
             finalParams = params;
         }
 
-        if (this.integrationConfig.call_auth.mode === core.NangoCallAuthModes.AUTH_HEADER_TOKEN) {
-            finalHeaders['Authorization'] = `Bearer ${this.userConnection.oAuthAccessToken}`;
+        if (this.integrationConfig.requests.params) {
+            for (const paramsKey of Object.keys(this.integrationConfig.requests.params)) {
+                finalHeaders[paramsKey] = core.interpolateString(this.integrationConfig.requests.params[paramsKey]!, interpolationVariables);
+            }
         }
 
         let serializedBody: string;

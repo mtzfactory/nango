@@ -48,7 +48,7 @@ const samples = yaml.load(fs.readFileSync('packages/node-client/bin/samples.yaml
 const sampleName = process.argv[2];
 
 if (typeof sampleName !== 'string' || samples[sampleName] === undefined) {
-    console.log('Provided parameter does not correspond to valid sample in packages/node-client/binsamples.yaml.');
+    console.log('Provided parameter does not correspond to valid sample in packages/node-client/bin/samples.yaml.');
 } else if (tokens[samples[sampleName].integration] === undefined) {
     console.log('Missing access token for integration. Please edit the .dev-tokens.yaml file in the Nango project root directory.');
 } else {

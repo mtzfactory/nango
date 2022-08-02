@@ -2,7 +2,7 @@
  * Copyright (c) 2022 Nango, all rights reserved.
  */
 
-import type { NangoConfig, NangoIntegrationsConfig, NangoIntegrationConfig } from '@nangohq/core';
+import type { NangoConfig, NangoIntegrationsConfig, NangoIntegrationConfig, NangoIntegrationsYamlIntegrationConfig, NangoBlueprint } from '@nangohq/core';
 import * as core from '@nangohq/core';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -19,6 +19,7 @@ export class IntegrationsManager {
 
     private nangoConfigFile = 'nango-config.yaml';
     private integrationsConfigFile = 'integrations.yaml';
+    private blueprints_directory = 'blueprints';
 
     private fsNangoConfigTimeout: NodeJS.Timeout | null = null;
     private fsIntegrationsConfigTimeout: NodeJS.Timeout | null = null;
@@ -80,7 +81,11 @@ export class IntegrationsManager {
             }
         }
 
-        return integrationConfig as NangoIntegrationConfig;
+        if (!integrationConfig) {
+            throw new Error(`Requested integrationConfig for integration which does not exist: "${integrationName}`);
+        }
+
+        return this.resolveIntegrationConfig(integrationConfig);
     }
 
     public actionExists(integration: string, action: string): boolean {
@@ -109,5 +114,72 @@ export class IntegrationsManager {
         this.integrationsConfig = yaml.load(
             fs.readFileSync(path.join(this.nangoIntegrationsDirPath, this.integrationsConfigFile)).toString()
         ) as NangoIntegrationsConfig;
+    }
+
+    private resolveIntegrationConfig(sourceConfig: NangoIntegrationsYamlIntegrationConfig): NangoIntegrationConfig {
+        // No blueprint used -> YAML config = fully specified config
+        if (!sourceConfig.extends_blueprint) {
+            return sourceConfig as NangoIntegrationConfig;
+        }
+
+        // Load the blueprint
+        let blueprintName;
+        let blueprintVersion = undefined;
+        if (sourceConfig.extends_blueprint.includes(':')) {
+            [blueprintName, blueprintVersion] = sourceConfig.extends_blueprint.split(':');
+        } else {
+            blueprintName = sourceConfig.extends_blueprint;
+        }
+        const blueprintPath = path.join(path.join(process.env['NANGO_SERVER_ROOT_DIR']!, this.blueprints_directory), `${blueprintName}.yaml`);
+        const blueprint = yaml.load(fs.readFileSync(blueprintPath).toString()) as NangoBlueprint;
+
+        // Sort the versions in the blueprint DESC
+        blueprint.versions.sort((a, b) => {
+            const vA = Object.keys(a)[0]!;
+            const vB = Object.keys(b)[0]!;
+            if (vA < vB) {
+                return 1;
+            } else if (vA > vB) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+
+        if (!blueprintVersion) {
+            blueprintVersion = Object.keys(blueprint.versions[0]!)[0];
+        }
+
+        let blueprintConfig = undefined;
+        for (const versionConfig of blueprint.versions) {
+            const versionName = Object.keys(versionConfig)[0]!;
+            if (versionName === blueprintVersion) {
+                blueprintConfig = versionConfig[versionName];
+            }
+        }
+
+        if (!blueprintConfig) {
+            throw new Error(
+                `Invalid blueprint config: Could not find a configuration for version "${blueprintVersion}" of blueprint "${blueprintName}" in the blueprint file "${blueprintPath}". The file or blueprint version may not exist or the configuration may be malformed. Raw YAML data that was loaded from file:\n${JSON.stringify(
+                    blueprint
+                )}`
+            );
+        }
+
+        const finalConfig = {
+            auth: sourceConfig.auth ? sourceConfig.auth : blueprintConfig.auth,
+            requests: sourceConfig.requests ? sourceConfig.requests : blueprintConfig.requests
+        } as any;
+
+        // Add all the other keys also present in sourceConfig
+        let sourceConfigKeys = Object.keys(sourceConfig);
+        sourceConfigKeys = sourceConfigKeys.filter((elem) => {
+            return elem !== 'auth' && elem !== 'requests';
+        });
+        for (const key of sourceConfigKeys) {
+            finalConfig[key] = (sourceConfig as any)[key]; // A bit of a dirty hack to make TypeScript happy
+        }
+
+        return finalConfig as NangoIntegrationConfig;
     }
 }

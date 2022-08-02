@@ -14,6 +14,24 @@ export interface NangoConfig {
 }
 
 //////////////////////
+// Blueprints
+//////////////////////
+
+export interface NangoBlueprint {
+    name: string;
+    maintainer: string;
+    docs_url?: string;
+    versions: { [key: string]: NangoBlueprintConfig }[];
+}
+
+export interface NangoBlueprintConfig {
+    comment?: string;
+
+    auth: NangoIntegrationAuthConfig;
+    requests: NangoIntegrationRequestsConfig;
+}
+
+//////////////////////
 // Integrations Config (integrations.yaml)
 //////////////////////
 
@@ -22,29 +40,62 @@ export interface NangoIntegrationsConfig {
 }
 
 export enum NangoIntegrationAuthModes {
-    BASIC_AUTH,
-    OAUTH
+    OAuth2 = 'OAUTH2'
 }
 
 export interface NangoIntegrationWrapper {
-    [key: string]: NangoIntegrationConfig;
+    [key: string]: NangoIntegrationsYamlIntegrationConfig;
 }
 
-export interface NangoIntegrationConfig {
-    base_url: string;
-    auth_mode: NangoIntegrationAuthModes;
-    call_auth: NangoCallAuth;
+interface NangoIntegrationConfigCommon {
     http_request_timeout_seconds?: number;
     log_level?: string;
 }
 
-export enum NangoCallAuthModes {
-    AUTH_HEADER_TOKEN = 'AUTH_HEADER_TOKEN'
+// Allowed combos are:
+// - extends_blueprint
+// - extends_blueprint + auth and/or requests to override the blueprint
+// - auth + requests (both required if no extends_blueprint is passed)
+// All other params are optional/mandatory as marked here
+export interface NangoIntegrationsYamlIntegrationConfig extends NangoIntegrationConfigCommon {
+    extends_blueprint?: string;
+
+    auth?: NangoIntegrationAuthConfig;
+    requests?: NangoIntegrationRequestsConfig;
 }
 
-export interface NangoCallAuth {
-    mode: NangoCallAuthModes;
-    header_name?: string;
+// NangoIntegrationConfig vs NangoIntegrationsYamlIntegrationConfig:
+// NangoIntegrationsYamlIntegrationConfig = Integration config as specified in integrations.yaml
+// NangoIntegrationConfig = fully resolved config ready to be used (may be merged from blueprint + overrides)
+//
+// Unless you work on IntegrationsManager you only ever have to deal with NangoIntegrationConfig
+export interface NangoIntegrationConfig extends NangoIntegrationConfigCommon {
+    auth: NangoIntegrationAuthConfig;
+    requests: NangoIntegrationRequestsConfig;
+}
+
+export interface NangoIntegrationAuthConfig {
+    auth_mode: NangoIntegrationAuthModes.OAuth2;
+
+    authorization_url: string;
+    authorization_params: Record<string, string>;
+
+    token_url: string;
+    token_params: {
+        grant_type: 'authorization_code' | 'client_credentials';
+    };
+    config: {
+        response_type: 'code';
+        scope: string[];
+    };
+
+    refresh_url?: string;
+}
+
+export interface NangoIntegrationRequestsConfig {
+    base_url: string;
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
 }
 
 //////////////////////

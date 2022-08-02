@@ -13,7 +13,7 @@ class AsanaUsersAction extends NangoAction {
         const headers = {
             Accept: 'application/json'
         };
-        var response = await this.httpRequest('1.0/users', 'GET', undefined, undefined, headers);
+        var response = await this.httpRequest('/users', 'GET', undefined, undefined, headers);
 
         return { status: response.status, statusText: response.statusText };
     }
