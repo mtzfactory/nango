@@ -12,6 +12,7 @@ import type winston from 'winston';
 import { ConnectionsManager } from './connections-manager.js';
 import { IntegrationsManager } from './integrations-manager.js';
 import { handleRegisterConnection, handleTriggerAction } from './message-handlers.js';
+import { startOAuthServer } from './oauth-server.js';
 
 /** -------------------- Server Internal Properties -------------------- */
 
@@ -89,6 +90,9 @@ function bootstrapServer() {
 
     // Setup connectionsManager
     ConnectionsManager.getInstance().init(path.join(serverWorkingDir, 'server.db'));
+
+    // Start the OAuth HTTP server
+    startOAuthServer(serverWorkingDir);
 
     // Must happen once config is loaded as it contains the log level
     logger = logging.getLogger(IntegrationsManager.getInstance().getNangoConfig().main_server_log_level, logging.nangoServerLogFormat);

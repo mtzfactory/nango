@@ -10,6 +10,8 @@ services:
     server:
         image: nangohq/server
         container_name: nango-server
+        ports:
+            - '3003:3003'
         volumes:
             - type: bind
               source: ${NANGO_INTEGRATIONS_DIR}

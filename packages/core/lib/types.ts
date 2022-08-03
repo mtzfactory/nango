@@ -11,6 +11,8 @@ export interface NangoConfig {
     default_action_log_level: string;
 
     main_server_log_level: string;
+
+    oauth_server_port: number;
 }
 
 //////////////////////

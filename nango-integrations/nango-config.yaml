@@ -1,4 +1,6 @@
 main_server_log_level: info
 
+oauth_server_port: 3003 # Note: If you change this you also need to update the docker-compose file!
+
 default_http_request_timeout_seconds: 100
 default_action_log_level: info
