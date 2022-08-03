@@ -6,15 +6,17 @@ import { NangoAction } from '@nangohq/action';
 
 class SlackNotifyAction extends NangoAction {
     override async executeAction(input: any) {
-        this.logger.info(`SlackNotifyAction has been called with input:\n${JSON.stringify(input)}`);
+        // Log that we got called and what the inputs were
+        this.logger.info(`SlackNotifyAction has been called with input: ${JSON.stringify(input)}`);
+
         // Check that we have a channel id and a message in our input
         if (input.channelId === undefined || input.msg === undefined) {
             throw new Error(
-                `Missing arguments for Slack - notify action, must pass both a channel ID (passed in: ${input.channelId} and a message (passed in: ${input.msg}.`
+                `Missing arguments for Slack - notify action, must pass both a channel ID (passed in: ${input.channelId}) and a message (passed in: ${input.msg}).`
             );
         }
-        // Execute our Slack API call to post the message
-        // using the builtin Nango httpRequest method
+
+        // Execute our Slack API call to post the message using the builtin Nango httpRequest method
         const requestBody = {
             channel: input.channelId,
             mrkdwn: true,
@@ -22,6 +24,7 @@ class SlackNotifyAction extends NangoAction {
         };
         var response = await this.httpRequest('chat.postMessage', 'POST', undefined, requestBody);
 
+        // Return the status and statusText of the Slack API request. Could also return any other data here.
         return { status: response.status, statusText: response.statusText };
     }
 }
