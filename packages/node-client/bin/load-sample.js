@@ -42,15 +42,20 @@ async function loadSample(sample) {
 const nango = new Nango();
 await nango.connect();
 
-const tokens = yaml.load(fs.readFileSync('.dev-tokens.yaml').toString());
+const tokens = {
+    slack: process.env.SLACK_ACCESS_TOKEN,
+    github: process.env.GITHUB_ACCESS_TOKEN,
+    asana: process.env.ASANA_ACCESS_TOKEN,
+    hubspot: process.env.HUBSPOT_ACCESS_TOKEN
+};
 const samples = yaml.load(fs.readFileSync('packages/node-client/bin/samples.yaml').toString()).samples;
 
 const sampleName = process.argv[2];
 
 if (typeof sampleName !== 'string' || samples[sampleName] === undefined) {
-    console.log('Provided parameter does not correspond to valid sample in packages/node-client/bin/samples.yaml.');
+    console.log(`Provided parameter "${sampleName}" does not correspond to valid sample in packages/node-client/bin/samples.yaml.`);
 } else if (tokens[samples[sampleName].integration] === undefined) {
-    console.log('Missing access token for integration. Please edit the .dev-tokens.yaml file in the Nango project root directory.');
+    console.log('Missing access token for integration. Please edit the .dev-secrets file in the Nango project root directory.');
 } else {
     await loadSample(samples[sampleName]);
 }

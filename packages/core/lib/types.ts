@@ -48,6 +48,11 @@ export enum NangoIntegrationAuthModes {
 }
 
 interface NangoIntegrationConfigCommon {
+    [key: string]: any; // Needed so that TypeScript allows us to index this with strings. Whenever possible access directly through the properties.
+
+    oauth_client_id?: string;
+    oauth_client_secret?: string;
+
     http_request_timeout_seconds?: number;
     log_level?: string;
 }

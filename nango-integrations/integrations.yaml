@@ -2,6 +2,10 @@ integrations:
     slack:
         extends_blueprint: slack:v0
         log_level: debug
+
+        oauth_client_id: '2710526930471.3741879872599'
+        oauth_client_secret: ${SLACK_CLIENT_SECRET}
+
     github:
         extends_blueprint: github:v0
         log_level: debug

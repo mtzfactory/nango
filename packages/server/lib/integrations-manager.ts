@@ -60,12 +60,6 @@ export class IntegrationsManager {
 
         this.reloadNangoConfig();
         this.reloadIntegrationsConfig();
-
-        this.nangoConfig = yaml.load(fs.readFileSync(path.join(this.nangoIntegrationsDirPath, 'nango-config.yaml')).toString()) as NangoConfig;
-
-        this.integrationsConfig = yaml.load(
-            fs.readFileSync(path.join(this.nangoIntegrationsDirPath, 'integrations.yaml')).toString()
-        ) as NangoIntegrationsConfig;
     }
 
     public getNangoConfig() {
@@ -117,6 +111,16 @@ export class IntegrationsManager {
         this.integrationsConfig = yaml.load(
             fs.readFileSync(path.join(this.nangoIntegrationsDirPath, this.integrationsConfigFile)).toString()
         ) as NangoIntegrationsConfig;
+
+        // Resolve ${ENV_VAR} values in the values of the integrations configs
+        for (let integrationName in this.integrationsConfig.integrations) {
+            let integrationYamlConfig = this.integrationsConfig.integrations[integrationName];
+            for (let configKey in integrationYamlConfig) {
+                if (typeof integrationYamlConfig[configKey] === 'string') {
+                    integrationYamlConfig[configKey] = core.interpolateString(integrationYamlConfig[configKey], process.env);
+                }
+            }
+        }
     }
 
     private resolveIntegrationConfig(sourceConfig: NangoIntegrationsYamlIntegrationConfig): NangoIntegrationConfig {
@@ -163,7 +167,7 @@ export class IntegrationsManager {
             return elem !== 'auth' && elem !== 'requests';
         });
         for (const key of sourceConfigKeys) {
-            finalConfig[key] = (sourceConfig as any)[key]; // A bit of a dirty hack to make TypeScript happy
+            finalConfig[key] = sourceConfig[key];
         }
 
         return finalConfig as NangoIntegrationConfig;
