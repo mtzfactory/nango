@@ -12,7 +12,7 @@ const sqlLiteSessionStore = sqlLiteStore(session);
 export function startOAuthServer(serverWorkingDir: string) {
     const port = IntegrationsManager.getInstance().getNangoConfig().oauth_server_port;
 
-    const sessionDbPath = path.join(serverWorkingDir, 'sessions-db.db');
+    const sessionDbPath = path.join(serverWorkingDir, 'http-sessions.db');
     const sessionsDb = new dbConstructor(sessionDbPath);
 
     let sessionConfig = {
