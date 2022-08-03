@@ -12,7 +12,9 @@ export interface NangoConfig {
 
     main_server_log_level: string;
 
+    oauth_server_enabled?: boolean;
     oauth_server_port: number;
+    oauth_server_root_url: string;
 }
 
 //////////////////////
@@ -52,6 +54,7 @@ interface NangoIntegrationConfigCommon {
 
     oauth_client_id?: string;
     oauth_client_secret?: string;
+    oauth_scopes?: string[];
 
     http_request_timeout_seconds?: number;
     log_level?: string;
@@ -84,14 +87,14 @@ export interface NangoIntegrationAuthConfig {
 
     authorization_url: string;
     authorization_params: Record<string, string>;
+    authorization_method?: OAuthAuthorizationMethod;
+    body_format?: OAuthBodyFormat;
+    scope_separator?: string;
 
     token_url: string;
     token_params: {
         grant_type: 'authorization_code' | 'client_credentials';
-    };
-    config: {
-        response_type: 'code';
-        scope: string[];
+        [key: string]: string;
     };
 
     refresh_url?: string;
@@ -134,6 +137,29 @@ export interface NangoMessageHandlerResult {
     success: boolean;
     errorMsg?: string;
     returnValue?: any;
+}
+
+//////////////////////
+// OAuth Server
+//////////////////////
+
+export enum OAuthAuthorizationMethod {
+    BODY = 'body',
+    HEADER = 'header'
+}
+
+export enum OAuthBodyFormat {
+    FORM = 'form',
+    JSON = 'json'
+}
+
+export interface OAuthSessionStore {
+    [key: string]: OAuthSession;
+}
+
+export interface OAuthSession {
+    integrationName: string;
+    callbackUrl: string;
 }
 
 //////////////////////

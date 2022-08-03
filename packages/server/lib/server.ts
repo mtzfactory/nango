@@ -92,7 +92,10 @@ function bootstrapServer() {
     ConnectionsManager.getInstance().init(path.join(serverWorkingDir, 'server.db'));
 
     // Start the OAuth HTTP server
-    startOAuthServer(serverWorkingDir);
+    const nangoConfig = IntegrationsManager.getInstance().getNangoConfig();
+    if (nangoConfig.oauth_server_enabled === undefined || nangoConfig.oauth_server_enabled === true) {
+        startOAuthServer();
+    }
 
     // Must happen once config is loaded as it contains the log level
     logger = logging.getLogger(IntegrationsManager.getInstance().getNangoConfig().main_server_log_level, logging.nangoServerLogFormat);

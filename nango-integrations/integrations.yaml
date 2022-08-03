@@ -5,6 +5,8 @@ integrations:
 
         oauth_client_id: '2710526930471.3741879872599'
         oauth_client_secret: ${SLACK_CLIENT_SECRET}
+        oauth_scopes:
+            - 'chat:write'
 
     github:
         extends_blueprint: github:v0
