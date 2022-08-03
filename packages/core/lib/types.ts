@@ -23,7 +23,7 @@ export interface NangoBlueprint {
     name: string;
     maintainer: string;
     docs_url?: string;
-    versions: { [key: string]: NangoBlueprintConfig }[];
+    versions: { [key: string]: NangoBlueprintConfig };
 }
 
 export interface NangoBlueprintConfig {
@@ -38,15 +38,13 @@ export interface NangoBlueprintConfig {
 //////////////////////
 
 export interface NangoIntegrationsConfig {
-    integrations: Array<NangoIntegrationWrapper>;
+    integrations: {
+        [key: string]: NangoIntegrationsYamlIntegrationConfig;
+    };
 }
 
 export enum NangoIntegrationAuthModes {
     OAuth2 = 'OAUTH2'
-}
-
-export interface NangoIntegrationWrapper {
-    [key: string]: NangoIntegrationsYamlIntegrationConfig;
 }
 
 interface NangoIntegrationConfigCommon {

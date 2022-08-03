@@ -25,10 +25,10 @@ Note that all configuration keys in this file are mandatory at this point. The d
 This file contains integration-specific configuration. Here is an example:
 ```yaml
 integrations:
-    - slack:
+    slack:
         base_url: 'https://slack.com/api',
         action_log_level: debug
-    - salesforce:
+    salesforce:
         base_url: 'https://api.salesforce.com',
         action_log_level: error
 ```

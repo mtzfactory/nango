@@ -1,13 +1,13 @@
 integrations:
-    - slack:
-          extends_blueprint: slack:v0
-          log_level: debug
-    - github:
-          extends_blueprint: github:v0
-          log_level: debug
-    - asana:
-          extends_blueprint: asana:v0
-          log_level: debug
-    - hubspot:
-          extends_blueprint: hubspot:v0
-          log_level: debug
+    slack:
+        extends_blueprint: slack:v0
+        log_level: debug
+    github:
+        extends_blueprint: github:v0
+        log_level: debug
+    asana:
+        extends_blueprint: asana:v0
+        log_level: debug
+    hubspot:
+        extends_blueprint: hubspot:v0
+        log_level: debug

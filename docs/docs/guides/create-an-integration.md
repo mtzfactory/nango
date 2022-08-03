@@ -18,7 +18,7 @@ Choose a name for your integration (e.g. 'slack', 'salesforce', etc.), it is a b
 
 Open the `integrations.yaml` file and copy/paste the configuration for a new Integration under the `integrations` key:
 ```yaml title="integrations.yaml"
-- myintegration:
+myintegration:
     base_url: https://myintegration.com/api/
     call_auth:
         mode: AUTH_HEADER_TOKEN

@@ -73,16 +73,10 @@ export class IntegrationsManager {
     }
 
     public getIntegrationConfig(integrationName: string): NangoIntegrationConfig {
-        let integrationConfig = undefined;
-        for (const integration of this.integrationsConfig.integrations) {
-            const currentIntegrationName = Object.keys(integration)[0];
-            if (currentIntegrationName === integrationName) {
-                integrationConfig = integration[integrationName];
-            }
-        }
+        let integrationConfig = this.integrationsConfig.integrations[integrationName];
 
         if (!integrationConfig) {
-            throw new Error(`Requested integrationConfig for integration which does not exist: "${integrationName}`);
+            throw new Error(`Requested integrationConfig for integration which does not exist: "${integrationName}"`);
         }
 
         return this.resolveIntegrationConfig(integrationConfig);
@@ -142,30 +136,13 @@ export class IntegrationsManager {
         const blueprintPath = path.join(path.join(process.env['NANGO_SERVER_ROOT_DIR']!, this.blueprints_directory), `${blueprintName}.yaml`);
         const blueprint = yaml.load(fs.readFileSync(blueprintPath).toString()) as NangoBlueprint;
 
-        // Sort the versions in the blueprint DESC
-        blueprint.versions.sort((a, b) => {
-            const vA = Object.keys(a)[0]!;
-            const vB = Object.keys(b)[0]!;
-            if (vA < vB) {
-                return 1;
-            } else if (vA > vB) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
+        const blueprintVersions = Object.keys(blueprint.versions).sort().reverse();
 
         if (!blueprintVersion) {
-            blueprintVersion = Object.keys(blueprint.versions[0]!)[0];
+            blueprintVersion = blueprintVersions[0];
         }
 
-        let blueprintConfig = undefined;
-        for (const versionConfig of blueprint.versions) {
-            const versionName = Object.keys(versionConfig)[0]!;
-            if (versionName === blueprintVersion) {
-                blueprintConfig = versionConfig[versionName];
-            }
-        }
+        const blueprintConfig = blueprint.versions[blueprintVersion!];
 
         if (!blueprintConfig) {
             throw new Error(

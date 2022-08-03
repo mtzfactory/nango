@@ -2,19 +2,19 @@ name: hubspot
 maintainer: Nango <blueprints@nango.dev>
 docs_url: https://developers.hubspot.com/docs/api/overview
 versions:
-    - v0:
-          comment: 'This config is compatible with all hubspot APIs that build on api.hubapi.com (e.g. CRM API, Marketing API etc.)'
-          auth:
-              authorization_url: https://app.hubspot.com/oauth/authorize
-              token_url: https://api.hubapi.com/oauth/v1/token
-              auth_type: OAUTH2
-              token_params:
-                  grant_type: authorization_code
-              auth:
-                  response_type: code
-          requests:
-              base_url: https://api.hubapi.com/
-              headers:
-                  Accept: application/json
-                  Authorization: Bearer ${accessToken}
-                  User-Agent: Nango
+    v0:
+        comment: 'This config is compatible with all hubspot APIs that build on api.hubapi.com (e.g. CRM API, Marketing API etc.)'
+        auth:
+            authorization_url: https://app.hubspot.com/oauth/authorize
+            token_url: https://api.hubapi.com/oauth/v1/token
+            auth_type: OAUTH2
+            token_params:
+                grant_type: authorization_code
+            auth:
+                response_type: code
+        requests:
+            base_url: https://api.hubapi.com/
+            headers:
+                Accept: application/json
+                Authorization: Bearer ${accessToken}
+                User-Agent: Nango

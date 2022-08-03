@@ -84,11 +84,11 @@ cd [...]/node-sample/nango-integrations
 Open the `integrations.yaml` file (cf. [reference](reference/configuration.md#integrationsYaml)) and copy/paste the configuration for our new Slack Integration:
 ```yaml title="integrations.yaml"
 integrations:
-  - slack:
-      base_url: https://slack.com/api/
-      call_auth:
-        mode: AUTH_HEADER_TOKEN
-      log_level: debug
+    slack:
+        base_url: https://slack.com/api/
+        call_auth:
+            mode: AUTH_HEADER_TOKEN
+        log_level: debug
 ```
 
 Create a directory to host the code for the Slack Integration. In the Nango Folder, run:
