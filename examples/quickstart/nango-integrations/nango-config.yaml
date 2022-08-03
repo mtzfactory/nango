@@ -1,4 +1,0 @@
-main_server_log_level: info
-
-default_http_request_timeout_seconds: 100
-default_action_log_level: info
