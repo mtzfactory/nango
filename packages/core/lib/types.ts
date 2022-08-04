@@ -161,6 +161,7 @@ export interface OAuthSessionStore {
 
 export interface OAuthSession {
     integrationName: string;
+    userId: string;
     callbackUrl: string;
 }
 
