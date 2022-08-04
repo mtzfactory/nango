@@ -1,7 +1,7 @@
-main_server_log_level: info
+main_server_log_level: debug
 
 oauth_server_port: 3003 # Note: If you change this you also need to update the docker-compose file!
-oauth_server_root_url: http://localhost:3003 # Port does NOT get appended automatically, manually add it here if needed
+oauth_server_root_url: https://f399-51-154-54-66.eu.ngrok.io # Port does NOT get appended automatically, manually add it here if needed
 
 default_http_request_timeout_seconds: 100
 default_action_log_level: info
