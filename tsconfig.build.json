@@ -3,6 +3,7 @@
     "references": [
         { "path": "packages/core" },
         { "path": "packages/cli" },
+        { "path": "packages/frontend" },
         { "path": "packages/node-client" },
         { "path": "packages/action" },
         { "path": "packages/server" },
