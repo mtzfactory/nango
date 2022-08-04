@@ -85,17 +85,19 @@ export interface NangoIntegrationConfig extends NangoIntegrationConfigCommon {
 export interface NangoIntegrationAuthConfig {
     auth_mode: NangoIntegrationAuthModes.OAuth2;
 
+    // Config related to authorization URL forward
     authorization_url: string;
     authorization_params: Record<string, string>;
-    authorization_method?: OAuthAuthorizationMethod;
-    body_format?: OAuthBodyFormat;
     scope_separator?: string;
 
+    // Config related to token request
     token_url: string;
     token_params: {
         grant_type: 'authorization_code' | 'client_credentials';
         [key: string]: string;
     };
+    authorization_method?: OAuthAuthorizationMethod;
+    body_format?: OAuthBodyFormat;
 
     refresh_url?: string;
 }

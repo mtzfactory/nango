@@ -98,7 +98,7 @@ function bootstrapServer() {
     }
 
     // Must happen once config is loaded as it contains the log level
-    logger = logging.getLogger(IntegrationsManager.getInstance().getNangoConfig().main_server_log_level, logging.nangoServerLogFormat);
+    logger = logging.getLogger(nangoConfig.main_server_log_level, logging.nangoServerLogFormat);
 }
 
 async function connectRabbit() {
