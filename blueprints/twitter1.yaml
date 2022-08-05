@@ -1,0 +1,21 @@
+name: twitter1
+maintainer: Nango <blueprints@nango.dev>
+docs_url: https://developer.twitter.com/en/docs/twitter-api
+versions:
+    v0:
+        comment: "Implements Twitter's OAuth 1.0a authentication (which let's you act on a user's behalf) for API version 1.1 and 2. For OAuth 2 apps (which act only on behalf of the app) use 'twitter2' blueprint. If you are unsure which is right for you check the Twitter API docs."
+        auth:
+            auth_mode: OAUTH1
+            request_url: https://api.twitter.com/oauth/request_token
+            authorization_url: https://api.twitter.com/oauth/authorize
+            token_url: https://api.twitter.com/oauth/access_token
+            signature_method: 'HMAC-SHA1'
+            request_params:
+                x_auth_access_type: write
+
+        requests:
+            base_url: https://api.twitter.com/
+            headers:
+                Accept: application/json
+                Authorization: Bearer ${accessToken}
+                User-Agent: Nango

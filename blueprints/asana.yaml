@@ -5,9 +5,9 @@ versions:
     v0:
         comment: 'Implements Asana API V 1.0'
         auth:
+            auth_mode: OAUTH2
             authorization_url: https://app.asana.com/-/oauth_authorize
             token_url: https://app.asana.com/-/oauth_token
-            auth_type: OAUTH2
             token_params:
                 grant_type: authorization_code
             auth:

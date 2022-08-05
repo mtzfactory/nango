@@ -11,9 +11,33 @@ integrations:
     github:
         extends_blueprint: github:v0
         log_level: debug
+
+        oauth_client_id: 32c5215c3d3737e5b7d6
+        oauth_client_secret: ${GITHUB_CLIENT_SECRET}
+        oauth_scopes:
+            - user
+
     asana:
         extends_blueprint: asana:v0
         log_level: debug
     hubspot:
         extends_blueprint: hubspot:v0
         log_level: debug
+    twitter:
+        extends_blueprint: twitter1:v0
+        log_level: debug
+
+        oauth_client_id:
+        oauth_client_secret: ${TWITTER_CLIENT_SECRET}
+        oauth_scopes: ''
+
+    trello:
+        extends_blueprint: trello:v0
+        log_level: debug
+
+        oauth_client_id: 082eb76ce73566d56bf64ed29071fad3
+        oauth_client_secret: ${TRELLO_CLIENT_SECRET}
+        oauth_scopes:
+            - read
+            - write
+            - account

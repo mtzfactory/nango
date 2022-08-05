@@ -5,9 +5,9 @@ versions:
     v0:
         comment: 'This config is compatible with all hubspot APIs that build on api.hubapi.com (e.g. CRM API, Marketing API etc.)'
         auth:
+            auth_mode: OAUTH2
             authorization_url: https://app.hubspot.com/oauth/authorize
             token_url: https://api.hubapi.com/oauth/v1/token
-            auth_type: OAUTH2
             token_params:
                 grant_type: authorization_code
             auth:

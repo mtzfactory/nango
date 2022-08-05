@@ -5,9 +5,9 @@ versions:
     v0:
         comment: "Implements Slack API's OAuth 2.0 V2 for auth & the web API for requests"
         auth:
+            auth_mode: OAUTH2
             authorization_url: https://slack.com/oauth/v2/authorize
             token_url: https://slack.com/api/oauth.v2.access
-            auth_type: OAUTH2
             authorization_params:
                 access_type: offline
                 consent: true

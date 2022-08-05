@@ -12,7 +12,7 @@ import type winston from 'winston';
 import { ConnectionsManager } from './connections-manager.js';
 import { IntegrationsManager } from './integrations-manager.js';
 import { handleRegisterConnection, handleTriggerAction } from './message-handlers.js';
-import { startOAuthServer } from './oauth-server.js';
+import { startOAuthServer } from './oauth/oauth-server.js';
 
 /** -------------------- Server Internal Properties -------------------- */
 

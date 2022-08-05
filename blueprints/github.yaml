@@ -5,9 +5,9 @@ versions:
     v0:
         comment: 'Implements '
         auth:
+            auth_mode: OAUTH2
             authorization_url: https://github.com/login/oauth/authorize
             token_url: https://github.com/login/oauth/access_token
-            auth_type: OAUTH2
             auth:
                 access_type: offline
         requests:

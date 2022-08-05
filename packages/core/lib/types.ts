@@ -46,7 +46,15 @@ export interface NangoIntegrationsConfig {
 }
 
 export enum NangoIntegrationAuthModes {
+    OAuth1 = 'OAUTH1',
     OAuth2 = 'OAUTH2'
+}
+
+export enum NangoCredentialsMode {
+    ACCESS_TOKEN = 'ACCESS_TOKEN', // Usually used for OAuth 2 access tokens. Optionally supports refresh
+    USERNAME_PASSWORD = 'USERNAME_PASSWORD', // Basic auth: username + pw, api_key + api_secret etc.
+    API_KEY = 'API_KEY', // Just an api_key (fixed value, not obtained through OAuth flow)
+    OAUTH1_TOKEN_PAIR = 'OAUTH1_TOKEN_PAIR' // An OAuth 1.0a token pair: oauth_token + oauth_token_secret. Must be used together with OAuth1 Auth Mode. Automatically signs requests
 }
 
 interface NangoIntegrationConfigCommon {
@@ -83,18 +91,37 @@ export interface NangoIntegrationConfig extends NangoIntegrationConfigCommon {
 }
 
 export interface NangoIntegrationAuthConfig {
-    auth_mode: NangoIntegrationAuthModes.OAuth2;
+    auth_mode: NangoIntegrationAuthModes;
 
     // Config related to authorization URL forward
     authorization_url: string;
-    authorization_params: Record<string, string>;
+    authorization_params?: Record<string, string>;
     scope_separator?: string;
 
     // Config related to token request
     token_url: string;
-    token_params: {
-        grant_type: 'authorization_code' | 'client_credentials';
+    token_params?: {
         [key: string]: string;
+    };
+}
+
+export interface NangoIntegrationAuthConfigOAuth1 extends NangoIntegrationAuthConfig {
+    auth_mode: NangoIntegrationAuthModes.OAuth1;
+
+    request_url: string;
+    request_params?: Record<string, string>;
+    request_http_method?: 'GET' | 'PUT' | 'POST'; // Defaults to POST if not provided
+
+    token_http_method?: 'GET' | 'PUT' | 'POST'; // Defaults to POST if not provided
+
+    signature_method: 'HMAC-SHA1' | 'RSA-SHA1' | 'PLAINTEXT';
+}
+
+export interface NangoIntegrationAuthConfigOAuth2 extends NangoIntegrationAuthConfig {
+    auth_mode: NangoIntegrationAuthModes.OAuth2;
+
+    token_params?: {
+        grant_type?: 'authorization_code' | 'client_credentials';
     };
     authorization_method?: OAuthAuthorizationMethod;
     body_format?: OAuthBodyFormat;
@@ -163,6 +190,10 @@ export interface OAuthSession {
     integrationName: string;
     userId: string;
     callbackUrl: string;
+    authMode: NangoIntegrationAuthModes;
+
+    // Needed for oAuth 1.0a
+    request_token_secret?: string;
 }
 
 //////////////////////
