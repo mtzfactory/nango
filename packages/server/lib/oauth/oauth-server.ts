@@ -4,42 +4,48 @@
 
 import express from 'express';
 import { IntegrationsManager } from '../integrations-manager.js';
+import * as logging from '../logging.js';
 import * as uuid from 'uuid';
 import simpleOauth2 from 'simple-oauth2';
 import { NangoIntegrationAuthConfigOAuth2, NangoIntegrationAuthModes, OAuthSession, OAuthSessionStore } from '@nangohq/core';
 import * as core from '@nangohq/core';
 import { getSimpleOAuth2ClientConfig, NangoOAuth1Client } from './oauth-clients.js';
+import type winston from 'winston';
 
 const app = express();
 const sessionStore: OAuthSessionStore = {};
 
+// A simple HTTP(S) server that implements an OAuth 1.0a and OAuth 2.0 dance
+// Yes the code is not very beautiful but IMHO this reflects OAuth:
+// It is not rocket science, but 100 things can go wrong in 100 different places.
+// At least this implementation is all in 2 files + 2 libraries, there is worse out there :)
+//
+// If you land here because you are debugging an OAuth flow with Nango I highly recommend you
+// set main_server_log_level = debug if you have not done so and try again. It prints tons
+// of useful stuff for you.
+//
+// If you are debuggig an issue with OAuth 2.0 also set the env variable
+// DEBUG=*simple-oauth2*
+// This prints additional useful details.
+
 export function startOAuthServer() {
-    let serverRootUrl = IntegrationsManager.getInstance().getNangoConfig().oauth_server_root_url;
+    const nangoConfig = IntegrationsManager.getInstance().getNangoConfig();
+    let serverRootUrl = nangoConfig.oauth_server_root_url;
     serverRootUrl = serverRootUrl.slice(-1) !== '/' ? serverRootUrl + '/' : serverRootUrl;
     const oAuthCallbackUrl = serverRootUrl + 'oauth/callback';
 
-    const port = IntegrationsManager.getInstance().getNangoConfig().oauth_server_port;
+    const port = nangoConfig.oauth_server_port;
+
+    const logger = logging.getLogger(nangoConfig.main_server_log_level, logging.oAuthServerLogFormat);
 
     app.get('/oauth/connect/:integration', (req, res) => {
         const { integration } = req.params;
         let { userId } = req.query;
         userId = userId as string;
 
-        let integrationConfig;
-        try {
-            integrationConfig = IntegrationsManager.getInstance().getIntegrationConfig(integration);
-        } catch {
-            return sendResultHTML(
-                res,
-                integration,
-                userId,
-                'unknown_integration',
-                `Authentication failed: This Nango instance does not have a configuration for the integration "${integration}". Do you have a typo?`
-            );
-        }
-
         if (!userId) {
             return sendResultHTML(
+                logger,
                 res,
                 integration,
                 userId,
@@ -48,6 +54,7 @@ export function startOAuthServer() {
             );
         } else if (!integration) {
             return sendResultHTML(
+                logger,
                 res,
                 integration,
                 userId,
@@ -55,6 +62,24 @@ export function startOAuthServer() {
                 'Authentication failed: Missing integration name, it is required and cannot be an empty string.'
             );
         }
+
+        let integrationConfig;
+        try {
+            integrationConfig = IntegrationsManager.getInstance().getIntegrationConfig(integration);
+        } catch {
+            return sendResultHTML(
+                logger,
+                res,
+                integration,
+                userId,
+                'unknown_integration',
+                `Authentication failed: This Nango instance does not have a configuration for the integration "${integration}". Do you have a typo?`
+            );
+        }
+
+        logger.debug(
+            `Starting OAuth flow for integration "${integration}" and userId "${userId}" - full integration config:\n${JSON.stringify(integrationConfig)}`
+        );
 
         const authState = uuid.v1();
         sessionStore[authState] = {
@@ -66,6 +91,7 @@ export function startOAuthServer() {
 
         if (!integrationConfig.oauth_client_id || !integrationConfig.oauth_client_secret || integrationConfig.oauth_scopes === undefined) {
             return sendResultHTML(
+                logger,
                 res,
                 integration,
                 userId,
@@ -95,9 +121,14 @@ export function startOAuthServer() {
                     ...additionalAuthParams
                 });
 
+                logger.debug(
+                    `OAuth 2.0 flow for "${integration}" and userId "${userId}" - redirecting user to the following URL for authorization: ${authorizationUri}`
+                );
+
                 res.redirect(authorizationUri);
             } else {
                 return sendResultHTML(
+                    logger,
                     res,
                     integration,
                     userId,
@@ -122,12 +153,18 @@ export function startOAuthServer() {
                 .then((tokenResult) => {
                     const sessionData = sessionStore[authState]!;
                     sessionData.request_token_secret = tokenResult.request_token_secret;
+                    const redirectUrl = oAuth1Client.getAuthorizationURL(tokenResult);
+
+                    logger.debug(
+                        `OAuth 1.0a flow for "${integration}" and userId "${userId}" - request token call completed successfully. Redirecting user to the following URL for authorization: ${redirectUrl}`
+                    );
 
                     // All worked, let's redirect the user to the authorization page
-                    res.redirect(oAuth1Client.getAuthorizationURL(tokenResult));
+                    res.redirect(redirectUrl);
                 })
                 .catch((error) => {
                     return sendResultHTML(
+                        logger,
                         res,
                         integration,
                         userId as string,
@@ -137,6 +174,7 @@ export function startOAuthServer() {
                 });
         } else {
             return sendResultHTML(
+                logger,
                 res,
                 integration,
                 userId,
@@ -153,6 +191,7 @@ export function startOAuthServer() {
 
         if (state === undefined || sessionData === undefined) {
             return sendResultHTML(
+                logger,
                 res,
                 sessionData.integrationName,
                 sessionData.userId,
@@ -160,6 +199,10 @@ export function startOAuthServer() {
                 `Authorization failed: The external server did not send a valid state parameter back in the callback. Got state: ${state}`
             );
         }
+
+        logger.debug(
+            `Received OAuth callback for "${sessionData.integrationName}" and userId "${sessionData.userId}" - full callback URI was: ${req.originalUrl}"`
+        );
 
         const integrationConfig = IntegrationsManager.getInstance().getIntegrationConfig(sessionData.integrationName!);
 
@@ -177,7 +220,7 @@ export function startOAuthServer() {
                     errorType = 'unknown_external_callback_error';
                     errorMessage = `Authorization failed: The external OAuth2 server did not provide an authorization code in the callback. Unfortunately no additional errors were reported by the server. The full callback URI was: ${req.originalUrl}`;
                 }
-                return sendResultHTML(res, sessionData.integrationName, sessionData.userId, errorType, errorMessage);
+                return sendResultHTML(logger, res, sessionData.integrationName, sessionData.userId, errorType, errorMessage);
             }
 
             const simpleOAuthClient = new simpleOauth2.AuthorizationCode(getSimpleOAuth2ClientConfig(integrationConfig));
@@ -197,11 +240,17 @@ export function startOAuthServer() {
                     ...additionalTokenParams
                 });
 
+                logger.debug(
+                    `OAuth 2 flow for "${sessionData.integrationName}" and userId "${
+                        sessionData.userId
+                    }" - completed successfully. Received access token: ${JSON.stringify(accessToken)}`
+                );
                 console.log('Ok we should do somthing with this :)', accessToken);
 
-                return sendResultHTML(res, sessionData.integrationName, sessionData.userId, '', '');
+                return sendResultHTML(logger, res, sessionData.integrationName, sessionData.userId, '', '');
             } catch (e) {
                 return sendResultHTML(
+                    logger,
                     res,
                     sessionData.integrationName,
                     sessionData.userId,
@@ -225,7 +274,7 @@ export function startOAuthServer() {
                     errorType = 'unknown_external_callback_error';
                     errorMessage = `Authorization failed: The external OAuth 1.0a server did not provide an oauth_token and/or an oauth_verifier in the callback. Unfortunately no additional errors were reported by the server. The full callback URI was: ${req.originalUrl}`;
                 }
-                return sendResultHTML(res, sessionData.integrationName, sessionData.userId, errorType, errorMessage);
+                return sendResultHTML(logger, res, sessionData.integrationName, sessionData.userId, errorType, errorMessage);
             }
 
             const oauth_token_secret = sessionData.request_token_secret!;
@@ -234,11 +283,18 @@ export function startOAuthServer() {
             oAuth1Client
                 .getOAuthAccessToken(oauth_token as string, oauth_token_secret, oauth_verifier as string)
                 .then((accessTokenResult) => {
+                    logger.debug(
+                        `OAuth 1.0a flow for "${sessionData.integrationName}" and userId "${
+                            sessionData.userId
+                        }" - completed successfully. Received access token: ${JSON.stringify(accessTokenResult)}`
+                    );
+
                     console.log('A miracle, got accesss tokens!', accessTokenResult);
-                    return sendResultHTML(res, sessionData.integrationName, sessionData.userId, '', '');
+                    return sendResultHTML(logger, res, sessionData.integrationName, sessionData.userId, '', '');
                 })
                 .catch((error) => {
                     return sendResultHTML(
+                        logger,
                         res,
                         sessionData.integrationName,
                         sessionData.userId,
@@ -248,6 +304,7 @@ export function startOAuthServer() {
                 });
         } else {
             return sendResultHTML(
+                logger,
                 res,
                 sessionData.integrationName,
                 sessionData.userId,
@@ -258,9 +315,14 @@ export function startOAuthServer() {
     });
 
     app.listen(port);
+
+    logger.debug(`OAuth server started, listening on port ${port}. OAuth callback URL: ${oAuthCallbackUrl}`);
 }
 
-function sendResultHTML(res: any, integrationName: string, userId: string, error: string | null, errorDesc: string | null) {
+// Yes including a full HTML template here in a string goes against many best practices.
+// Yet it also felt wrong to add another dependency to simply parse 1 template.
+// If you have an idea on how to improve this feel free to submit a pull request.
+function sendResultHTML(logger: winston.Logger, res: any, integrationName: string, userId: string, error: string | null, errorDesc: string | null) {
     const resultHTMLTemplate = `
 <!--
 Nango OAuth flow callback. Read more about how to use it at: https://github.com/NangoHQ/nango
@@ -316,6 +378,7 @@ Nango OAuth flow callback. Read more about how to use it at: https://github.com/
     });
 
     if (error) {
+        logger.debug(`Got an error in the OAuth flow for integration "${integrationName}" and userId "${userId}": ${error} - ${errorDesc}`);
         res.status(500);
     } else {
         res.status(200);

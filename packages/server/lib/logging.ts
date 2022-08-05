@@ -10,6 +10,10 @@ export const nangoServerLogFormat = winston.format.printf((info) => {
     return `${info['timestamp']} ${info['level']} [SERVER-MAIN] ${info['message']}`;
 });
 
+export const oAuthServerLogFormat = winston.format.printf((info) => {
+    return `${info['timestamp']} ${info['level']} [OAUTH-SERVER] ${info['message']}`;
+});
+
 export const nangoActionLogFormat = winston.format.printf((info) => {
     return `${info['timestamp']} ${info['level']} [${info['integration']}] [${info['action']}] [user-id: ${info['userId']}] [exec ID: #${info['actionExecutionId']}] ${info['message']}`;
 });
