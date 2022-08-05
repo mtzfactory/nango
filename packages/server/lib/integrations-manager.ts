@@ -156,20 +156,10 @@ export class IntegrationsManager {
             );
         }
 
-        const finalConfig = {
-            auth: sourceConfig.auth ? sourceConfig.auth : blueprintConfig.auth,
-            requests: sourceConfig.requests ? sourceConfig.requests : blueprintConfig.requests
-        } as any;
+        // Merge the user's integration config onto the blueprint
+        // This means user provided keys override any blueprint provided keys if they conflict
+        const finalConfig = core.mergeDeep(blueprintConfig, sourceConfig) as NangoIntegrationConfig;
 
-        // Add all the other keys also present in sourceConfig
-        let sourceConfigKeys = Object.keys(sourceConfig);
-        sourceConfigKeys = sourceConfigKeys.filter((elem) => {
-            return elem !== 'auth' && elem !== 'requests';
-        });
-        for (const key of sourceConfigKeys) {
-            finalConfig[key] = sourceConfig[key];
-        }
-
-        return finalConfig as NangoIntegrationConfig;
+        return finalConfig;
     }
 }
