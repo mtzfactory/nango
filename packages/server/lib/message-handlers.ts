@@ -2,7 +2,7 @@
  * Copyright (c) 2022 Nango, all rights reserved.
  */
 
-import type { NangoMessageHandlerResult, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from '@nangohq/core';
+import { NangoIntegrationAuthModes, NangoMessageHandlerResult, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from '@nangohq/core';
 import { ConnectionsManager } from './connections-manager.js';
 import { IntegrationsManager } from './integrations-manager.js';
 import * as logging from './logging.js';
@@ -29,7 +29,17 @@ export function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessag
         return createError(`Attempt to register an already-existing connection (integration: ${nangoMsg.integration}, user_id: ${nangoMsg.userId})`);
     }
 
-    ConnectionsManager.getInstance().registerConnection(nangoMsg.userId, nangoMsg.integration, nangoMsg.oAuthAccessToken, nangoMsg.additionalConfig);
+    const accessToken = {
+        access_token: nangoMsg.oAuthAccessToken
+    };
+
+    ConnectionsManager.getInstance().insertConnection(
+        nangoMsg.userId,
+        nangoMsg.integration,
+        accessToken,
+        NangoIntegrationAuthModes.OAuth2,
+        nangoMsg.additionalConfig
+    );
 
     return createSuccess();
 }

@@ -47,14 +47,41 @@ export interface NangoIntegrationsConfig {
 
 export enum NangoIntegrationAuthModes {
     OAuth1 = 'OAUTH1',
-    OAuth2 = 'OAUTH2'
+    OAuth2 = 'OAUTH2',
+    UsernamePassword = 'USERNAME_PASSWORD',
+    ApiKey = 'API_KEY'
 }
 
-export enum NangoCredentialsMode {
-    ACCESS_TOKEN = 'ACCESS_TOKEN', // Usually used for OAuth 2 access tokens. Optionally supports refresh
-    USERNAME_PASSWORD = 'USERNAME_PASSWORD', // Basic auth: username + pw, api_key + api_secret etc.
-    API_KEY = 'API_KEY', // Just an api_key (fixed value, not obtained through OAuth flow)
-    OAUTH1_TOKEN_PAIR = 'OAUTH1_TOKEN_PAIR' // An OAuth 1.0a token pair: oauth_token + oauth_token_secret. Must be used together with OAuth1 Auth Mode. Automatically signs requests
+export type NangoAuthCredentials = NangoOAuth2Credentials | NangoUsernamePasswordCredentials | NangoApiKeyCredentials | NangoOAuth1Credentials;
+
+interface NangoCredentialsCommon {
+    type: NangoIntegrationAuthModes;
+    raw: Record<string, string>; // Raw response for credentials as received by the OAuth server or set by the user
+}
+
+export interface NangoOAuth2Credentials extends NangoCredentialsCommon {
+    type: NangoIntegrationAuthModes.OAuth2;
+    accessToken: string;
+
+    refreshToken?: string;
+    expiresAt?: Date;
+}
+
+export interface NangoUsernamePasswordCredentials extends NangoCredentialsCommon {
+    type: NangoIntegrationAuthModes.UsernamePassword;
+    username: string;
+    password: string;
+}
+
+export interface NangoApiKeyCredentials extends NangoCredentialsCommon {
+    type: NangoIntegrationAuthModes.ApiKey;
+    apiKey: string;
+}
+
+export interface NangoOAuth1Credentials extends NangoCredentialsCommon {
+    type: NangoIntegrationAuthModes.OAuth1;
+    oAuthToken: string;
+    oAuthTokenSecret: string;
 }
 
 interface NangoIntegrationConfigCommon {
@@ -91,6 +118,7 @@ export interface NangoIntegrationConfig extends NangoIntegrationConfigCommon {
 }
 
 export interface NangoIntegrationAuthConfig {
+    // The authentication mode to use (e.g. OAuth 1, OAuth 2)
     auth_mode: NangoIntegrationAuthModes;
 
     // Config related to authorization URL forward
@@ -204,7 +232,8 @@ export interface NangoConnection {
     uuid: string;
     integration: string;
     userId: string;
-    oAuthAccessToken: string;
+    authMode: NangoIntegrationAuthModes;
+    credentials: NangoAuthCredentials;
     additionalConfig: Record<string, unknown> | undefined;
 }
 

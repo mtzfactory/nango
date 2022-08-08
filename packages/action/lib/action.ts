@@ -2,7 +2,7 @@
  * Copyright (c) 2022 Nango, all rights reserved.
  */
 
-import type { HttpHeader, HttpParams, NangoConfig, NangoConnection, NangoIntegrationConfig } from '@nangohq/core';
+import type { HttpHeader, HttpParams, NangoConfig, NangoConnection, NangoIntegrationConfig, NangoOAuth2Credentials } from '@nangohq/core';
 import * as core from '@nangohq/core';
 import type * as winston from 'winston';
 import type { Axios, AxiosResponse, Method } from 'axios';
@@ -64,8 +64,9 @@ class NangoAction {
 
         const fullURL = new URL(endpoint, this.integrationConfig.requests.base_url).href;
 
+        const oAuth2Credentials = this.userConnection.credentials as NangoOAuth2Credentials;
         const interpolationVariables = {
-            accessToken: this.userConnection.oAuthAccessToken
+            accessToken: oAuth2Credentials.accessToken
         };
 
         let finalHeaders: HttpHeader = {};

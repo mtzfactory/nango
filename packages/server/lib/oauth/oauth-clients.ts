@@ -17,12 +17,6 @@ type OAuth1RequestTokenResult = {
     parsed_query_string: any;
 };
 
-type OAuth1AccessTokenResult = {
-    access_token: string;
-    access_token_secret: string;
-    parsed_query_string: any;
-};
-
 // The choice of OAuth 1.0a libraries for node is not exactly great:
 // There are a half-dozen around but none of the is really maintained anymore (no surprise, OAuth 1.0 is officially deprecated)
 // We still need to support it though because a few dozen important services are still using it, e.g. Twitter, Etsy, Sellsy, Trello
@@ -83,13 +77,13 @@ export class NangoOAuth1Client {
         return promise;
     }
 
-    async getOAuthAccessToken(oauth_token: string, oauth_token_secret: string, oauth_token_verifier: string): Promise<OAuth1AccessTokenResult> {
+    async getOAuthAccessToken(oauth_token: string, oauth_token_secret: string, oauth_token_verifier: string): Promise<any> {
         let additionalTokenParams = {};
         if (this.authConfig.token_params) {
             additionalTokenParams = this.authConfig.token_params;
         }
 
-        const promise = new Promise<OAuth1AccessTokenResult>((resolve, reject) => {
+        const promise = new Promise<any>((resolve, reject) => {
             // This is lifted from https://github.com/ciaranj/node-oauth/blob/master/lib/oauth.js#L456
             // Unfortunately that main method does not expose extra params like the initial token request does ¯\_(ツ)_/¯
 
@@ -113,8 +107,6 @@ export class NangoOAuth1Client {
                     else {
                         // @ts-ignore
                         var queryParams = new URLSearchParams(data);
-                        var oauth_access_token = queryParams.get('oauth_token')!;
-                        var oauth_access_token_secret = queryParams.get('oauth_token_secret')!;
 
                         var parsedFull = {};
                         for (var pair of queryParams) {
@@ -122,11 +114,7 @@ export class NangoOAuth1Client {
                             parsedFull[pair[0]] = pair[1];
                         }
 
-                        resolve({
-                            access_token: oauth_access_token,
-                            access_token_secret: oauth_access_token_secret,
-                            parsed_query_string: parsedFull
-                        });
+                        resolve(parsedFull);
                     }
                 }
             );

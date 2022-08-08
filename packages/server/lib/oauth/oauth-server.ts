@@ -11,6 +11,7 @@ import { NangoIntegrationAuthConfigOAuth2, NangoIntegrationAuthModes, OAuthSessi
 import * as core from '@nangohq/core';
 import { getSimpleOAuth2ClientConfig, NangoOAuth1Client } from './oauth-clients.js';
 import type winston from 'winston';
+import { ConnectionsManager } from '../connections-manager.js';
 
 const app = express();
 const sessionStore: OAuthSessionStore = {};
@@ -173,7 +174,11 @@ export function startOAuthServer() {
                         integration,
                         userId as string,
                         'oauth1_request_token',
-                        `Authentication failed: The external server returned an error in the request token step of the OAuth 1.0a flow. Error: ${error}`
+                        `Authentication failed: The external server returned an error in the request token step of the OAuth 1.0a flow. Error: ${JSON.stringify(
+                            error,
+                            undefined,
+                            2
+                        )}`
                     );
                 });
         } else {
@@ -183,7 +188,7 @@ export function startOAuthServer() {
                 integration,
                 userId,
                 'unsupported_auth_mode',
-                `Authentication failed: The integration "${integration}" is configured to use auth mode "${integrationConfig.auth.auth_mode}" which is not supported by this OAuth flow. Please check the documentation or contact support.`
+                `Authentication failed: The integration "${integration}" is configured to use auth mode "${integrationConfig.auth.auth_mode}" which is not supported by the OAuth flow (only OAuth1 and OAuth2 integrations are supported). Please check the documentation for how to pass in auth credentials for your auth mode or contact support.`
             );
         }
     });
@@ -247,23 +252,42 @@ export function startOAuthServer() {
                 logger.debug(
                     `OAuth 2 flow for "${sessionData.integrationName}" and userId "${
                         sessionData.userId
-                    }" - completed successfully. Received access token: ${JSON.stringify(accessToken)}`
+                    }" - completed successfully. Received access token: ${JSON.stringify(accessToken, undefined, 2)}`
                 );
-                console.log('Ok we should do somthing with this :)', accessToken);
+
+                try {
+                    ConnectionsManager.getInstance().insertOrUpdateConnection(
+                        sessionData.userId,
+                        sessionData.integrationName,
+                        accessToken.token,
+                        NangoIntegrationAuthModes.OAuth2,
+                        undefined
+                    );
+                } catch (e) {
+                    return sendResultHTML(
+                        logger,
+                        res,
+                        sessionData.integrationName,
+                        sessionData.userId,
+                        'token_storage_error',
+                        `Authentication succeeded but token storage failed: There was a problem storing the access token for user "${
+                            sessionData.userId
+                        }" and integration "${sessionData.integrationName}". Got this error: ${
+                            (e as Error).message
+                        }.\nToken response from server was: ${JSON.stringify(accessToken, undefined, 2)}`
+                    );
+                }
 
                 return sendResultHTML(logger, res, sessionData.integrationName, sessionData.userId, '', '');
             } catch (e) {
+                const errorE = e as Error;
                 return sendResultHTML(
                     logger,
                     res,
                     sessionData.integrationName,
                     sessionData.userId,
                     'token_retrieval_error',
-                    `Authentication failed: There was a problem exchanging the OAuth 2 authorization code for an access token. Got this error: ${JSON.stringify(
-                        e,
-                        undefined,
-                        2
-                    )}`
+                    `Authentication failed: There was a problem exchanging the OAuth 2 authorization code for an access token. Got this error: ${errorE.name} - ${errorE.message}`
                 );
             }
         } else if (sessionData.authMode === NangoIntegrationAuthModes.OAuth1) {
@@ -295,7 +319,28 @@ export function startOAuthServer() {
                         }" - completed successfully. Received access token: ${JSON.stringify(accessTokenResult, undefined, 2)}`
                     );
 
-                    console.log('A miracle, got accesss tokens!', accessTokenResult);
+                    try {
+                        ConnectionsManager.getInstance().insertOrUpdateConnection(
+                            sessionData.userId,
+                            sessionData.integrationName,
+                            accessTokenResult,
+                            NangoIntegrationAuthModes.OAuth1,
+                            undefined
+                        );
+                    } catch (e) {
+                        return sendResultHTML(
+                            logger,
+                            res,
+                            sessionData.integrationName,
+                            sessionData.userId,
+                            'token_storage_error',
+                            `Authentication succeeded but token storage failed: There was a problem storing the access token for user "${
+                                sessionData.userId
+                            }" and integration "${sessionData.integrationName}". Got this error: ${
+                                (e as Error).message
+                            }.\nToken response from server was: ${JSON.stringify(accessTokenResult, undefined, 2)}`
+                        );
+                    }
                     return sendResultHTML(logger, res, sessionData.integrationName, sessionData.userId, '', '');
                 })
                 .catch((error) => {
@@ -341,10 +386,10 @@ Nango OAuth flow callback. Read more about how to use it at: https://github.com/
   <body>
     <noscript>JavaScript is required to proceed with the authentication.</noscript>
     <script type="text/javascript">
-      window.integrationName = '\${integrationName}';
-      window.userId = '\${userId}';
-      window.authError = '\${error}';
-      window.authErrorDescription = '\${errorDesc}';
+      window.integrationName = \`\${integrationName}\`;
+      window.userId = \`\${userId}\`;
+      window.authError = \`\${error}\`;
+      window.authErrorDescription = \`\${errorDesc}\`;
 
       const message = {};
 
