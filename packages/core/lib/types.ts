@@ -171,6 +171,8 @@ export interface NangoIntegrationRequestsConfig {
 
 export enum NangoMessageAction {
     REGISTER_CONNECTION = 'REGISTER_CONNECTION',
+    UPDATE_CONNECTION_CREDENTIALS = 'UPDATE_CONNECTION_CREDENTIALS',
+    UPDATE_CONNECTION_CONFIG = 'UPDATE_CONNECTION_CONFIG',
     TRIGGER_ACTION = 'TRIGGER_ACTION'
 }
 
@@ -179,6 +181,7 @@ export interface NangoMessage {
 }
 
 export interface NangoTriggerActionMessage extends NangoMessage {
+    action: NangoMessageAction.TRIGGER_ACTION;
     integration: string;
     triggeredAction: string;
     userId: string;
@@ -186,10 +189,25 @@ export interface NangoTriggerActionMessage extends NangoMessage {
 }
 
 export interface NangoRegisterConnectionMessage extends NangoMessage {
+    action: NangoMessageAction.REGISTER_CONNECTION;
     integration: string;
     userId: string;
-    oAuthAccessToken: string;
+    credentials: NangoAuthCredentials;
     additionalConfig?: Record<string, unknown>;
+}
+
+export interface NangoUpdateConnectionCredentialsMessage extends NangoMessage {
+    action: NangoMessageAction.UPDATE_CONNECTION_CREDENTIALS;
+    integration: string;
+    userId: string;
+    credentials: NangoAuthCredentials;
+}
+
+export interface NangoUpdateConnectionConfigMessage extends NangoMessage {
+    action: NangoMessageAction.UPDATE_CONNECTION_CONFIG;
+    integration: string;
+    userId: string;
+    additionalConfig: Record<string, unknown>;
 }
 
 export interface NangoMessageHandlerResult {

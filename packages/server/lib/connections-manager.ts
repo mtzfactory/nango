@@ -38,45 +38,53 @@ export class ConnectionsManager {
         if (!this.getConnection(userId, integration)) {
             this.insertConnection(userId, integration, credentials, authMode, additionalConfig);
         } else {
-            this.updateConnection(userId, integration, credentials, authMode, additionalConfig);
+            this.updateConnectionCredentials(userId, integration, credentials, authMode);
+            if (additionalConfig) {
+                this.updateConnectionConfig(userId, integration, additionalConfig);
+            }
         }
     }
 
-    public updateConnection(
-        userId: string,
-        integration: string,
-        credentials: object,
-        authMode: NangoIntegrationAuthModes,
-        additionalConfig?: Record<string, unknown>
-    ) {
+    public updateConnectionCredentials(userId: string, integration: string, credentials: object, authMode: NangoIntegrationAuthModes) {
         const existingConnection = this.getConnection(userId, integration);
         if (!existingConnection) {
             throw new Error(`Tried to update connection for userId "${userId}" and integration "${integration}" but this connection does not exist`);
         }
 
-        let newAdditionalConfig: string;
-        if (additionalConfig === undefined) {
-            // Do not update additionalConfig
-            newAdditionalConfig = JSON.stringify(existingConnection.additionalConfig);
-        } else if (additionalConfig === null) {
-            // Clear additional config
-            newAdditionalConfig = JSON.stringify({});
-        } else {
-            newAdditionalConfig = JSON.stringify(additionalConfig);
-        }
-        const parsedCredentials = JSON.stringify(this.parseRawCredentials(credentials, authMode));
+        // Compute new credentials
+        const newCredentials = JSON.stringify(this.parseRawCredentials(credentials, authMode));
 
         this.db
             .prepare(
                 `
         UPDATE nango_connections
         SET
-            credentials = ?,
+            credentials = ?
+        WHERE uuid = ?
+    `
+            )
+            .run(newCredentials, existingConnection.uuid);
+    }
+
+    public updateConnectionConfig(userId: string, integration: string, additionalConfig: Record<string, unknown>) {
+        const existingConnection = this.getConnection(userId, integration);
+        if (!existingConnection) {
+            throw new Error(`Tried to update connection for userId "${userId}" and integration "${integration}" but this connection does not exist`);
+        }
+
+        // Compute new config
+        const newConfig = JSON.stringify(additionalConfig);
+
+        this.db
+            .prepare(
+                `
+        UPDATE nango_connections
+        SET
             additional_config = ?
         WHERE uuid = ?
     `
             )
-            .run(parsedCredentials, newAdditionalConfig, existingConnection.uuid);
+            .run(newConfig, existingConnection.uuid);
     }
 
     public insertConnection(
@@ -165,8 +173,6 @@ export class ConnectionsManager {
         }
         parsedCredentials.raw = rawAuthCredentials;
 
-        console.log('Parsed credentials:', parsedCredentials, '\n\n\nRaw credentials:', rawAuthCredentials);
-
         // Checks if the credentials are well formed, if not it will throw
         const parsedNangoAuthCredentials = this.checkCredentials(parsedCredentials);
 
@@ -192,7 +198,7 @@ export class ConnectionsManager {
             case NangoIntegrationAuthModes.OAuth2:
                 if (!rawAuthCredentials.accessToken) {
                     throw new Error(
-                        `Cannot parse credentials, OAuth2 access token credentials must have "accessToken" property: ${JSON.stringify(
+                        `Cannot parse credentials, OAuth2 access token credentials must have "access_token" property: ${JSON.stringify(
                             rawAuthCredentials,
                             undefined,
                             2
@@ -200,7 +206,7 @@ export class ConnectionsManager {
                     );
                 } else if (rawAuthCredentials.refreshToken && !rawAuthCredentials.expiresAt) {
                     throw new Error(
-                        `Cannot parse credentials, if OAuth2 access token credentials have a "refreshToken" property the "expiresAt" property must also be set: ${JSON.stringify(
+                        `Cannot parse credentials, if OAuth2 access token credentials have a "refresh_token" property the "expires_at" property must also be set: ${JSON.stringify(
                             rawAuthCredentials,
                             undefined,
                             2
@@ -211,7 +217,7 @@ export class ConnectionsManager {
             case NangoIntegrationAuthModes.OAuth1:
                 if (!rawAuthCredentials.oAuthToken || !rawAuthCredentials.oAuthTokenSecret) {
                     throw new Error(
-                        `Cannot parse credentials, OAuth1 credentials must have both "oAuthToken" and "oAuthTokenSecret" property: ${JSON.stringify(
+                        `Cannot parse credentials, OAuth1 credentials must have both "oauth_token" and "oauth_token_secret" property: ${JSON.stringify(
                             rawAuthCredentials,
                             undefined,
                             2
@@ -222,7 +228,7 @@ export class ConnectionsManager {
             case NangoIntegrationAuthModes.ApiKey:
                 if (!rawAuthCredentials.apiKey) {
                     throw new Error(
-                        `Cannot parse credentials, ApiKey credentials must have "apiKey" property: ${JSON.stringify(rawAuthCredentials, undefined, 2)}`
+                        `Cannot parse credentials, ApiKey credentials must have "api_key" property: ${JSON.stringify(rawAuthCredentials, undefined, 2)}`
                     );
                 }
                 break;

@@ -3,7 +3,16 @@
  */
 
 import { connect, Channel, Connection } from 'amqplib';
-import { NangoMessageAction, NangoTriggerActionMessage, NangoRegisterConnectionMessage, NangoMessageHandlerResult, NangoMessage } from '@nangohq/core';
+import {
+    NangoMessageAction,
+    NangoTriggerActionMessage,
+    NangoRegisterConnectionMessage,
+    NangoMessageHandlerResult,
+    NangoMessage,
+    NangoAuthCredentials,
+    NangoUpdateConnectionCredentialsMessage,
+    NangoUpdateConnectionConfigMessage
+} from '@nangohq/core';
 import * as core from '@nangohq/core';
 
 export default class Nango {
@@ -31,16 +40,38 @@ export default class Nango {
     public async registerConnection(
         integration: string,
         userId: string,
-        oAuthAccessToken: string,
+        credentials: NangoAuthCredentials,
         additionalConfig?: Record<string, unknown>
     ): Promise<NangoMessageHandlerResult> {
         const msg = {
             integration: integration,
             userId: userId,
-            oAuthAccessToken: oAuthAccessToken,
+            credentials: credentials,
             additionalConfig: additionalConfig,
             action: NangoMessageAction.REGISTER_CONNECTION
         } as NangoRegisterConnectionMessage;
+
+        return this.sendMessageToServer(msg);
+    }
+
+    public async updateConnectionCredentials(integration: string, userId: string, credentials: NangoAuthCredentials): Promise<NangoMessageHandlerResult> {
+        const msg = {
+            integration: integration,
+            userId: userId,
+            credentials: credentials,
+            action: NangoMessageAction.UPDATE_CONNECTION_CREDENTIALS
+        } as NangoUpdateConnectionCredentialsMessage;
+
+        return this.sendMessageToServer(msg);
+    }
+
+    public async updateConnectionConfig(integration: string, userId: string, additionalConfig: Record<string, unknown>): Promise<NangoMessageHandlerResult> {
+        const msg = {
+            integration: integration,
+            userId: userId,
+            additionalConfig: additionalConfig,
+            action: NangoMessageAction.UPDATE_CONNECTION_CONFIG
+        } as NangoUpdateConnectionConfigMessage;
 
         return this.sendMessageToServer(msg);
     }

@@ -2,7 +2,15 @@
  * Copyright (c) 2022 Nango, all rights reserved.
  */
 
-import { NangoMessage, NangoMessageAction, NangoMessageHandlerResult, NangoRegisterConnectionMessage, NangoTriggerActionMessage } from '@nangohq/core';
+import {
+    NangoMessage,
+    NangoMessageAction,
+    NangoMessageHandlerResult,
+    NangoRegisterConnectionMessage,
+    NangoTriggerActionMessage,
+    NangoUpdateConnectionCredentialsMessage,
+    NangoUpdateConnectionConfigMessage
+} from '@nangohq/core';
 import * as core from '@nangohq/core';
 import * as logging from './logging.js';
 import * as path from 'path';
@@ -11,7 +19,7 @@ import { connect, ConsumeMessage, Channel, Connection } from 'amqplib';
 import type winston from 'winston';
 import { ConnectionsManager } from './connections-manager.js';
 import { IntegrationsManager } from './integrations-manager.js';
-import { handleRegisterConnection, handleTriggerAction } from './message-handlers.js';
+import { handleRegisterConnection, handleTriggerAction, handleUpdateConnectionCredentials, handleUpdateConnectionConfig } from './message-handlers.js';
 import { startOAuthServer } from './oauth/oauth-server.js';
 
 /** -------------------- Server Internal Properties -------------------- */
@@ -38,22 +46,27 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
 
     let result: NangoMessageHandlerResult;
     switch (nangoMessage.action) {
-        case NangoMessageAction.REGISTER_CONNECTION: {
+        case NangoMessageAction.REGISTER_CONNECTION:
             const registerMessage = nangoMessage as NangoRegisterConnectionMessage;
             result = handleRegisterConnection(registerMessage);
             break;
-        }
-        case NangoMessageAction.TRIGGER_ACTION: {
+        case NangoMessageAction.UPDATE_CONNECTION_CREDENTIALS:
+            const updateCredentialsMessage = nangoMessage as NangoUpdateConnectionCredentialsMessage;
+            result = handleUpdateConnectionCredentials(updateCredentialsMessage);
+            break;
+        case NangoMessageAction.UPDATE_CONNECTION_CONFIG:
+            const updateConfigMessage = nangoMessage as NangoUpdateConnectionConfigMessage;
+            result = handleUpdateConnectionConfig(updateConfigMessage);
+            break;
+        case NangoMessageAction.TRIGGER_ACTION:
             const triggerMessage = nangoMessage as NangoTriggerActionMessage;
             result = await handleTriggerAction(triggerMessage);
             if (result.success) {
                 logger.debug(`Result from action: ${JSON.stringify(result.returnValue)}`);
             }
             break;
-        }
-        default: {
+        default:
             throw new Error(`Received inbound server message with unknown action: ${nangoMessage.action}`);
-        }
     }
 
     rabbitChannel?.sendToQueue(msg.properties.replyTo, Buffer.from(JSON.stringify(result), 'utf8'), {
