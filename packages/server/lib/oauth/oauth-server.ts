@@ -63,6 +63,7 @@ export function startOAuthServer() {
                 'Authentication failed: Missing integration name, it is required and cannot be an empty string.'
             );
         }
+        userId = userId.toString();
 
         let integrationConfig;
         try {

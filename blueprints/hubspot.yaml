@@ -16,5 +16,5 @@ versions:
             base_url: https://api.hubapi.com/
             headers:
                 Accept: application/json
-                Authorization: Bearer ${accessToken}
+                Authorization: Bearer ${access_token}
                 User-Agent: Nango

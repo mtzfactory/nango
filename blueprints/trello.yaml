@@ -19,5 +19,5 @@ versions:
             base_url: https://api.trello.com/1
             headers:
                 Accept: application/json
-                Authorization: 'OAuth oauth_consumer_key="${apiKey}", oauth_token="${apiToken}"'
+                Authorization: 'OAuth oauth_consumer_key="${oauth_client_id}", oauth_token="${oauth_token}"'
                 User-Agent: Nango

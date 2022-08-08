@@ -20,20 +20,22 @@ function closeConnection() {
 }
 
 async function registerConnection(integration) {
-    await nango.registerConnection(integration, 1, tokens[integration]).catch((errorMsg) => {
+    await nango.registerConnection(integration, '1', tokens[integration]).catch((errorMsg) => {
         console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
     });
 }
 
 async function triggerAction(integration, action, input) {
-    let result = await nango.triggerAction(integration, action, 1, input).catch((errorMsg) => {
+    let result = await nango.triggerAction(integration, action, '1', input).catch((errorMsg) => {
         console.log(`Uh oh, got error message on triggerAction: ${errorMsg}`);
     });
     logResponse(integration, action, result);
 }
 
 async function loadSample(sample) {
-    await registerConnection(sample.integration);
+    if (!sample.skipRegister) {
+        await registerConnection(sample.integration);
+    }
     await triggerAction(sample.integration, sample.action, sample.input);
 }
 
@@ -49,15 +51,15 @@ const tokens = {
     hubspot: process.env.HUBSPOT_ACCESS_TOKEN
 };
 const samples = yaml.load(fs.readFileSync('packages/node-client/bin/samples.yaml').toString()).samples;
-
 const sampleName = process.argv[2];
+const sample = samples[sampleName];
 
-if (typeof sampleName !== 'string' || samples[sampleName] === undefined) {
+if (typeof sampleName !== 'string' || sample === undefined) {
     console.log(`Provided parameter "${sampleName}" does not correspond to valid sample in packages/node-client/bin/samples.yaml.`);
-} else if (tokens[samples[sampleName].integration] === undefined) {
+} else if (!sample.skipRegister && tokens[sample.integration] === undefined) {
     console.log('Missing access token for integration. Please edit the .dev-secrets file in the Nango project root directory.');
 } else {
-    await loadSample(samples[sampleName]);
+    await loadSample(sample);
 }
 
 closeConnection();

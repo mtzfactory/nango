@@ -91,6 +91,8 @@ interface NangoIntegrationConfigCommon {
     oauth_client_secret?: string;
     oauth_scopes?: string[];
 
+    app_api_key?: string; // App wide api key, can be used as a variable in NangoIntegrationRequestsConfig
+
     http_request_timeout_seconds?: number;
     log_level?: string;
 }

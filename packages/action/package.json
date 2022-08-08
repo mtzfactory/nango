@@ -14,6 +14,7 @@
     "dependencies": {
         "@nangohq/core": "^0.1.14",
         "axios": "^0.27.2",
+        "oauth": "^0.10.0",
         "winston": "^3.8.1"
     },
     "files": [

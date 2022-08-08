@@ -19,3 +19,9 @@ samples:
         action: contacts
         input:
             limit: 5
+    twitter:
+        integration: twitter
+        action: tweet
+        skipRegister: true
+        input:
+            msg: 'Hello Robin, this is Nango tweeting for you!'

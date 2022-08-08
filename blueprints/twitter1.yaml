@@ -17,5 +17,4 @@ versions:
             base_url: https://api.twitter.com/
             headers:
                 Accept: application/json
-                Authorization: Bearer ${accessToken}
                 User-Agent: Nango

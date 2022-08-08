@@ -2,11 +2,21 @@
  * Copyright (c) 2022 Nango, all rights reserved.
  */
 
-import type { HttpHeader, HttpParams, NangoConfig, NangoConnection, NangoIntegrationConfig, NangoOAuth2Credentials } from '@nangohq/core';
+import {
+    HttpHeader,
+    HttpParams,
+    NangoConfig,
+    NangoConnection,
+    NangoIntegrationAuthConfigOAuth1,
+    NangoIntegrationAuthModes,
+    NangoIntegrationConfig,
+    NangoOAuth1Credentials
+} from '@nangohq/core';
 import * as core from '@nangohq/core';
 import type * as winston from 'winston';
 import type { Axios, AxiosResponse, Method } from 'axios';
 import axios from 'axios';
+import oAuth1 from 'oauth';
 
 class NangoAction {
     private nangoConfig: NangoConfig;
@@ -64,10 +74,41 @@ class NangoAction {
 
         const fullURL = new URL(endpoint, this.integrationConfig.requests.base_url).href;
 
-        const oAuth2Credentials = this.userConnection.credentials as NangoOAuth2Credentials;
-        const interpolationVariables = {
-            accessToken: oAuth2Credentials.accessToken
-        };
+        const interpolationVariables: Record<string, any> = {};
+        if (this.integrationConfig.app_api_key) {
+            interpolationVariables['app_api_key'] = this.integrationConfig.app_api_key;
+        }
+
+        if (this.integrationConfig.oauth_client_id) {
+            interpolationVariables['oauth_client_id'] = this.integrationConfig.oauth_client_id;
+        }
+        if (this.integrationConfig.oauth_client_secret) {
+            interpolationVariables['oauth_client_secret'] = this.integrationConfig.oauth_client_secret;
+        }
+
+        // Add credentials variables
+        const userCredentials = this.userConnection.credentials;
+        switch (userCredentials.type) {
+            case NangoIntegrationAuthModes.OAuth2:
+                interpolationVariables['access_token'] = userCredentials.accessToken;
+                break;
+            case NangoIntegrationAuthModes.OAuth1:
+                interpolationVariables['oauth_token'] = userCredentials.oAuthToken;
+                interpolationVariables['oauth_token_secret'] = userCredentials.oAuthTokenSecret;
+                break;
+            case NangoIntegrationAuthModes.ApiKey:
+                interpolationVariables['api_key'] = userCredentials.apiKey;
+                break;
+            case NangoIntegrationAuthModes.UsernamePassword:
+                interpolationVariables['username'] = userCredentials.username;
+                interpolationVariables['password'] = userCredentials.password;
+                interpolationVariables['basic_auth_encoded'] = Buffer.from(userCredentials.username + ':' + userCredentials.password).toString('base64');
+                break;
+        }
+        // Add all the top level raw variables as well
+        for (const key in userCredentials.raw) {
+            interpolationVariables['raw.' + key] = userCredentials.raw[key];
+        }
 
         let finalHeaders: HttpHeader = {};
         if (headers !== undefined) {
@@ -97,6 +138,14 @@ class NangoAction {
             finalHeaders['Content-Type'] = 'application/json';
         } else {
             serializedBody = body;
+        }
+
+        // If the request is for an OAuth1 integration we need to sign it and add a special Authorization header
+        // In theory this should be the right auth header for all OAuth1 based APIs, but it turns out some invented their own
+        // weird authorization format and skip the request signing (looking at you, Trello). So we only set this if the user has not
+        // created any custom Authorization header in the integration config
+        if (this.integrationConfig.auth.auth_mode === NangoIntegrationAuthModes.OAuth1 && !finalHeaders['Authorization']) {
+            finalHeaders['Authorization'] = this.createOAuth1AuthorizationHeader(method, fullURL, finalParams);
         }
 
         const promise = new Promise<AxiosResponse<any, any>>((resolve, reject) => {
@@ -163,6 +212,31 @@ class NangoAction {
             `Default NangoAction - executeAction has been called. This is probably not what you intended. Passed input:\n${JSON.stringify(input)}`
         );
         return;
+    }
+
+    private createOAuth1AuthorizationHeader(method: Method, url: string, queryParams: any) {
+        const authConfig = this.integrationConfig.auth as NangoIntegrationAuthConfigOAuth1;
+        const oAuth1Credentials = this.userConnection.credentials as NangoOAuth1Credentials;
+        const oAuthToken = oAuth1Credentials.oAuthToken;
+        const oAuthTokenSecret = oAuth1Credentials.oAuthTokenSecret;
+
+        const oAuth1Client = new oAuth1.OAuth(
+            authConfig.request_url,
+            authConfig.token_url,
+            this.integrationConfig.oauth_client_id!,
+            this.integrationConfig.oauth_client_secret!,
+            '1.0A',
+            '',
+            authConfig.signature_method,
+            undefined,
+            {}
+        );
+
+        // This is pretty much lifted from the oauth library. It works, but don't ask me if there is another/better way :)
+        // @ts-ignore
+        const orderedParams = oAuth1Client._prepareParameters(oAuthToken, oAuthTokenSecret, method, url, queryParams);
+        // @ts-ignore
+        return oAuth1Client._buildAuthorizationHeaders(orderedParams);
     }
 }
 
