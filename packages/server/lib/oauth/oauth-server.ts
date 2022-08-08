@@ -78,7 +78,11 @@ export function startOAuthServer() {
         }
 
         logger.debug(
-            `Starting OAuth flow for integration "${integration}" and userId "${userId}" - full integration config:\n${JSON.stringify(integrationConfig)}`
+            `Starting OAuth flow for integration "${integration}" and userId "${userId}" - full integration config:\n${JSON.stringify(
+                integrationConfig,
+                undefined,
+                2
+            )}`
         );
 
         const authState = uuid.v1();
@@ -256,7 +260,9 @@ export function startOAuthServer() {
                     sessionData.userId,
                     'token_retrieval_error',
                     `Authentication failed: There was a problem exchanging the OAuth 2 authorization code for an access token. Got this error: ${JSON.stringify(
-                        e
+                        e,
+                        undefined,
+                        2
                     )}`
                 );
             }
@@ -286,7 +292,7 @@ export function startOAuthServer() {
                     logger.debug(
                         `OAuth 1.0a flow for "${sessionData.integrationName}" and userId "${
                             sessionData.userId
-                        }" - completed successfully. Received access token: ${JSON.stringify(accessTokenResult)}`
+                        }" - completed successfully. Received access token: ${JSON.stringify(accessTokenResult, undefined, 2)}`
                     );
 
                     console.log('A miracle, got accesss tokens!', accessTokenResult);

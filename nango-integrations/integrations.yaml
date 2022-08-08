@@ -27,7 +27,7 @@ integrations:
         extends_blueprint: twitter1:v0
         log_level: debug
 
-        oauth_client_id:
+        oauth_client_id: bW0UOgWIjUIkfMkPQps8ePvQV
         oauth_client_secret: ${TWITTER_CLIENT_SECRET}
         oauth_scopes: ''
 
