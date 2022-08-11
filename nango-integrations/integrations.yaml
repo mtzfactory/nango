@@ -20,9 +20,21 @@ integrations:
     asana:
         extends_blueprint: asana:v0
         log_level: debug
+
+        oauth_client_id: '1202775834417405'
+        oauth_client_secret: ${ASANA_CLIENT_SECRET}
+        oauth_scopes:
+            - default
+
     hubspot:
         extends_blueprint: hubspot:v0
         log_level: debug
+
+        oauth_client_id: 063de961-65d3-43fd-a8be-1897a4e16b3d
+        oauth_client_secret: ${HUBSPOT_CLIENT_SECRET}
+        oauth_scopes:
+            - crm.objects.contacts.read
+
     twitter:
         extends_blueprint: twitter1:v0
         log_level: debug
@@ -41,3 +53,22 @@ integrations:
             - read
             - write
             - account
+
+    xero:
+        extends_blueprint: xero:v0
+        log_level: debug
+
+        oauth_client_id: 37A917C6DFBF4CF79537D41A3AD2EB18
+        oauth_client_secret: ${XERO_CLIENT_SECRET}
+        oauth_scopes:
+            - accounting.transactions
+            - offline_access
+
+    discord:
+        extends_blueprint: discord:v0
+        log_level: debug
+
+        oauth_client_id: '1006954742532030514'
+        oauth_client_secret: ${DISCORD_CLIENT_SECRET}
+        oauth_scopes:
+            - identify

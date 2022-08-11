@@ -389,8 +389,8 @@ Nango OAuth flow callback. Read more about how to use it at: https://github.com/
     <script type="text/javascript">
       window.integrationName = \`\${integrationName}\`;
       window.userId = \`\${userId}\`;
-      window.authError = \`\${error}\`;
-      window.authErrorDescription = \`\${errorDesc}\`;
+      window.authError = \'\${error}\';
+      window.authErrorDescription = \'\${errorDesc}\';
 
       const message = {};
 
@@ -425,8 +425,8 @@ Nango OAuth flow callback. Read more about how to use it at: https://github.com/
     const resultHTML = core.interpolateString(resultHTMLTemplate, {
         integrationName: integrationName,
         userId: userId,
-        error: error,
-        errorDesc: errorDesc
+        error: error?.replace('\n', '\\n'),
+        errorDesc: errorDesc?.replace('\n', '\\n')
     });
 
     if (error) {

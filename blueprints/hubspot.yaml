@@ -10,8 +10,6 @@ versions:
             token_url: https://api.hubapi.com/oauth/v1/token
             token_params:
                 grant_type: authorization_code
-            auth:
-                response_type: code
         requests:
             base_url: https://api.hubapi.com/
             headers:

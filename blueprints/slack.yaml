@@ -8,9 +8,6 @@ versions:
             auth_mode: OAUTH2
             authorization_url: https://slack.com/oauth/v2/authorize
             token_url: https://slack.com/api/oauth.v2.access
-            authorization_params:
-                access_type: offline
-                consent: true
         requests:
             base_url: https://slack.com/api/
             headers:
