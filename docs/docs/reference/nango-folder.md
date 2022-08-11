@@ -9,7 +9,7 @@ Integrations and Actions that you use with Nango as part of your product live in
 
 The Nango Folder folder contains all the details, configuration and code of the Integrations and Actions that you defined in Nango. As such, it fully defines the behavior of Nango at runtime: You are guaranteed that a Nango server which loads your Nango Folder always behaves the same way, which makes deployments across different environments easy and painless.
 
-Usually the Nango Folder lives in the root directory of your application which uses Nango for its native integrations, but you could place it anywhere in your code base where you see fit. In all cases we highly recommend that you version control it as part of the main repo of your application so it gets deployed together with the rest of your application (see also [deploying Nango](nango-hosted.md).
+Usually the Nango Folder lives in the root directory of your application which uses Nango for its native integrations, but you could place it anywhere in your code base where you see fit. In all cases we highly recommend that you version control it as part of the main repo of your application so it gets deployed together with the rest of your application (see also [deploying Nango](nango-hosted.md)).
 
 :::info
 Nango can be used with any language or application framework, it is completely language agnostic.
@@ -43,19 +43,24 @@ For a list of all possible keys currently supported please check the [`nango-con
 ### `integrations.yaml`
 Contains the integration-specific configuration for each Integration. Because this file lists all the available Integrations in your Nango installation it is also a good lookup place for that.
 
-Configurations specified here generally take precedence over the defaults specified in `nango-config.yaml`, so you can overwrite defaults on a per integration-level.
+Integrations can be based on a [Blueprint](blueprint-catalog/blueprint-overview.md), which makes them much faster and easier to add.
 
-As an example let's look at the `integrations.yaml` configuration of a simple Slack Integration:
+Configurations specified here generally take precedence over the defaults specified in `nango-config.yaml`, so you can overwrite defaults on a per integration-level. The same is true for configuration that is inherited from the blueprint (if specified).
+
+As an example let's look at the `integrations.yaml` configuration of a simple Slack Integration that uses the [Slack blueprint](blueprint-catalog/blueprint-slack.md):
 ```yaml
 integrations:
-  - slack:
-      base_url: https://slack.com/api/
-      call_auth:
-        mode: AUTH_HEADER_TOKEN
-      log_level: debug
+    slack:
+        extends_blueprint: slack:v0
+        log_level: debug
+
+        oauth_client_id: 'XXXXXXXX'
+        oauth_client_secret: ${SLACK_CLIENT_SECRET}
+        oauth_scopes:
+            - your scopes
 ```
 
-Many keys here are optional, for all the details and possibilities please consult the [`integrations.yaml` reference](/reference/configuration.md#integrationsYaml).
+Some keys here are optional, for all the details and possibilities please consult the [`integrations.yaml` reference](/reference/configuration.md#integrationsYaml).
 
 ### `package.json`
 This file makes Nango Folder an npm package, if you are familiar with npm packages and the `package.json` format you will find all the usual keys in here. If not don't worry: To use Nango you don't need to understand its content and we have guides with step by step commands for the few occasions where you do need to interact with it.

@@ -52,7 +52,7 @@ await nango.connect();
 After connect has succeeded you Nango client is ready to start sending commands to the server. If you send commands before `connect` has succeeded you may get exceptions and messages will be lost.
 
 ## registerConnection method {#registerConnection}
-You must register a connection, with the `registerConnection` method, for a user/Integration combination before you can trigger an action for it. In particular, the connection stores information such as the credentials of the user to access the 3rd-party system.
+Before you can trigger an action for a Connection it must be registered. This can either happen through the user completing a Nango powered OAuth flow or you can manually register it with the `registerConnection` method.The Connection stores information such as the credentials of the user to access the 3rd-party system and any additional configuration which you want to store for thus user-Integration pair.
 
 The registerConnection method takes a number of parameters:
 ```ts
@@ -60,8 +60,8 @@ public async registerConnection(
         integration: string,
         userId: string,
         credentials: NangoAuthCredentials,
-        additionalConfig: Record<string, unknown>
-): Promise<NangoMessageHandlerResult>
+        additionalConfig?: Record<string, unknown>
+): Promise<NangoMessageHandlerResult<undefined>>
 ```
 
 Let's briefly look at each one:
@@ -154,6 +154,119 @@ The result and error variable in the example above are a [`NangoMessageHandlerRe
 Note that connections are unique per user and integration: Attempting to register a connection for the same user id and integration twice will result in an error.
 :::
 
+## updateConnectionConfig method
+To update the additional config for an already existing Connection you can use the `updateConnectionConfig` method.
+
+If you are not sure what the additional config is and how it can be helpful check the explanation above in the [registerConnection]{#registerConnection} method.
+
+Note the the **new configuration must be JSON serializable** or the call will not succeed and return an error.
+
+```ts
+public async updateConnectionConfig(
+    integration: string,
+    userId: string,
+    additionalConfig: Record<string, unknown>
+): Promise<NangoMessageHandlerResult<undefined>>
+```
+
+An example call looks like this:
+```ts
+let newConfig = {
+    channelId: 'X382949'
+};
+
+// Assuming the connection for 'slack' with userId '1' exists
+nango.updateConnectionConfig('example', '1', newConfig)
+    .catch((error) => {
+        console.log(`There was a problem: ${error.errorMsg}`);
+    })
+    .then(() => {
+        console.log('Config updated successfully');
+    }) 
+```
+
+## updateConnectionCredentials method
+To update the credentials for an already existing Connection you can use the `updateConnectionCredentials` method. Note that the new credentials must conform to the [auth mode of the integration](reference/configuration.md#integrationsYaml) or the call will fail and return an error. You can find examples of valid credentials for each auth mode under [registerConnection](#registerConnection) above.
+
+```ts
+public async updateConnectionCredentials(
+    integration: string,
+    userId: string,
+    credentials: NangoAuthCredentials
+): Promise<NangoMessageHandlerResult<undefined>>
+```
+
+An example call looks like this:
+```ts
+let credentials = {
+    api_key: 'My-new-api-key'
+};
+
+// Assuming 'example' is an integration with auth mode API_KEY
+// and user with id '1' has an existing Connection:
+nango.updateConnectionCredentials('example', '1', credentials)
+    .catch((error) => {
+        console.log(`There was a problem: ${error.errorMsg}`);
+    })
+    .then(() => {
+        console.log('Credentials updated successfully');
+    }) 
+```
+
+## getConnectionsForUserId method
+Use this method to retrieve all active Connections for a particular userId. Many applications use this for instance to render their Integrations page where a user can see which Integrations they have already setup or change the configuration of an Integration.
+
+```ts
+public async getConnectionsForUserId(userId: string):
+    Promise<NangoMessageHandlerResult<NangoConnectionPublic[]>>
+```
+
+If a user id does not have any Connections registered in Nango this method will return an empty array.
+
+```ts
+nango.getConnectionsForUserId('1')
+    .catch((error) => {
+        console.log(`There was a problem: ${error.errorMsg}`);
+    })
+    .then((connections) => {
+        console.log('The user with id "1" has the following connections setup:', connections);
+    }) 
+```
+
+The returned `NangoConnectionPublic` object looks like this:
+```js
+{
+    uuid: 'unique uuid of the Connection object',
+    integration: 'example',
+    userId: '1',
+    dateCreated: '2022-08-10 16:08:23',
+    lastModified: '2022-08-10 16:08:23',
+    additionalConfig: {} // Or whatever else you stored in additionalConfig
+}
+```
+
+## getConnectionsForIntegration method
+This method works the same way as the `getConnectionsForUserId` method above, but instead returns all Connections associated with a particular Integration. This can be helpful for admin backends where you want to show all users who have setup a particular Integration.
+
+```ts
+public async getConnectionsForIntegration(integration: string):
+    Promise<NangoMessageHandlerResult<NangoConnectionPublic[]>>
+```
+
+If a integration does not have any Connections registered in Nango this method will return an empty array.
+
+```ts
+nango.getConnectionsForIntegration('example')
+    .catch((error) => {
+        console.log(`There was a problem: ${error.errorMsg}`);
+    })
+    .then((connections) => {
+        console.log('The integration "example" has the following connections setup:', connections);
+    }) 
+```
+
+See the `getConnectionsForUserId` method above for the shape or the returned `NangoConnectionPublic` object.
+
 ## triggerAction method {#triggerAction}
 The `triggerAction` method tells the server to execute an action of an integration in the context of a user's connection.
 
@@ -164,7 +277,7 @@ public async triggerAction(
     triggerAction: string,
     userId: string,
     input: Record<string, unknown>
-): Promise<NangoMessageHandlerResult>
+): Promise<NangoMessageHandlerResult<any>>
 ```
 
 Let's look at each parameter:
@@ -206,10 +319,10 @@ All messages sent to the Nango server will return a `NangoMessageHandlerResult` 
 
 It's structure looks like this:
 ```ts
-interface NangoMessageHandlerResult {
+interface NangoMessageHandlerResult<T extends any> {
     success: boolean;
     errorMsg?: string;
-    returnValue?: any;
+    returnValue?: T;
 }
 ```
 

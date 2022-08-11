@@ -76,8 +76,8 @@ You should **always** use this builtin method to make HTTP requests inside of yo
 Because Nango will possibly queue and retry your HTTP request (e.g. if it detects a rate-limit issue or the access token needs to be refreshed) it may take a long time for your HTTP request to complete. In certain situations Nango may also transparently retry HTTP requests issues through this method and only resolve the promise once the request has succeeded. In this case it will always add appropriate log messages on the `info` log level.
 :::
 
-#### Authentication of the API call
-When you make an HTTP request through this method Nango will automatically add authentication to the request. How it does this is dictated by the [`call_auth -> mode` setting](reference/configuration.md#integrationsYaml) in the integration's config.
+#### Authorization of the API call
+When you make an HTTP request through this method Nango will automatically add the necessary authorization to the request. How it does this is dictated by the [`auth_mode` as well as the `requests` settings of the integration](reference/configuration.md#integrationsYaml). In the very rare case that you need to interact with this take a look at [guide on requests authorization](guides/auth.md#requestAuth) but 99% of times it should just work™️.
 
 #### Parameter reference
 | Parameter | Example value | Description |
@@ -89,7 +89,7 @@ When you make an HTTP request through this method Nango will automatically add a
 | headers | `{headerKey: 'headerValue'}` | Additional headers to be added to the HTTP requests. By default Nango will add an appropriate `Authorization` header if required. This parameter is optional.|
 
 #### Debugging HTTP calls
-Nango will automatically log details of every HTTP request sent and responses received if the [`log_level` of the action](reference/configuration.md#integrationsYaml) is set to `debug` or lower. To track 
+Nango will automatically log details of every HTTP request sent and responses received if the [`log_level` of the integration](reference/configuration.md#integrationsYaml) is set to `debug` or lower. To track 
 
 #### Timeouts
 Nango automatically sets a timeout on every HTTP request based on the timeout configuration you specify. If a request fails due to a timeout it's promise will be rejected. Please check the documentation on [`default_http_request_timeout_seconds` in `nango-config.yaml`](reference/configuration.md#nangoConfigYaml) as well the documentation on [`http_request_timeout_seconds` in the integration config](reference/configuration.md#integrationsYaml) for details on how to set the timeout.

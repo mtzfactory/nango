@@ -111,7 +111,7 @@ A typical OAuth 1.0a configuration looks like this:
             request_url: https://oauth.externalapi.com/request
             authorization_url: https://oauth.externalapi.com/authorize
             token_url: https://oauth.externalapi.com/token
-            signature_method: 'HMAC-SHA1' # 'HMAC-RSA' and 'PLAINTEXT' are also supported
+            signature_method: 'HMAC-SHA1' # 'RSA-SHA1' and 'PLAINTEXT' are also supported
 
             authorization_params:
                 additional_params: which are added to the authorization URL above
@@ -149,7 +149,7 @@ Basic auth is still in use for some APIs, sometimes also in the form of an api k
 To set the Integration up for a user you need to manually ask them in your frontend for the username and password (sometimes also called an api key and api secret). Once you have these you can use the Nango client SDK to register a new Connection with Nango and pass them as credentials for this user. The SDK reference of the [registerConnection method](reference/SDKs/node.md#registerConnection) has good examples of how to do this.
 
 
-## Authorizing requests
+## Authorizing requests {#requestAuth}
 
 :::info
 If you are using one of the many [Blueprints](blueprint-catalog/blueprint-overview.md) provided by Nango you most likely do not need this part. It is already handled for you in the Blueprint.
@@ -220,7 +220,7 @@ For most OAuth 2.0 APIs the requests authorization is done with an `Authorizatio
                 Authorization: Bearer ${access_token}
 ```
 
-### Authorizing requests with OAuth 1.0a credentials
+### Authorizing requests with OAuth 1.0a credentials {#oauth1requests}
 
 #### Standard OAuth 1.0a request signing
 The OAuth 1.0a spec requires every API request and its parameters to be signed. Luckily Nango handles this complexity automatically for you and adds the appropriate Authorization header to every request if the `auth_mode` is set to OAuth 1.
@@ -280,6 +280,7 @@ Note that this is different from the Integration wide `app_api_key` mentioned ab
             params:
                 api_key: ${app_api_key} # As an example
 ```
+
 ### Authorizing requests with Basic Auth (Username & Password) credentials
 If your api uses basic auth to authorize requests you would use the username & password auth mode. This gives you access to the following placeholders:
 
