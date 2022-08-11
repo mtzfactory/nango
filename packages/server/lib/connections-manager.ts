@@ -124,11 +124,53 @@ export class ConnectionsManager {
             uuid: rawConnection.uuid,
             integration: rawConnection.integration,
             userId: rawConnection.user_id,
+            dateCreated: rawConnection.dateCreated,
+            lastModified: rawConnection.lastModified,
             credentials: this.parseCredentials(rawConnection.credentials),
             additionalConfig: JSON.parse(rawConnection.additional_config)
         } as NangoConnection;
 
         return connectionObject;
+    }
+
+    public getConnectionsForUserId(userId: string): NangoConnection[] {
+        const rawConnections = this.db.prepare('SELECT * FROM nango_connections WHERE user_id = ?').all(userId);
+
+        let connections: NangoConnection[] = [];
+        for (const rawConnection of rawConnections) {
+            const connectionObject = {
+                uuid: rawConnection.uuid,
+                integration: rawConnection.integration,
+                userId: rawConnection.user_id,
+                dateCreated: rawConnection.datecreated,
+                lastModified: rawConnection.lastmodified,
+                credentials: this.parseCredentials(rawConnection.credentials),
+                additionalConfig: JSON.parse(rawConnection.additional_config)
+            } as NangoConnection;
+            connections.push(connectionObject);
+        }
+
+        return connections;
+    }
+
+    public getConnectionsForIntegration(integration: string): NangoConnection[] {
+        const rawConnections = this.db.prepare('SELECT * FROM nango_connections WHERE integration = ?').all(integration);
+
+        let connections: NangoConnection[] = [];
+        for (const rawConnection of rawConnections) {
+            const connectionObject = {
+                uuid: rawConnection.uuid,
+                integration: rawConnection.integration,
+                userId: rawConnection.user_id,
+                dateCreated: rawConnection.datecreated,
+                lastModified: rawConnection.lastmodified,
+                credentials: this.parseCredentials(rawConnection.credentials),
+                additionalConfig: JSON.parse(rawConnection.additional_config)
+            } as NangoConnection;
+            connections.push(connectionObject);
+        }
+
+        return connections;
     }
 
     // Parses and arbitrary object (e.g. a server response or a user provided auth object) into NangoAuthCredentials.

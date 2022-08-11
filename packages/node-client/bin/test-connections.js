@@ -3,6 +3,10 @@ import Nango from '../dist/nango.js';
 const nango = new Nango();
 await nango.connect();
 
+//////////////////
+// Registering & updating connections
+//////////////////
+
 // Attempt to register a connection with bad credentials
 nango
     .registerConnection('slack', '10001', { api_key: 'zzzzzzzzz' }, { channel: 'Zhxsk' })
@@ -61,4 +65,35 @@ nango
     })
     .then(() => {
         console.log('updateConnectionConfig connection succeeded');
+    });
+
+//////////////////
+// Retrieving connections
+//////////////////
+
+nango
+    .getConnectionsForIntegration('slack')
+    .catch((e) => {
+        console.log('Uh oh, got error on getConnectionsForIntegration: ', e);
+    })
+    .then((connections) => {
+        console.log('Got the connections for "slack":', connections);
+    });
+
+nango
+    .getConnectionsForUserId('1')
+    .catch((e) => {
+        console.log('Uh oh, got error on getConnectionsForUserId("1"): ', e);
+    })
+    .then((connections) => {
+        console.log('Got the connections for user id "1":', connections);
+    });
+
+nango
+    .getConnectionsForUserId('10001')
+    .catch((e) => {
+        console.log('Uh oh, got error on getConnectionsForUserId("10001"): ', e);
+    })
+    .then((connections) => {
+        console.log('Got the connections for user id "10001":', connections);
     });

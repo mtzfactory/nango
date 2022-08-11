@@ -9,7 +9,9 @@ import {
     NangoRegisterConnectionMessage,
     NangoTriggerActionMessage,
     NangoUpdateConnectionCredentialsMessage,
-    NangoUpdateConnectionConfigMessage
+    NangoUpdateConnectionConfigMessage,
+    NangoGetIntegrationConnectionsMessage,
+    NangoGetUserIdConnectionsMessage
 } from '@nangohq/core';
 import * as core from '@nangohq/core';
 import * as logging from './logging.js';
@@ -19,7 +21,15 @@ import { connect, ConsumeMessage, Channel, Connection } from 'amqplib';
 import type winston from 'winston';
 import { ConnectionsManager } from './connections-manager.js';
 import { IntegrationsManager } from './integrations-manager.js';
-import { handleRegisterConnection, handleTriggerAction, handleUpdateConnectionCredentials, handleUpdateConnectionConfig } from './message-handlers.js';
+import {
+    createError,
+    handleRegisterConnection,
+    handleTriggerAction,
+    handleUpdateConnectionCredentials,
+    handleUpdateConnectionConfig,
+    handleGetIntegrationConnections,
+    handleGetUserIdConnections
+} from './message-handlers.js';
 import { startOAuthServer } from './oauth/oauth-server.js';
 
 /** -------------------- Server Internal Properties -------------------- */
@@ -44,7 +54,7 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
 
     logger.debug(`Server received message:\n${msg.content.toString()}`);
 
-    let result: NangoMessageHandlerResult;
+    let result: NangoMessageHandlerResult<any>;
     switch (nangoMessage.action) {
         case NangoMessageAction.REGISTER_CONNECTION:
             const registerMessage = nangoMessage as NangoRegisterConnectionMessage;
@@ -58,6 +68,16 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
             const updateConfigMessage = nangoMessage as NangoUpdateConnectionConfigMessage;
             result = handleUpdateConnectionConfig(updateConfigMessage);
             break;
+
+        case NangoMessageAction.GET_INTEGRATION_CONNECTIONS:
+            const getIntegrationConnectionsMessage = nangoMessage as NangoGetIntegrationConnectionsMessage;
+            result = handleGetIntegrationConnections(getIntegrationConnectionsMessage);
+            break;
+        case NangoMessageAction.GET_USER_ID_CONNECTIONS:
+            const getUserIdConnectionsMessage = nangoMessage as NangoGetUserIdConnectionsMessage;
+            result = handleGetUserIdConnections(getUserIdConnectionsMessage);
+            break;
+
         case NangoMessageAction.TRIGGER_ACTION:
             const triggerMessage = nangoMessage as NangoTriggerActionMessage;
             result = await handleTriggerAction(triggerMessage);
@@ -66,7 +86,10 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
             }
             break;
         default:
-            throw new Error(`Received inbound server message with unknown action: ${nangoMessage.action}`);
+            // Unrecognized message, return an error
+            logger.error(`Server received inbound server message with unknown action: ${nangoMessage.action}`);
+            result = createError(`Received inbound server message with unknown action: ${nangoMessage.action}`);
+            break;
     }
 
     rabbitChannel?.sendToQueue(msg.properties.replyTo, Buffer.from(JSON.stringify(result), 'utf8'), {

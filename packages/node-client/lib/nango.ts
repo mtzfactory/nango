@@ -11,7 +11,10 @@ import {
     NangoMessage,
     NangoAuthCredentials,
     NangoUpdateConnectionCredentialsMessage,
-    NangoUpdateConnectionConfigMessage
+    NangoUpdateConnectionConfigMessage,
+    NangoConnectionPublic,
+    NangoGetUserIdConnectionsMessage,
+    NangoGetIntegrationConnectionsMessage
 } from '@nangohq/core';
 import * as core from '@nangohq/core';
 
@@ -42,7 +45,7 @@ export default class Nango {
         userId: string,
         credentials: NangoAuthCredentials,
         additionalConfig?: Record<string, unknown>
-    ): Promise<NangoMessageHandlerResult> {
+    ): Promise<NangoMessageHandlerResult<undefined>> {
         const msg = {
             integration: integration,
             userId: userId,
@@ -54,7 +57,11 @@ export default class Nango {
         return this.sendMessageToServer(msg);
     }
 
-    public async updateConnectionCredentials(integration: string, userId: string, credentials: NangoAuthCredentials): Promise<NangoMessageHandlerResult> {
+    public async updateConnectionCredentials(
+        integration: string,
+        userId: string,
+        credentials: NangoAuthCredentials
+    ): Promise<NangoMessageHandlerResult<undefined>> {
         const msg = {
             integration: integration,
             userId: userId,
@@ -65,7 +72,11 @@ export default class Nango {
         return this.sendMessageToServer(msg);
     }
 
-    public async updateConnectionConfig(integration: string, userId: string, additionalConfig: Record<string, unknown>): Promise<NangoMessageHandlerResult> {
+    public async updateConnectionConfig(
+        integration: string,
+        userId: string,
+        additionalConfig: Record<string, unknown>
+    ): Promise<NangoMessageHandlerResult<undefined>> {
         const msg = {
             integration: integration,
             userId: userId,
@@ -76,7 +87,30 @@ export default class Nango {
         return this.sendMessageToServer(msg);
     }
 
-    public async triggerAction(integration: string, triggerAction: string, userId: string, input: Record<string, unknown>): Promise<NangoMessageHandlerResult> {
+    public async getConnectionsForUserId(userId: string): Promise<NangoMessageHandlerResult<NangoConnectionPublic[]>> {
+        const msg = {
+            userId: userId,
+            action: NangoMessageAction.GET_USER_ID_CONNECTIONS
+        } as NangoGetUserIdConnectionsMessage;
+
+        return this.sendMessageToServer(msg);
+    }
+
+    public async getConnectionsForIntegration(integration: string): Promise<NangoMessageHandlerResult<NangoConnectionPublic[]>> {
+        const msg = {
+            integration: integration,
+            action: NangoMessageAction.GET_INTEGRATION_CONNECTIONS
+        } as NangoGetIntegrationConnectionsMessage;
+
+        return this.sendMessageToServer(msg);
+    }
+
+    public async triggerAction(
+        integration: string,
+        triggerAction: string,
+        userId: string,
+        input: Record<string, unknown>
+    ): Promise<NangoMessageHandlerResult<any>> {
         const msg = {
             integration: integration,
             triggeredAction: triggerAction,
@@ -103,7 +137,7 @@ export default class Nango {
                 }
 
                 if (msg.properties.correlationId in this.correlationIdToPromise) {
-                    const nangoMsg = JSON.parse(msg.content.toString()) as NangoMessageHandlerResult;
+                    const nangoMsg = JSON.parse(msg.content.toString()) as NangoMessageHandlerResult<any>;
                     const resolveRejectObj = this.correlationIdToPromise[msg.properties.correlationId];
                     delete this.correlationIdToPromise[msg.properties.correlationId];
 
@@ -120,10 +154,10 @@ export default class Nango {
         );
     }
 
-    private async sendMessageToServer(nangoMsg: NangoMessage): Promise<NangoMessageHandlerResult> {
+    private async sendMessageToServer(nangoMsg: NangoMessage): Promise<NangoMessageHandlerResult<any>> {
         let correlationId: string = core.makeId(8);
 
-        let promise = new Promise<NangoMessageHandlerResult>((resolve, reject) => {
+        let promise = new Promise<NangoMessageHandlerResult<any>>((resolve, reject) => {
             this.correlationIdToPromise[correlationId] = { resolve: resolve, reject: reject };
 
             this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(nangoMsg), 'utf8'), {

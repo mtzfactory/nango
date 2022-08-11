@@ -173,6 +173,10 @@ export enum NangoMessageAction {
     REGISTER_CONNECTION = 'REGISTER_CONNECTION',
     UPDATE_CONNECTION_CREDENTIALS = 'UPDATE_CONNECTION_CREDENTIALS',
     UPDATE_CONNECTION_CONFIG = 'UPDATE_CONNECTION_CONFIG',
+
+    GET_INTEGRATION_CONNECTIONS = 'GET_INTEGRATION_CONNECTIONS',
+    GET_USER_ID_CONNECTIONS = 'GET_USER_ID_CONNECTIONS',
+
     TRIGGER_ACTION = 'TRIGGER_ACTION'
 }
 
@@ -180,14 +184,13 @@ export interface NangoMessage {
     action: NangoMessageAction;
 }
 
-export interface NangoTriggerActionMessage extends NangoMessage {
-    action: NangoMessageAction.TRIGGER_ACTION;
-    integration: string;
-    triggeredAction: string;
-    userId: string;
-    input: object;
+export interface NangoMessageHandlerResult<T extends any> {
+    success: boolean;
+    errorMsg?: string;
+    returnValue?: T;
 }
 
+// Connection related
 export interface NangoRegisterConnectionMessage extends NangoMessage {
     action: NangoMessageAction.REGISTER_CONNECTION;
     integration: string;
@@ -210,10 +213,22 @@ export interface NangoUpdateConnectionConfigMessage extends NangoMessage {
     additionalConfig: Record<string, unknown>;
 }
 
-export interface NangoMessageHandlerResult {
-    success: boolean;
-    errorMsg?: string;
-    returnValue?: any;
+// Get Connection messages
+export interface NangoGetIntegrationConnectionsMessage extends NangoMessage {
+    integration: string;
+}
+
+export interface NangoGetUserIdConnectionsMessage extends NangoMessage {
+    userId: string;
+}
+
+// Action related
+export interface NangoTriggerActionMessage extends NangoMessage {
+    action: NangoMessageAction.TRIGGER_ACTION;
+    integration: string;
+    triggeredAction: string;
+    userId: string;
+    input: object;
 }
 
 //////////////////////
@@ -245,17 +260,25 @@ export interface OAuthSession {
 }
 
 //////////////////////
-// Varia
+// Connection
 //////////////////////
 
-export interface NangoConnection {
+export interface NangoConnectionPublic {
     uuid: string;
     integration: string;
     userId: string;
-    authMode: NangoIntegrationAuthModes;
-    credentials: NangoAuthCredentials;
+    dateCreated: Date;
+    lastModified: Date;
     additionalConfig: Record<string, unknown> | undefined;
 }
+
+export interface NangoConnection extends NangoConnectionPublic {
+    credentials: NangoAuthCredentials;
+}
+
+//////////////////////
+// Varia
+//////////////////////
 
 export interface HttpHeader {
     [key: string]: string;

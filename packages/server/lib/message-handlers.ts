@@ -7,28 +7,31 @@ import type {
     NangoRegisterConnectionMessage,
     NangoUpdateConnectionConfigMessage,
     NangoUpdateConnectionCredentialsMessage,
-    NangoTriggerActionMessage
+    NangoTriggerActionMessage,
+    NangoGetUserIdConnectionsMessage,
+    NangoConnectionPublic,
+    NangoGetIntegrationConnectionsMessage
 } from '@nangohq/core';
 import { ConnectionsManager } from './connections-manager.js';
 import { IntegrationsManager } from './integrations-manager.js';
 import * as logging from './logging.js';
 import * as core from '@nangohq/core';
 
-function createError(errorMsg: string): NangoMessageHandlerResult {
+export function createError(errorMsg: string): NangoMessageHandlerResult<any> {
     return {
         success: false,
         errorMsg: errorMsg
-    } as NangoMessageHandlerResult;
+    } as NangoMessageHandlerResult<any>;
 }
 
-function createSuccess(result?: any): NangoMessageHandlerResult {
+function createSuccess<T>(result?: T): NangoMessageHandlerResult<T> {
     return {
         success: true,
         returnValue: result
-    } as NangoMessageHandlerResult;
+    } as NangoMessageHandlerResult<T>;
 }
 
-export function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage): NangoMessageHandlerResult {
+export function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessage): NangoMessageHandlerResult<undefined> {
     // Check if the connection already exists
     const connection = ConnectionsManager.getInstance().getConnection(nangoMsg.userId, nangoMsg.integration);
     if (connection !== undefined) {
@@ -38,6 +41,15 @@ export function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessag
     const integrationConfig = IntegrationsManager.getInstance().getIntegrationConfig(nangoMsg.integration);
     if (!integrationConfig) {
         return createError(`Attempt to register a connection for a non-existing integration: "${nangoMsg.integration}"`);
+    }
+
+    // Check if the new config if JSON serializable
+    try {
+        JSON.stringify(nangoMsg.additionalConfig);
+    } catch {
+        return createError(
+            `additionalConfig is not JSON serializable, please provide a serializable config. (integration "${nangoMsg.integration}", user_id "${nangoMsg.userId})"`
+        );
     }
 
     // Connections manager will raise an exception if the credentials passed in are not conformant to what we expect for this integration
@@ -60,11 +72,20 @@ export function handleRegisterConnection(nangoMsg: NangoRegisterConnectionMessag
     return createSuccess();
 }
 
-export function handleUpdateConnectionConfig(nangoMsg: NangoUpdateConnectionConfigMessage): NangoMessageHandlerResult {
+export function handleUpdateConnectionConfig(nangoMsg: NangoUpdateConnectionConfigMessage): NangoMessageHandlerResult<undefined> {
     // Check if the connection exists
     const connection = ConnectionsManager.getInstance().getConnection(nangoMsg.userId, nangoMsg.integration);
     if (!connection) {
         return createError(`Attempt to update a non-existing connection (integration "${nangoMsg.integration}", user_id "${nangoMsg.userId})"`);
+    }
+
+    // Check if the new config if JSON serializable
+    try {
+        JSON.stringify(nangoMsg.additionalConfig);
+    } catch {
+        return createError(
+            `New additionalConfig is not JSON serializable, please provide a serializable config. (integration "${nangoMsg.integration}", user_id "${nangoMsg.userId})"`
+        );
     }
 
     ConnectionsManager.getInstance().updateConnectionConfig(nangoMsg.userId, nangoMsg.integration, nangoMsg.additionalConfig);
@@ -72,7 +93,7 @@ export function handleUpdateConnectionConfig(nangoMsg: NangoUpdateConnectionConf
     return createSuccess();
 }
 
-export function handleUpdateConnectionCredentials(nangoMsg: NangoUpdateConnectionCredentialsMessage): NangoMessageHandlerResult {
+export function handleUpdateConnectionCredentials(nangoMsg: NangoUpdateConnectionCredentialsMessage): NangoMessageHandlerResult<undefined> {
     // Check if the connection exists
     const connection = ConnectionsManager.getInstance().getConnection(nangoMsg.userId, nangoMsg.integration);
     if (!connection) {
@@ -103,7 +124,59 @@ export function handleUpdateConnectionCredentials(nangoMsg: NangoUpdateConnectio
     return createSuccess();
 }
 
-export async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage): Promise<NangoMessageHandlerResult> {
+export function handleGetUserIdConnections(nangoMsg: NangoGetUserIdConnectionsMessage): NangoMessageHandlerResult<NangoConnectionPublic[]> {
+    // Get the connections
+    let connections;
+    try {
+        connections = ConnectionsManager.getInstance().getConnectionsForUserId(nangoMsg.userId);
+    } catch (e) {
+        return createError(`There was a problem retrieving the connections for user with Id "${nangoMsg.userId}": ${(e as Error).message}`);
+    }
+
+    // For security reasons publicly returned connections do not have the credentials included
+    let finalConnections: NangoConnectionPublic[] = [];
+    for (const connection of connections) {
+        const publicConnection = {
+            uuid: connection.uuid,
+            userId: connection.userId,
+            integration: connection.integration,
+            dateCreated: connection.dateCreated,
+            lastModified: connection.lastModified,
+            additionalConfig: connection.additionalConfig
+        } as NangoConnectionPublic;
+        finalConnections.push(publicConnection);
+    }
+
+    return createSuccess(finalConnections);
+}
+
+export function handleGetIntegrationConnections(nangoMsg: NangoGetIntegrationConnectionsMessage): NangoMessageHandlerResult<NangoConnectionPublic[]> {
+    // Get the connections
+    let connections;
+    try {
+        connections = ConnectionsManager.getInstance().getConnectionsForIntegration(nangoMsg.integration);
+    } catch (e) {
+        return createError(`There was a problem retrieving the connections for integration "${nangoMsg.integration}": ${(e as Error).message}`);
+    }
+
+    // For security reasons publicly returned connections do not have the credentials included
+    let finalConnections: NangoConnectionPublic[] = [];
+    for (const connection of connections) {
+        const publicConnection = {
+            uuid: connection.uuid,
+            userId: connection.userId,
+            integration: connection.integration,
+            dateCreated: connection.dateCreated,
+            lastModified: connection.lastModified,
+            additionalConfig: connection.additionalConfig
+        } as NangoConnectionPublic;
+        finalConnections.push(publicConnection);
+    }
+
+    return createSuccess(finalConnections);
+}
+
+export async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage): Promise<NangoMessageHandlerResult<any>> {
     const integrationsManager = IntegrationsManager.getInstance();
 
     // Check if the integration exists
