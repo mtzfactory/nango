@@ -368,7 +368,7 @@ export function startOAuthServer() {
 
     app.listen(port);
 
-    logger.debug(`OAuth server started, listening on port ${port}. OAuth callback URL: ${oAuthCallbackUrl}`);
+    logger.info(`OAuth server started, listening on port ${port}. OAuth callback URL: ${oAuthCallbackUrl}`);
 }
 
 // Yes including a full HTML template here in a string goes against many best practices.

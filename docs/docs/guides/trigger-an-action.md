@@ -13,7 +13,7 @@ import TabItem from '@theme/TabItem';
 Let's assume you have a `myintegration` Integration and a `myaction` Action already configured (cf. [Create an Integration](guides/create-an-integration.md) and [Create an Action](guides/create-an-action)).
 
 To trigger an Action from your main application, you need to install the Nango SDK. In your app's directory, run:
-<Tabs>
+<Tabs groupId="programming-language">
 <TabItem value="node" label="Node" default>
 
 ```bash
@@ -21,13 +21,13 @@ To trigger an Action from your main application, you need to install the Nango S
 ```
 
 </TabItem>
-<TabItem value="other" label="Other Languages" default>
+<TabItem value="other" label="Other Languages">
     Coming soon!
 </TabItem>
 </Tabs>
 
 In the file where you want to trigger the Action:
-<Tabs>
+<Tabs groupId="programming-language">
 <TabItem value="node" label="Node" default>
 
 ```typescript
@@ -44,7 +44,7 @@ nango.close();
 ```
 
 </TabItem>
-<TabItem value="other" label="Other Languages" default>
+<TabItem value="other" label="Other Languages">
     Coming soon!
 </TabItem>
 </Tabs>

@@ -1,6 +1,6 @@
 ---
 sidebar_label: Best Practices
-sidebar_position: 5
+sidebar_position: 7
 ---
 
 # Best Practices

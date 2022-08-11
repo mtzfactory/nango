@@ -1,6 +1,6 @@
 ---
 sidebar_label: Logging
-sidebar_position: 4
+sidebar_position: 6
 ---
 
 # Logging in Nango

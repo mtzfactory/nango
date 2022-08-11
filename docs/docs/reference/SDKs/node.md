@@ -2,6 +2,8 @@
 sidebar_label: 'SDK: Node'
 sidebar_position: 1
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # SDK: Node
 
@@ -10,8 +12,6 @@ This is the reference for the Nango node.js client SDK, which we call node-clien
 Other client SDKs are planned, but currently the node.js client is the only officially supported client of Nango.
 
 It is written in TypeScript and includes types in its npm package for direct use in a TypeScript project. Of course you can also use it in any JavaScript based project that supports ES6. Our node-client supports both ES modules based imports and commonJS type requires.
-
-You can find a full example of using the node-client in our quickstart example here: [`run-quickstart.js` source code](https://github.com/NangoHQ/nango/blob/main/examples/quickstart/run-quickstart.js)
 
 If you want to go even deeper, the [full source code of node-client](https://github.com/NangoHQ/nango/tree/main/packages/node-client) is available in our GitHub repo (check the `lib` folder for the source files).
 
@@ -59,7 +59,7 @@ The registerConnection method takes a number of parameters:
 public async registerConnection(
         integration: string,
         userId: string,
-        oAuthAccessToken: string,
+        credentials: NangoAuthCredentials,
         additionalConfig: Record<string, unknown>
 ): Promise<NangoMessageHandlerResult>
 ```
@@ -67,12 +67,22 @@ public async registerConnection(
 Let's briefly look at each one:
 - `integration` is the name of the integration for which you are registering the connection. This must match 1:1 with the name of the integration in the `integrations.yaml` file
 - `userId` is the id of the user in your application that is setting the connection up. This could be any id, what you use is up to you and your application's use case (e.g. some integrations may be per account, so you could also send an account id instead).
-- `oAuthAccessToken` is the access token associated with this user that will be used by Nango to authenticate API calls
+- `credentials` is the credentials object that will be used by Nango to authenticate API calls for this user with this integration (see examples below).
 - `additionalConfig` is an optional parameter you can use to store additional information along with this connection. This information will be available to you again in your action code. You can use it to store user-specific configuration of your integration such as e.g. a Slack channel id to post messages to, a mapping of a user's custom fields to your data model or similar configurations. Note that the object you pass in here **must be JSON serializable**.
 
-When called `registerConnection` will return a promise which resolves if the operation succeeded and gets rejected if it did not.
+When called `registerConnection` will return a promise which resolves if the operation succeeded and gets rejected if it did not. Here is how to call it depending on the [auth mode of the Integration](reference/configuration.md#integrationsYaml):
+<Tabs>
+<TabItem value="oauth2" label="OAuth 2" default>
+
 ```ts
-nango.registerConnection('slack', 1, 'xoxb-XXXXXXXXXXXXXXXX', { channelId: 'XXXXXXX' })
+let credentials = {
+    access_token: 'XXXXXXXXXX',
+    // Optional but needed if the access token should be refreshed
+    refresh_token: 'RefreshTokenXXXXXXX',
+    expires_at: new Date(2022, 09, 01, 23, 59, 59)
+};
+
+nango.registerConnection('slack', '1', credentials, { config: 'ZZZZZZZ' })
 .then((result) => {
     // register succeeded!
 })
@@ -80,6 +90,63 @@ nango.registerConnection('slack', 1, 'xoxb-XXXXXXXXXXXXXXXX', { channelId: 'XXXX
     // There was a problem whilst registering the connection
 });
 ```
+</TabItem>
+
+<TabItem value="oauth1" label="OAuth 1.0a" default>
+
+```ts
+let credentials = {
+    oauth_token: 'XXXXXXXXXX',
+    oauth_token_secret: 'YYYYYYYYYYYYY'
+};
+
+nango.registerConnection('twitter', '1', credentials, { config: 'ZZZZZZZ' })
+.then((result) => {
+    // register succeeded!
+})
+.catch((error) => {
+    // There was a problem whilst registering the connection
+});
+```
+</TabItem>
+
+<TabItem value="apikey" label="API Key" default>
+
+```ts
+let credentials = {
+    api_key: 'XXXXXXXXXX'
+};
+
+nango.registerConnection('example', '1', credentials, { config: 'ZZZZZZZ' })
+.then((result) => {
+    // register succeeded!
+})
+.catch((error) => {
+    // There was a problem whilst registering the connection
+});
+```
+</TabItem>
+
+<TabItem value="usernamepw" label="Username & Password" default>
+
+```ts
+// Can also be used for api_key & api_secret
+let credentials = {
+    username: 'XXXXXXXXXX',
+    password: 'YYYYYYYY'
+};
+
+nango.registerConnection('example', '1', credentials, { config: 'ZZZZZZZ' })
+.then((result) => {
+    // register succeeded!
+})
+.catch((error) => {
+    // There was a problem whilst registering the connection
+});
+```
+</TabItem>
+
+</Tabs>
 
 The result and error variable in the example above are a [`NangoMessageHandlerResult` object](#nangoMessageHandlerResult).
 
