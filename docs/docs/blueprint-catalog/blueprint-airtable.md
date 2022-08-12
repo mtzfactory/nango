@@ -41,5 +41,5 @@ _These are community contributed field notes about working with this API. We hop
 - Users can generate & view their api key on their [account](https://airtable.com/account) page.
 
 :::info Share your experience
-Learned something about working with the Airtable API that you want to share with other developers? [Add it to this page](https://Airtable.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-airtable.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Airtable API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-airtable.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::

@@ -52,5 +52,5 @@ _These are community contributed field notes about working with this API. We hop
 ```
 
 :::info Share your experience
-Learned something about working with the Discord API that you want to share with other developers? [Add it to this page](https://Discord.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-discord.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Discord API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-discord.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::

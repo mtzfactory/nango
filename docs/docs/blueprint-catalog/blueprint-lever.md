@@ -45,5 +45,5 @@ _These are community contributed field notes about working with this API. We hop
 - This is a list of [all possible scopes](https://hire.lever.co/developer/documentation#scopes) you can request.
 
 :::info Share your experience
-Learned something about working with the Lever API that you want to share with other developers? [Add it to this page](https://Lever.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-lever.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Lever API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-lever.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::

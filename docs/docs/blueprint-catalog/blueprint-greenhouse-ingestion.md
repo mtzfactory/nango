@@ -56,5 +56,5 @@ _These are community contributed field notes about working with this API. We hop
 - The Ingestion API also supports Basic auth, but the process seems very user unfriendly and cumbersome (to us at least). We think OAuth is best for users (and you) whenever available, but if you want to use the Basic Auth version feel free to create your own integration configuration fot it by following our [auth guide](guides/auth.md). Nango fully supports that as well.
 
 :::info Share your experience
-Learned something about working with the Greenhouse Ingestion API that you want to share with other developers? [Add it to this page](https://Greenhouse.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-greenhouse-ingestion.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Greenhouse Ingestion API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-greenhouse-ingestion.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::

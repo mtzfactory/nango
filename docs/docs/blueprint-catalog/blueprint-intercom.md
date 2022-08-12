@@ -45,5 +45,5 @@ _These are community contributed field notes about working with this API. We hop
 - Signing up for a developer account is easy. But to make your app public, so any Intercom customer can install it, you need to [submit it for review](https://developers.intercom.com/building-apps/docs/review-publish-your-app#section-submit-your-app-for-review). Once submitted you can also apply to have your app listed in the Intercom marketplace. Both are manual review processes so be sure to start them early and plan extra time!
 
 :::info Share your experience
-Learned something about working with the Intercom API that you want to share with other developers? [Add it to this page](https://Intercom.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-intercom.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Intercom API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-intercom.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::

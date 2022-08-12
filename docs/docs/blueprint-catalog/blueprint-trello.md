@@ -55,5 +55,5 @@ _These are community contributed field notes about working with this API. We hop
 - There is no review process to make an app public, once you have an API key anybody can immediately install the application.
 
 :::info Share your experience
-Learned something about working with the Trello API that you want to share with other developers? [Add it to this page](https://Trello.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-trello.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Trello API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-trello.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::

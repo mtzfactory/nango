@@ -52,5 +52,5 @@ _These are community contributed field notes about working with this API. We hop
 ```
 
 :::info Share your experience
-Learned something about working with the Twitter API that you want to share with other developers? [Add it to this page](https://Twitter.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-twitter.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Twitter API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-twitter.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::

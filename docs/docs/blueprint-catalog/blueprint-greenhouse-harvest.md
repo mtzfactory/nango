@@ -54,5 +54,5 @@ _These are community contributed field notes about working with this API. We hop
 - The process for the user to obtain their harvest api key is unfortunately rather cumbersome. If you Google around you can find a lot of help pages of other tools though that have written a step-by-step guide on how to get it
 
 :::info Share your experience
-Learned something about working with the Greenhouse Harvest API that you want to share with other developers? [Add it to this page](https://Greenhouse.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-greenhouse-harvest.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Greenhouse Harvest API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-greenhouse-harvest.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::

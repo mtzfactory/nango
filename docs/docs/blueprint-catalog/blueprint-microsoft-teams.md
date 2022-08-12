@@ -44,5 +44,5 @@ _These are community contributed field notes about working with this API. We hop
 - Nothing noteworthy yet, add your experience!
 
 :::info Share your experience
-Learned something about working with the MS Teams API that you want to share with other developers? [Add it to this page](https://MS Teams.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-microsoft-teams.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the MS Teams API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-microsoft-teams.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::

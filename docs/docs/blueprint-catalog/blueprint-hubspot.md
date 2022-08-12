@@ -42,7 +42,7 @@ _These are community contributed field notes about working with this API. We hop
 - Signing up for a developer account is easy. You can distribute your application immediately, but to get rid of a big red warning that is shown to users on the authorize step you must verify with Hubspot. If you want to [list your app in the marketplace](https://developers.hubspot.com/docs/api/listing-your-app) there is a review process and many requirements on your app, be sure to start this process early!
 
 :::info Share your experience
-Learned something about working with the Hubspot API that you want to share with other developers? [Add it to this page](https://Hubspot.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-hubspot.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Hubspot API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-hubspot.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::
 
 

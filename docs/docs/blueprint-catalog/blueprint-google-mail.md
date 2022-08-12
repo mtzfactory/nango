@@ -44,5 +44,5 @@ _These are community contributed field notes about working with this API. We hop
 - The OAuth flow for Google Mail and all other Google workspace products is the same, hence scopes can be interchanged between these.
 
 :::info Share your experience
-Learned something about working with the Google Mail API that you want to share with other developers? [Add it to this page](https://Google Mail.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-Google Mail.md) (it is just a markdown file) and send us a pull request. Thanks so much!
+Learned something about working with the Google Mail API that you want to share with other developers? [Add it to this page](https://github.com/NangoHQ/nango/edit/main/docs/docs/blueprint-catalog/blueprint-Google Mail.md) (it is just a markdown file) and send us a pull request. Thanks so much!
 :::
