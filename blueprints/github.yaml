@@ -3,13 +3,12 @@ maintainer: Nango <blueprints@nango.dev>
 docs_url: https://docs.github.com/en/developers
 versions:
     v0:
-        comment: 'Implements '
+        comment: 'Implements Github OAuth 2.0 & the Github REST API'
         auth:
             auth_mode: OAUTH2
             authorization_url: https://github.com/login/oauth/authorize
             token_url: https://github.com/login/oauth/access_token
-            auth:
-                access_type: offline
+
         requests:
             base_url: https://api.github.com/
             headers:
