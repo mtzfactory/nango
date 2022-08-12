@@ -1,13 +1,13 @@
 {
     "name": "@nangohq/nango-integrations",
-    "version": "0.1.17",
+    "version": "0.2.0",
     "description": "Package hosting Nango's integration blueprints.",
     "private": true,
     "type": "module",
     "keywords": [],
     "license": "SEE LICENSE IN LICENSE.md",
     "dependencies": {
-        "@nangohq/action": "^0.1.14"
+        "@nangohq/action": "^0.2.0"
     },
     "devDependencies": {
         "typescript": "^4.7.4"

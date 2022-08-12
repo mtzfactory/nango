@@ -1,6 +1,6 @@
 {
     "name": "nango",
-    "version": "0.1.17",
+    "version": "0.2.0",
     "description": "Nango's CLI tool.",
     "type": "module",
     "main": "dist/index.js",
