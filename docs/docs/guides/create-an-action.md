@@ -50,7 +50,7 @@ Typically the input is a small object which tells the Action what should be post
 - For CRM contacts import, additional filters to apply
 - For CRM contacts updating, the field to update, the new value and the contact's external ID in the CRM
 
-Note that because an action always gets triggered in the context of a specific user's Connection you do not have to pass in the user-id, auth token or similar per-user configuration. Instead you should load these from the [Connection object](http://localhost:3000/reference/actions#thisgetcurrentconnectionconfig) if needed.
+Note that because an action always gets triggered in the context of a specific user's Connection you do not have to pass in the user-id, auth token or similar per-user configuration. Nango already has all the credentials it needs to add authorization details to your request.
 
 To make writing your business logic easier Nango provides you with some helpers that you can (and should) use in your Action (check the [NangoAction reference](reference/actions.md) for all available methods):
 - For HTTP requests, use the built-in `this.httpRequest` method (cf. [reference](reference/actions.md#httpRequest)), which takes care of auth parameters, retries,  etc.
@@ -69,6 +69,9 @@ this.logger.info(`API request has completed with status ${response.status}`);
 
 return { status: response.status, statusText: response.statusText };
 ```
+
+Note that the returned data here is just an example: You can return any data you want as long as it is JSON serializable and Nango will return it in the `triggerAction` call in your application. You can find more details on input & return values from actions in the [NangoAction reference](reference/actions.md#inputReturnValues).
+
 
 ## Next steps
 

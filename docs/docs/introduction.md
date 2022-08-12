@@ -31,3 +31,18 @@ Nango comes with bullet-proof infrastructure focused on native integrations:
 ## What is a native integration?
 
 Native integrations designate the features in your product, for the benefit of your users, that are reliant on external services that your users also use. Native integrations are sometimes called "embedded", "customer-facing" or "product" integrations. Your product integrates to the external service via their public API. Users provide you with credentials to the 3rd-party service, usually via OAuth directly from your product. [Here](https://capsulecrm.com/integrations/) [are](https://linear.app/integrations) [example](https://reply.io/integrations) [pages](https://www.deel.com/integrations) advertising native integrations.
+
+## FAQ
+
+<details>
+  <summary>Which APIs does Nango work with?</summary>
+  <div>
+    <div>Every API!</div>
+    <br/>
+    <div>
+    Nango is fully API agnostic and works with every HTTP based API. Writing an Integration for an API with Nango is typically at least as fast a using a standard HTTP requests library.
+    <br/>
+    In addition Nango has 25+ Blueprints for commonly used APIs, with these you get OAuth, token refreshes, rate-limit handling and error handling just by adding a single line to your config file. We are expanding the Blueprints library every week. 
+    </div>
+  </div>
+</details>

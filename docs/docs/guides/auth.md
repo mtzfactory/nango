@@ -23,7 +23,9 @@ Nango provides a small frontend library that makes working with OAuth very easy.
 import Nango from '@nangohq/frontend'
 
 // Get a Nango frontend client
-var nango = new Nango('https://nango-oauth-server-url.yourdomain.com');
+// 'http://localhost:3003' should match the setting of oauth_server_root_url in nango-config.yaml
+// In production localhost:3003 would be replaced with e.g. 'oauth.myservice.com'
+var nango = new Nango('http://localhost:3003');
 
 // Trigger an OAuth flow for 'slack' for the user with user-id 1
 nango.connect('slack', '1')

@@ -81,15 +81,16 @@ In a new terminal, navigate to the Nango Folder:
 cd [...]/node-sample/nango-integrations
 ```
 
-Open the `integrations.yaml` file (cf. [reference](reference/configuration.md#integrationsYaml)) and copy/paste the configuration for our new Slack Integration:
+Open the `integrations.yaml` file (cf. [Add an Integration guide](guides/add-an-integration.md)) and copy/paste the configuration for our new Slack Integration:
 ```yaml title="integrations.yaml"
 integrations:
     slack:
-        base_url: https://slack.com/api/
-        call_auth:
-            mode: AUTH_HEADER_TOKEN
+        extends_blueprint: slack:v0
+
         log_level: debug
 ```
+
+Our Slack Integration makes use of the [Nango Slack Blueprint](blueprint-catalog/blueprint-slack.md), which pre-configures authentication & requests authorization for us. Using Blueprints is nice and makes you faster but is by no means required, Nango works with any API.
 
 Create a directory to host the code for the Slack Integration. In the Nango Folder, run:
 ```bash
@@ -101,7 +102,7 @@ cd slack
 
 ### Create an Action
 
-Actions (cf. [Architecture](architecture.md)) contain the business logic that is specific to each integration. They can be customized at will. Here, we want our Action to post a message on Slack. Naturally, Actions may be more complex than this simple example here (cf. [Best Practices](guides/best-practices.md)).
+Actions (cf. [Architecture](architecture.md)) contain the business logic that is specific to each integration. They can be customized at will. Here, we want our Action to post a message on Slack. Naturally, Actions may be more complex than this simple example here.
 
 Create a file for our new `notify` Action which will post a message to Slack: 
 ```bash
@@ -163,7 +164,7 @@ Install the Nango Node SDK:
 npm install @nangohq/node-client
 ```
 
-Create a file that will trigger the Slack Notify Action: 
+Create a file that will trigger the Slack Notify Action (if you cloned our sample repo at the start skip this, `app.js` already exists in your project): 
 ```bash
 touch app.js
 ```
@@ -177,9 +178,13 @@ await nango.connect();
 
 const slackMessage = `<your-name> implemented an integration from scratch 💪`; // TODO: replace name
 
-await nango.registerConnection('slack', 1, '<slack-token-goes-here>').catch((e) => {console.log(e)}); // TODO: replace token
+const credentials = {
+    access_token: '<slack-token-goes-here>' // TODO: replace token
+};
 
-await nango.triggerAction('slack', 'notify', 1, {
+await nango.registerConnection('slack', '1', credentials).catch((e) => {console.log(e)});
+
+await nango.triggerAction('slack', 'notify', '1', {
         channelId: 'C03QBJWCWJ1',
         mrkdwn: true,
         msg: slackMessage
@@ -191,7 +196,9 @@ nango.close();
 
 Replace your `<your-name>` with your actual name, and `<slack-token-goes-here>` with [this token](https://nangohq.notion.site/Quickstart-Slack-access-token-f41c7cc291c74fbd9b1110af6d631d01).
 
-If you are curious about the `registerConnection` call, this is how we tell Nango that a user has installed an Integration. You can learn more about it in the [Architecture](architecture.md#nango-integrations--actions) and the [client SDK reference](reference/SDKs/node.md#registerConnection).
+If you are curious about the `registerConnection` call, this is how we tell Nango that a user has installed an Integration. Alternatively you could add the OAuth client id & secret of your own Slack app and use the builtin OAuth server of Nango to let users authenticate directly with your app.
+
+You can learn more about these options in the [Architecture](architecture.md#nango-integrations--actions) and the [create an Integration guide](guides/create-an-integration.md).
 
 
 ### Test your Action
@@ -203,7 +210,7 @@ cd [...]/node-sample
 
 Run your app: 
 ```bash
-node spp.js
+node app.js
 ```
 
 You should see a success message in the console!
@@ -216,3 +223,13 @@ Finally, check the [#welcome channel](https://nango-community.slack.com/archives
 
 #### How did it go?
 We would love hear about your experience! Please don't be shy and give us feedback in the [#general channel](https://nango-community.slack.com/archives/C03QBHSMPUM) or directly to [@robin](https://nango-community.slack.com/archives/D03PZUHHF1V) or [@bastien](https://nango-community.slack.com/archives/D03QEGGULKC) on our community Slack. Thank you so much!
+
+## Next steps
+
+To dive deeper into Nango we suggest you use it to build one of your native integrations as a proof of concept. This will quickly show you how Nango helps you easily build reliable, scalable and powerful integrations.
+
+You might find the following guides useful for your PoC:
+- Learn how to [add an Integration which uses the builtin Nango OAuth server](guides/create-an-integration.md)
+- Explore the 25+ Blueprints in our [Blueprint catalog](blueprint-catalog/blueprint-overview.md)
+- Read up on the Nango [Architecture](architecture.md)
+- Join the [Community Slack](https://nango.dev/slack) to see what others are building with Nango and to get support

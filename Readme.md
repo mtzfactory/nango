@@ -37,13 +37,13 @@ Nango comes with bullet-proof infrastructure focused on native integrations:
 
 -   📁 A lightweight code framework to standardize integrations development
 -   ⏱ Built-in infrastructure for scheduling, queuing and retries
--   🔒 OAuth support with UI components for authenticating end-users + token refresh
+-   🔒 Builtin OAuth support with UI components for authenticating end-users + token refresh
 -   🛠 Delightful local development to test integrations as you code
 -   🔍 Powerful logging, monitoring and debugging
 -   ❤️  Simple setup with a CLI and native SDKs
--   ⛔️ Fine-grained rate-limit configuration
+-   ⛔️ Automatic rate-limit detection & mitigation
 -   👥 Community-contributed blueprints for common integration use-cases
--   🧩 Universal: Works with any programming language & framework
+-   🧩 Universal: Works with any API and any programming language & framework
 -   💻  Self-hostable, single docker container for easy local development
 
 Soon, we plan to support:
@@ -66,13 +66,29 @@ import { Nango } from '@nangohq/node-client';
 
 const nango = new Nango();
 
-nango.registerConnection('slack', userId, oAuthToken);
-
 // Post a message to a Slack channel
 nango.triggerAction('slack', 'notify', userId, {
     channelId: 'XXXXXXX',
     msg: 'Hello @channel, this is a notification triggered by Nango :tada:'
 });
+```
+
+And in your frontend, run a full OAuth flow with a single line of code (using Nango's builtin OAuth server):
+
+```js
+import Nango from '@nangohq/frontend';
+
+var nango = new Nango('http://localhost:3003');
+
+// Trigger an OAuth flow for 'slack' for the user with user-id 1
+nango
+    .connect('slack', '1')
+    .then((result) => {
+        console.log(`OAuth flow succeeded, integration has been setup for the user 🎉`);
+    })
+    .catch((error) => {
+        console.error(`There was an error in the OAuth flow: ${error.error.type} - ${error.error.message}`);
+    });
 ```
 
 ## 🔍 Learn more

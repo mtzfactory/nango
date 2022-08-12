@@ -45,7 +45,7 @@ _Default: 3003_
 
 The port where the builtin OAuth server listens. Note that if you change this value you will likely also need to change the docker container configuration in `docker-compose.yaml`!
 
-### oauth_server_root_url
+### oauth_server_root_url {#nangoConfig-oauth_server_root_url}
 _Default: http://localhost:3003_
 
 The root URL where the builtin OAuth server can be reached from the Internet (or local machine in the case of a local development setup). This URL is used to create the OAuth callback URL that will have to be registered with the OAuth providers. The OAuth server prints the full callback URL for the current configuration on startup with the `info` log level.
@@ -136,6 +136,20 @@ Specifies the [Blueprint](blueprint-catalog/blueprint-overview.md) from which th
 
 Because Blueprints specify the `auth` and `requests` part for you using this parameter is strongly encouraged whenever a Blueprint is available for the API you want to integrate. If no Blueprint is available you can contribute one and save future users a lot of hassle. Thank you!
 
+
+### Overwriting parameters from the blueprint
+In rare cases you might want to overwrite a parameter in your integration configuration which has been set by the blueprint you are extending. You can easily do this for any parameter, values that are specified directly in the Integration's configuration overwrite any values set by the blueprint.
+
+Here is an example which overrides the `requests` -> `base_url` parameter from the [Slack blueprint](blueprint-catalog/blueprint-slack.md) to change the base API URL:
+```yaml
+    #... other integrations
+    slack:
+        extends_blueprint: slack:v0
+
+        # Overwrite requests -> base_url, which is already set by the blueprint
+        requests:
+            base_url: https://fakeapi.slack.com/
+```
 
 ### log_level
 _Default: Optional parameter, if not specified the value is inherited from [`default_action_log_level`](#nangoConfig-default_action_log_level)_
