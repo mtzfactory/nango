@@ -81,7 +81,7 @@ In a new terminal, navigate to the Nango Folder:
 cd [...]/node-sample/nango-integrations
 ```
 
-Open the `integrations.yaml` file (cf. [Add an Integration guide](guides/add-an-integration.md)) and copy/paste the configuration for our new Slack Integration:
+Open the `integrations.yaml` file (cf. [Add an Integration guide](guides/create-an-integration.md)) and copy/paste the configuration for our new Slack Integration:
 ```yaml title="integrations.yaml"
 integrations:
     slack:

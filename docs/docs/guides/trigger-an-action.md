@@ -62,7 +62,7 @@ nango.close();
 
 For this code to work the Nango server needs to run locally. This is super easy with Nango, take a look at [Local Development](local-development.md) for a step-by-step guide to run Nango locally.
 
-If you want to learn more about the Nango SDK check out the [SDK reference](reference/SDKs) for your preferred language.
+If you want to learn more about the Nango SDK check out the [SDK reference](reference/SDKs/node.md) for your preferred language.
 
 If you want to try the Nango OAuth server, and your Integration supports OAuth, take a look at [how to trigger the OAuth flow from your frontend](guides/auth.md#frontendOauth). Nango will then automatically store the received credentials and you can skip the `registerConnection` call above.
 
