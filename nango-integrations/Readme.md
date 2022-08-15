@@ -6,11 +6,30 @@ This folder contains a few sample Integrations and Actions that we use for the d
 
 **No. Nango is API agnostic and works with any HTTP based API (such as REST APIs for instance).**
 
-Nango provides infrastructure that makes working with any API easier, such as builtin OAuth, automatic token refreshes, automatic retries, automatic rate-limit handling, built-in detailed logs etc.
+Nango provides infrastructure that makes working with any API easier, such as:
+
+-   Builtin OAuth (many different types)
+-   automatic access token refreshes
+-   automatic retries of failed requests
+-   automatic rate-limit handling
+-   built-in detailed logs
+    etc.
+
 Learn more about the features of Nango from the [main Readme](https://github.com/NangoHQ/nango) and [our docs](https://docs.nango.dev).
 
 ## Are these the Blueprints Nango provides?
 
 **No. You can find all the 25+ (and growing) Nango Blueprints in our [Blueprints Catalog](https://docs.nango.dev/blueprint-catalog/blueprint-overview)**
+
+We have Blueprints for many more APIs, such as:
+
+-   Airtable
+-   Discord
+-   Microsoft Teams
+-   Gitlab
+-   Gmail & Google Calendar
+-   Intercom
+-   Xero
+    etc.
 
 Note that whilst Blueprints speed up the development of new Integrations they are not necessary to use Nango: Even if we do not have a Blueprint for an API yet you can easily use it with Nango and benefit from all the features mentioned above.
