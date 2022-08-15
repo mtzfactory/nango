@@ -25,7 +25,7 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
 
 ## ⭐ Why
 
-Building native integrations is costly, particularly as you support more integrations, deeper integrations and higher traffic. Most companies end up building the same infrastructure: scheduling, queueing, error handling, retries, authentication, logging, local development environment, CI/CD, etc. Nango's goal is to make integration developers 10x more productive by providing them with this common infrastructure.
+Building native integrations is costly and time consuming, particularly as you support more integrations, deeper integrations and higher traffic. Most companies end up building the same infrastructure: scheduling, queueing, error handling, retries, authentication, logging, local development environment, CI/CD, etc. Nango's goal is to make integration developers 10x more productive by providing them with this common infrastructure.
 
 ## 🎁 A packaged micro-service for native integrations
 
@@ -37,13 +37,13 @@ Nango comes with bullet-proof infrastructure focused on native integrations:
 
 -   📁 A lightweight code framework to standardize integrations development
 -   ⏱ Built-in infrastructure for scheduling, queuing and retries
--   🔒 Builtin OAuth support with UI components for authenticating end-users + token refresh
+-   🔒 Builtin OAuth support with automatic token refresh & UI components
 -   🛠 Delightful local development to test integrations as you code
 -   🔍 Powerful logging, monitoring and debugging
 -   ❤️  Simple setup with a CLI and native SDKs
 -   ⛔️ Automatic rate-limit detection & mitigation
 -   👥 Community-contributed blueprints for common integration use-cases
--   🧩 Universal: Works with any API and any programming language & framework
+-   🧩 Universal: Works with any API, any programming language & framework
 -   💻  Self-hostable, single docker container for easy local development
 
 Soon, we plan to support:
@@ -55,11 +55,26 @@ Soon, we plan to support:
 
 …and many more capabilities.
 
+## 📘 Blueprints
+
+Our [22+ Blueprints](https://docs.nango.dev/blueprint-catalog/blueprint-overview), such as [Intercom](https://docs.nango.dev/blueprint-catalog/blueprint-intercom), [Airtable](https://docs.nango.dev/blueprint-catalog/blueprint-airtable), [Asana](https://docs.nango.dev/blueprint-catalog/blueprint-asana), [Hubspot](https://docs.nango.dev/blueprint-catalog/blueprint-hubspot) or [Xero](https://docs.nango.dev/blueprint-catalog/blueprint-xero), help you kickstart your next integration.
+Add two lines of code to your frontend & Nango config (see Quickstart) and you get:
+
+-   Builtin & pre-configured OAuth flow (see Quickstart)
+-   Builtin & pre-configured requests authorization
+-   Automatic auth credentials handling & access token refresh
+-   Automatic retries on timeouts
+-   Automatic rate-limit handling
+-   Full access to the API: Use any endpoint & raw requests/response
+-   Community contributed gotchas & learnings which cover everything the API docs missed (add yours too!)
+
+Nango also works with every other API, Blueprints are optional. We add more Blueprints every week.
+
 ## 🚀 Quickstart
 
-Follow our [Quickstart guide](https://docs.nango.dev/quickstart/node) to **build a Slack integration from scratch**!
+Follow our [Quickstart guide](https://docs.nango.dev/quickstart/node) to **build a Slack integration from scratch in 10 minutes**!
 
-With Nango, your integration code will look like this (node.JS example, [see other languages](https://docs.nango.dev/quickstart/other)):
+With Nango, your integration code will look like this (Node.js example, [see other languages](https://docs.nango.dev/quickstart/other)):
 
 ```ts
 import { Nango } from '@nangohq/node-client';
