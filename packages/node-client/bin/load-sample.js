@@ -20,7 +20,10 @@ function closeConnection() {
 }
 
 async function registerConnection(integration) {
-    await nango.registerConnection(integration, '1', tokens[integration]).catch((errorMsg) => {
+    const credentials = {
+        access_token: tokens[integration]
+    };
+    await nango.registerConnection(integration, '1', credentials).catch((errorMsg) => {
         console.log(`Uh oh, got error message on registerConnection: ${errorMsg}`);
     });
 }
