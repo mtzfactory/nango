@@ -213,7 +213,7 @@ nango.updateConnectionCredentials('example', '1', credentials)
     }) 
 ```
 
-## getConnectionsForUserId method
+## getConnectionsForUserId method {#getConnectionsForUserId}
 Use this method to retrieve all active Connections for a particular userId. Many applications use this for instance to render their Integrations page where a user can see which Integrations they have already setup or change the configuration of an Integration.
 
 ```ts
@@ -245,7 +245,7 @@ The returned `NangoConnectionPublic` object looks like this:
 }
 ```
 
-## getConnectionsForIntegration method
+## getConnectionsForIntegration method {#getConnectionsForIntegration}
 This method works the same way as the `getConnectionsForUserId` method above, but instead returns all Connections associated with a particular Integration. This can be helpful for admin backends where you want to show all users who have setup a particular Integration.
 
 ```ts

@@ -30,11 +30,41 @@ To get all Integrations which a user has setup you can query for all Connections
 <TabItem value="node" label="Node" default>
 
 ```ts
-const 
+const userId = '1';
+const userConnections = await nango.getConnectionsForUserId(userId);
+
+console.log(`The user with id "${userId}" has these active connections:`, userConnections);
 ```
+
+For a detailed documentation of the returned connections object check the [SDK reference for `getConnectionsForUserId`](reference/SDKs/node.md#getConnectionsForUserId).
 
 </TabItem>
 <TabItem value="other" label="Other Languages">
     Coming soon!
 </TabItem>
 </Tabs>
+
+You might want to make Nango's response of this available as an endpoint in your own backend so the frontend can always query which Integrations the currently logged in user has set up.
+
+## Getting all Connections of a specific Integration
+To get all the users which have setup a specific Integration you can query for all Connections of an integration:
+
+<Tabs groupId="programming-language">
+<TabItem value="node" label="Node" default>
+
+```ts
+const integration = 'slack';
+const integrationConnections = await nango.getConnectionsForIntegration(integration);
+
+console.log(`The integration "${integration}" has these active connections:`, integrationConnections);
+```
+
+For a detailed documentation of the returned connections object check the [SDK reference for `getConnectionsForIntegration`](reference/SDKs/node.md#getConnectionsForIntegration).
+
+</TabItem>
+<TabItem value="other" label="Other Languages">
+    Coming soon!
+</TabItem>
+</Tabs>
+
+This method is especially helpful for Admin panels or background tasks, where you are e.g. checking periodically to whom you should send a Slack notification.
