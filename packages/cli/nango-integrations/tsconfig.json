@@ -1,9 +1,10 @@
 {
     "compilerOptions": {
-      "target": "es2022",
-      "moduleResolution": "node",
-      "rootDir": ".",
-      "outDir": "dist"
+        "module": "es2022",
+        "target": "es2022",
+        "moduleResolution": "node",
+        "rootDir": ".",
+        "outDir": "dist"
     },
     "exclude": ["node_modules", "dist"]
-  }
+}
