@@ -22,4 +22,4 @@ COPY package*.json ./
 
 RUN npm install --omit=dev
 
-CMD ["node", "packages/server/dist/server.js"]
+ENTRYPOINT [ "node", "packages/server/dist/server.js" ]
