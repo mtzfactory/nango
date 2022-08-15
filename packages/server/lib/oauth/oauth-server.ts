@@ -2,6 +2,7 @@
  * Copyright (c) 2022 Nango, all rights reserved.
  */
 
+import * as crypto from 'node:crypto';
 import express from 'express';
 import { IntegrationsManager } from '../integrations-manager.js';
 import * as logging from '../logging.js';
@@ -88,12 +89,14 @@ export function startOAuthServer() {
         );
 
         const authState = uuid.v1();
-        sessionStore[authState] = {
+        const sessionData = {
             integrationName: integration,
             userId: userId as string,
             callbackUrl: oAuthCallbackUrl,
-            authMode: integrationConfig.auth.auth_mode
+            authMode: integrationConfig.auth.auth_mode,
+            codeVerifier: crypto.randomBytes(24).toString('hex')
         };
+        sessionStore[authState] = sessionData;
 
         if (!integrationConfig.oauth_client_id || !integrationConfig.oauth_client_secret || integrationConfig.oauth_scopes === undefined) {
             return sendResultHTML(
@@ -114,10 +117,21 @@ export function startOAuthServer() {
                 oAuth2AuthConfig.token_params.grant_type === undefined ||
                 oAuth2AuthConfig.token_params.grant_type === 'authorization_code'
             ) {
-                let additionalAuthParams = {};
+                let additionalAuthParams: Record<string, string> = {};
                 if (integrationConfig.auth.authorization_params) {
                     additionalAuthParams = integrationConfig.auth.authorization_params;
                 }
+
+                // We always implement PKCE, no matter whether the server requires it or not
+                const code_challenge = crypto
+                    .createHash('sha256')
+                    .update(sessionData.codeVerifier)
+                    .digest('base64')
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=+$/, '');
+                additionalAuthParams['code_challenge'] = code_challenge;
+                additionalAuthParams['code_challenge_method'] = 'S256';
 
                 const simpleOAuthClient = new simpleOauth2.AuthorizationCode(getSimpleOAuth2ClientConfig(integrationConfig));
                 const authorizationUri = simpleOAuthClient.authorizeURL({
@@ -235,13 +249,16 @@ export function startOAuthServer() {
 
             const simpleOAuthClient = new simpleOauth2.AuthorizationCode(getSimpleOAuth2ClientConfig(integrationConfig));
 
-            let additionalTokenParams = {};
+            let additionalTokenParams: Record<string, string> = {};
             if (integrationConfig.auth.token_params !== undefined) {
                 // We need to remove grant_type, simpleOAuth2 handles that for us
                 const deepCopy = JSON.parse(JSON.stringify(integrationConfig.auth.token_params));
                 delete deepCopy.grant_type;
                 additionalTokenParams = deepCopy;
             }
+
+            // We always implement PKCE, no matter whether the server requires it or not
+            additionalTokenParams['code_verifier'] = sessionData.codeVerifier;
 
             try {
                 const accessToken = await simpleOAuthClient.getToken({

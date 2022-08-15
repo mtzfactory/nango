@@ -255,6 +255,9 @@ export interface OAuthSession {
     callbackUrl: string;
     authMode: NangoIntegrationAuthModes;
 
+    // Needed for OAuth 2.0 PKCE
+    codeVerifier: string;
+
     // Needed for oAuth 1.0a
     request_token_secret?: string;
 }
