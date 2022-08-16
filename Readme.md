@@ -81,7 +81,8 @@ import { Nango } from '@nangohq/node-client';
 
 const nango = new Nango();
 
-// Post a message to a Slack channel
+// Actions are defined by you and live in your repo as code
+// For example: Post a message to a Slack channel
 nango.triggerAction('slack', 'notify', userId, {
     channelId: 'XXXXXXX',
     msg: 'Hello @channel, this is a notification triggered by Nango :tada:'
