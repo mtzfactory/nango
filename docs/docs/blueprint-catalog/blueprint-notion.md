@@ -8,7 +8,7 @@ This blueprint of Nango for the Notion API makes it very easy to work with the N
 
 [Notion REST API Docs](https://developers.notion.com/docs)  |  [API gotchas & learnings](#gotchas)
 
-Last updated: 12.08.2022
+Last updated: 16.08.2022
 
 ## How to use it
 To create your own integration based on the Notion blueprint add this to your `integrations.yaml` file:

@@ -133,4 +133,4 @@ const connection = this.getCurrentConnection();
 this.logger.debug(`Raw credentials response: ${JSON.stringify(connection.credentials.raw)}`);
 ```
 
-Note that whilst the data returned in `credentials` depends on the type of authentication which the API uses (e.g. OAuth 2, OAuth 1.0a, api key, basic auth) the property is guaranteed to always have the `raw` sub-property. For detailed specs of the returned credentials object check the [NangoOAuth2Credentials etc. here](https://github.com/NangoHQ/nango/blob/main/packages/core/lib/types.ts). If you need additional help with this please reach out in our community Slack and we will be happy to assist you.
+Note that whilst the data returned in `credentials` depends on the type of authentication which the API uses (e.g. OAuth 2, OAuth 1.0a, api key, basic auth) the property is guaranteed to always have the `raw` sub-property. For detailed specs of the returned credentials object check the [regiserConnection reference](reference/SDKs/node.md#registerConnection).

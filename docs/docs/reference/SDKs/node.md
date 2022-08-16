@@ -154,7 +154,7 @@ The result and error variable in the example above are a [`NangoMessageHandlerRe
 Note that connections are unique per user and integration: Attempting to register a connection for the same user id and integration twice will result in an error.
 :::
 
-## updateConnectionConfig method
+## updateConnectionConfig method {#updateConnectionConfig}
 To update the additional config for an already existing Connection you can use the `updateConnectionConfig` method.
 
 If you are not sure what the additional config is and how it can be helpful check the explanation above in the [registerConnection]{#registerConnection} method.
@@ -185,7 +185,7 @@ nango.updateConnectionConfig('example', '1', newConfig)
     }) 
 ```
 
-## updateConnectionCredentials method
+## updateConnectionCredentials method {#updateConnectionCredentials}
 To update the credentials for an already existing Connection you can use the `updateConnectionCredentials` method. Note that the new credentials must conform to the [auth mode of the integration](reference/configuration.md#integrationsYaml) or the call will fail and return an error. You can find examples of valid credentials for each auth mode under [registerConnection](#registerConnection) above.
 
 ```ts

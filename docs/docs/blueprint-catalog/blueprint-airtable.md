@@ -17,10 +17,20 @@ To create your own integration based on the Airtable blueprint add this to your 
     airtable:
         extends_blueprint: airtable:v0
 
-        app_api_key: ${AIRTABLE_CLIENT_SECRET} # Needed for the Metadata API, see gotchas below
+        app_api_key: ${AIRTABLE_CLIENT_SECRET} # Needed for the Metadata API, see gotchas below. This is need in addition to the user's api key.
 ```
 
-Because Airtable uses an api_key based authorization you need to ask users for their api key and the register it manually with Nango by calling the [registerConnection](reference/SDKs/node.md#registerConnection) method.
+Because Airtable uses an api_key based authorization you need to ask users for their api key and the register it manually with Nango by calling the [registerConnection](reference/SDKs/node.md#registerConnection) method like this:
+
+```js title="In your backend, using the Nango SDK"
+
+let credentials = {
+    api_key: '<Airtable "api key" from your frontend/user>'
+};
+
+await nango.registerConnection('airtable', '<user-id>', credentials);
+// Connection registered, you can now start executing Airtable actions for this user
+```
 
 ### Coverage
 Blueprint `v0` covers Airtable with api key based authorization and the Base & Meta REST API.
