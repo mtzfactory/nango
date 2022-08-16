@@ -99,10 +99,10 @@ Calling `httpRequest` returns a promise that resolves when the HTTP request fini
 Nango returns the full [Axios response object](https://axios-http.com/docs/res_schema) to you when the request finishes, please check the linked documentation for a full reference.
 
 
-### this.getCurrentConnectionConfig
+### this.getCurrentConnection {#getCurrentConnection}
 Signature:
 ```
-protected getCurrentConnectionConfig(): NangoConnection
+protected getCurrentConnection(): NangoConnection
 ```
 
 This method returns the Nango Connection object for current execution of the action:
@@ -111,8 +111,10 @@ interface NangoConnection {
     uuid: string;
     integration: string;
     userId: string;
-    oAuthAccessToken: string;
-    additionalConfig: object;
+    dateCreated: Date;
+    lastModified: Date;
+    credentials: NangoAuthCredentials;
+    additionalConfig: Record<string, unknown> | undefined;
 }
 ```
 
@@ -121,3 +123,14 @@ The main use case of this method is to access the `additionalConfig` property of
 As an example, if you have a Slack integration that posts notifications to a channel the user may be able to select the channel in your application where the would like to receive notifications. You can then store the channel id in `additionalConfig` and access it in your Nango action with this method.
 
 Please note that `additionalConfig` must be JSON serializable as Nango uses this format for storage and internal transmission.
+
+Another use case is when you need to access data the authorization server has returned along with the access token in the OAuth process: The `credentials` property has a sub-property called `raw` which contains the raw response of the server when it last returned an access token (if the access token has been refreshed `raw` will contain the raw server response of the last token refresh).
+
+In practice you could inspect and look at the data like this:
+```ts
+const connection = this.getCurrentConnection();
+
+this.logger.debug(`Raw credentials response: ${JSON.stringify(connection.credentials.raw)}`);
+```
+
+Note that whilst the data returned in `credentials` depends on the type of authentication which the API uses (e.g. OAuth 2, OAuth 1.0a, api key, basic auth) the property is guaranteed to always have the `raw` sub-property. For detailed specs of the returned credentials object check the [NangoOAuth2Credentials etc. here](https://github.com/NangoHQ/nango/blob/main/packages/core/lib/types.ts). If you need additional help with this please reach out in our community Slack and we will be happy to assist you.

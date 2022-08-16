@@ -60,7 +60,7 @@ class NangoAction {
         this.logger.info(`🏁✅ Execution of action finished in ${elapsedMilliseconds.toFixed(3)} ms`);
     }
 
-    protected getCurrentConnectionConfig(): NangoConnection {
+    protected getCurrentConnection(): NangoConnection {
         return this.userConnection;
     }
 
