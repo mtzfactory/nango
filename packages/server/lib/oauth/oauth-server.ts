@@ -80,14 +80,6 @@ export function startOAuthServer() {
             );
         }
 
-        logger.debug(
-            `Starting OAuth flow for integration "${integration}" and userId "${userId}" - full integration config:\n${JSON.stringify(
-                integrationConfig,
-                undefined,
-                2
-            )}`
-        );
-
         const authState = uuid.v1();
         const sessionData = {
             integrationName: integration,

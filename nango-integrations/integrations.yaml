@@ -28,7 +28,7 @@ integrations:
 
     hubspot:
         extends_blueprint: hubspot:v0
-        log_level: debug
+        log_level: info
 
         oauth_client_id: 063de961-65d3-43fd-a8be-1897a4e16b3d
         oauth_client_secret: ${HUBSPOT_CLIENT_SECRET}

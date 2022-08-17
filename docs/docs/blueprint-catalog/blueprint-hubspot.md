@@ -28,6 +28,8 @@ The oauth_ parameters are optional if you are not using Nango's builtin OAuth2 f
 ### Coverage
 Blueprint `v0` covers Hubspot OAuth 2 and the REST API.
 
+The base URL for API calls is set to `https://api.hubapi.com/`
+
 | Nango Feature | Supported Status | 
 |---|---|
 | Builtin OAuth2 authentication | ✅  |

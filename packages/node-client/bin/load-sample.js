@@ -9,7 +9,7 @@ import * as fs from 'fs';
 /** -------------------- Utils -------------------- */
 
 function logResponse(integration, action, response) {
-    console.log(`${integration}.${action} response: ${response.status} - ${response.statusText}`);
+    console.log(`${integration}.${action} response: ${JSON.stringify(response, null, 2)}`);
 }
 
 function closeConnection() {

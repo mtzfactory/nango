@@ -81,9 +81,6 @@ async function handleInboundMessage(msg: ConsumeMessage | null) {
         case NangoMessageAction.TRIGGER_ACTION:
             const triggerMessage = nangoMessage as NangoTriggerActionMessage;
             result = await handleTriggerAction(triggerMessage);
-            if (result.success) {
-                logger.debug(`Result from action: ${JSON.stringify(result.returnValue)}`);
-            }
             break;
         default:
             // Unrecognized message, return an error

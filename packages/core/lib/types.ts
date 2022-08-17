@@ -280,7 +280,7 @@ export interface NangoConnection extends NangoConnectionPublic {
 }
 
 //////////////////////
-// Varia
+// Action
 //////////////////////
 
 export interface HttpHeader {
@@ -302,6 +302,10 @@ export enum HTTPMethods {
     CONNECT = 'CONNECT',
     OPTIONS = 'OPTIONS'
 }
+
+//////////////////////
+// Varia
+//////////////////////
 
 export enum ServerRunMode {
     LOCAL_DEV = 'LOCAL_DEV',

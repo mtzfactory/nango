@@ -16,9 +16,10 @@ samples:
         action: users
     hubspot:
         integration: hubspot
-        action: contacts
+        action: get-all-contacts
+        skipRegister: true
         input:
-            limit: 5
+            #limit: 86
     twitter:
         integration: twitter
         action: tweet

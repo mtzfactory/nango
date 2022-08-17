@@ -216,8 +216,15 @@ export async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage): 
     // Load the JS file and execute the action
     const actionModule = await integrationsManager.getActionModule(nangoMsg.integration, nangoMsg.triggeredAction);
     const actionInstance = new actionModule(nangoConfig, integrationConfig, connection, actionLogger, nangoMsg.triggeredAction);
-    const result = await actionInstance.executeAction(nangoMsg.input);
-    actionInstance.markExecutionComplete();
-
-    return createSuccess(result);
+    try {
+        const result = await actionInstance.executeAction(nangoMsg.input);
+        actionInstance.markExecutionComplete();
+        return createSuccess(result);
+    } catch (e) {
+        let errorMessage = `There was an error during the action execution: ${(e as Error).message}`;
+        if ((e as Error).stack) {
+            errorMessage += ` - ${(e as Error).stack}`;
+        }
+        return createError(errorMessage);
+    }
 }

@@ -18,6 +18,10 @@ import type { Axios, AxiosResponse, Method } from 'axios';
 import axios from 'axios';
 import oAuth1 from 'oauth';
 
+export interface NangoHttpResponse<T = any, D = any> extends AxiosResponse<T, D> {
+    json?: Record<string, any>;
+}
+
 class NangoAction {
     private nangoConfig: NangoConfig;
     private integrationConfig: NangoIntegrationConfig;
@@ -56,15 +60,16 @@ class NangoAction {
 
     // A bit hacky but found no other decent way to get this message logged
     public markExecutionComplete() {
-        const elapsedMilliseconds = process.hrtime(this.executionStartTime)[1] / 1000000;
-        this.logger.info(`🏁✅ Execution of action finished in ${elapsedMilliseconds.toFixed(3)} ms`);
+        const hrtime = process.hrtime(this.executionStartTime);
+        const elapsedSeconds = (hrtime[0] + hrtime[1] / 1e9).toFixed(3);
+        this.logger.info(`🏁✅ Execution of action finished in ${elapsedSeconds} s`);
     }
 
     protected getCurrentConnection(): NangoConnection {
         return this.userConnection;
     }
 
-    protected async httpRequest(endpoint: string, method: Method, params?: HttpParams, body?: any, headers?: HttpHeader): Promise<AxiosResponse> {
+    protected async httpRequest(endpoint: string, method: Method, params?: HttpParams, body?: any, headers?: HttpHeader): Promise<NangoHttpResponse> {
         if (this.integrationConfig.requests.base_url.slice(-1) !== '/') {
             this.integrationConfig.requests.base_url += '/';
         }
@@ -148,10 +153,14 @@ class NangoAction {
             finalHeaders['Authorization'] = this.createOAuth1AuthorizationHeader(method, fullURL, finalParams);
         }
 
-        const promise = new Promise<AxiosResponse<any, any>>((resolve, reject) => {
+        const promise = new Promise<NangoHttpResponse<any, any>>((resolve, reject) => {
             const requestId = core.makeId(8);
             this.logger.debug(
-                `📡👆 HTTP ${method} request (#${requestId}): ${fullURL}\n\nHeaders:\n${JSON.stringify(finalHeaders, null, 4)}\n\nBody:\n${serializedBody}\n\n`
+                `📡👆 HTTP ${method} request (#${requestId}): ${fullURL}\n\nQuery params:\n${JSON.stringify(
+                    finalParams,
+                    null,
+                    2
+                )}\n\nHeaders:\n${JSON.stringify(finalHeaders, null, 2)}\n\nBody:\n${serializedBody}\n\n`
             );
 
             this.axiosInstance
@@ -165,17 +174,19 @@ class NangoAction {
                     data: serializedBody
                 })
                 .then((response) => {
+                    const nangoResponse = response as NangoHttpResponse;
                     let bodyLog = '';
 
-                    if (response.data != null) {
+                    if (nangoResponse.data != null) {
                         try {
-                            // Body is JSON.
-                            bodyLog = JSON.stringify(JSON.parse(response.data), null, 4);
+                            // Check if the body can be parsed as JSON
+                            nangoResponse.json = JSON.parse(nangoResponse.data);
+                            bodyLog = JSON.stringify(JSON.parse(nangoResponse.data), null, 2);
                         } catch {
-                            if (typeof response.data === 'string' && response.data.length > 0) {
+                            if (typeof nangoResponse.data === 'string' && nangoResponse.data.length > 0) {
                                 // Body is not JSON but has been parsed to a string type by Axios.
-                                bodyLog = response.data;
-                            } else if (typeof response.data === 'string' && response.data.length === 0) {
+                                bodyLog = nangoResponse.data;
+                            } else if (typeof nangoResponse.data === 'string' && nangoResponse.data.length === 0) {
                                 // Body is an empty string.
                                 bodyLog = 'Response body is empty.';
                             } else {
@@ -188,16 +199,16 @@ class NangoAction {
                         bodyLog = 'Response body is empty.';
                     }
 
-                    const statusHundred = `${response.status}`.slice(0, 1);
+                    const statusHundred = `${nangoResponse.status}`.slice(0, 1);
                     const statusEmoji = '45'.includes(statusHundred) ? '❌' : statusHundred === '2' ? '✅' : '';
 
                     this.logger.debug(
-                        `📡👇${statusEmoji} ${response.status} HTTP ${method} response (#${requestId}): ${fullURL}\nStatus: ${response.status} - ${
-                            response.statusText
-                        }\n\nHeaders:\n${JSON.stringify(response.headers, null, 4)}\n\nBody:\n${bodyLog}\n\n`
+                        `📡👇${statusEmoji} ${nangoResponse.status} HTTP ${method} response (#${requestId}): ${fullURL}\nStatus: ${nangoResponse.status} - ${
+                            nangoResponse.statusText
+                        }\n\nHeaders:\n${JSON.stringify(nangoResponse.headers, null, 2)}\n\nBody:\n${bodyLog}\n\n`
                     );
 
-                    resolve(response);
+                    resolve(nangoResponse);
                 })
                 .catch((error) => {
                     reject(error);
