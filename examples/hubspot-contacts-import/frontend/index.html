@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Nango Hubspot contacts import example</title>
+        <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+    </head>
+    <body style="width: 1024px; margin-left: auto; margin-right: auto;">
+        <noscript>JavaScript is required to proceed with the authentication.</noscript>
+        <h1>Nango example: Hubspot contacts importer</h1>
+        <h2>Integration status</h2>
+        <div>
+            <div id="integration-missing">
+                <p style="color: red">Integration is not setup, please authenticate via OAuth below</p>
+                <button id="oauth-button">Start OAuth</button>
+                <p>Result from OAuth:</p>
+                <p id="result">Idle, please start OAuth process</p>
+            </div>
+            <p id="integration-ok" style="color: green">Integration is setup, ready to fetch contacts!</p>
+        </div>
+
+        <h2>Hubspot contacts list</h2>
+        <div>
+            <button id="refresh-contacts">Refresh contacts</button>
+        </div>
+        <p id="refresh-status"></p>
+
+        <table style="margin-top: 50px;">
+            <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>First name</td>
+                    <td>Last name</td>
+                </tr>
+            </thead>
+            <tbody id="contacts-table-body">
+            </tbody>
+        </table>
+
+        <script type="module">
+            import Nango from 'https://cdn.jsdelivr.net/npm/@nangohq/frontend/dist/index.js';
+
+            reloadIntegrationStatus();
+
+            // OAuth process
+            var link = document.getElementById('oauth-button');
+            link.addEventListener(
+                'click',
+                () => {
+                    var nango = new Nango('http://localhost:3003');
+                    nango
+                        .connect('hubspot', '1')
+                        .then((result) => {
+                            var resultElement = document.getElementById('result');
+                            resultElement.innerHTML = `OAuth success: ${JSON.stringify(result)}`;
+                            reloadIntegrationStatus();
+                        })
+                        .catch((error) => {
+                            console.log('Error');
+                            var resultElement = document.getElementById('result');
+                            resultElement.innerHTML = `OAuth error: ${JSON.stringify(error)}`;
+                            reloadIntegrationStatus();
+                        });
+                },
+                false
+            );
+
+            // Reload contacts & then refresh the table
+            var link = document.getElementById('refresh-contacts');
+            link.addEventListener(
+                'click',
+                async () => {
+                    document.getElementById('refresh-status').innerText = 'Refresh in progress, please wait. This can take several seconds...';
+                    const response = await fetch('/refreshContacts');
+                    const jsonBody = await response.json();
+
+                    const tableBody = document.getElementById('contacts-table-body');
+                    tableBody.innerHTML = '';
+
+                    let newBody = '';
+                    for (const contact of jsonBody) {
+                        newBody += `
+                            <tr>
+                                <td>${contact.id}</td>
+                                <td>${contact.properties.firstname}</td>
+                                <td>${contact.properties.lastname}</td>
+                            </tr>
+                            `;
+                    }
+
+                    tableBody.innerHTML = newBody;
+
+                    document.getElementById('refresh-status').innerText = `Refresh complete, currently showing ${jsonBody.length} contacts.`;
+                },
+                false
+            );
+
+            async function reloadIntegrationStatus() {
+                const response = await fetch('/integrationStatus');
+                if (response.status === 200) {
+                    document.getElementById('integration-missing').hidden = true;
+                    document.getElementById('integration-ok').hidden = false;
+                } else {
+                    document.getElementById('integration-missing').hidden = false;
+                    document.getElementById('integration-ok').hidden = true;
+                }
+            }
+
+        </script>
+    </body>
+</html>
