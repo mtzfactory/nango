@@ -241,7 +241,7 @@ export class ConnectionsManager {
 
     // Checks if the OAuth2 credentials need to be refreshed and refreshes them if neccessary.
     // If credentials get refreshed it also updates the user's connection object.
-    // Once the refresh or check is complete the new/old credentials are returned, always use these moving forward.
+    // Once the refresh or check is complete the new/old credentials are returned, always use these moving forward
     public async refreshOauth2CredentialsIfNeeded(
         credentials: NangoOAuth2Credentials,
         userId: string,
