@@ -2,14 +2,24 @@
  * Copyright (c) 2022 Nango, all rights reserved.
  */
 
-import { NangoAuthCredentials, NangoConnection, NangoIntegrationAuthModes } from '@nangohq/core';
+import {
+    NangoAuthCredentials,
+    NangoConnection,
+    NangoCredentialsRefresh,
+    NangoIntegrationAuthModes,
+    NangoIntegrationConfig,
+    NangoOAuth2Credentials,
+    parseJsonDateAware
+} from '@nangohq/core';
 import * as uuid from 'uuid';
 import DatabaseConstructor, { Database } from 'better-sqlite3';
+import { refreshOAuth2Credentials } from './oauth/oauth-clients.js';
 
 export class ConnectionsManager {
     /** -------------------- Private Properties -------------------- */
     private static _instance: ConnectionsManager;
     private db!: Database;
+    private runningCredentialsRefreshes: NangoCredentialsRefresh[] = [];
 
     /** -------------------- Public Methods -------------------- */
 
@@ -27,6 +37,10 @@ export class ConnectionsManager {
             this.setupDb();
         }
     }
+
+    //////////////////////
+    // Connections (object) management
+    //////////////////////
 
     public insertOrUpdateConnection(
         userId: string,
@@ -173,6 +187,10 @@ export class ConnectionsManager {
         return connections;
     }
 
+    //////////////////////
+    // Credentials management
+    //////////////////////
+
     // Parses and arbitrary object (e.g. a server response or a user provided auth object) into NangoAuthCredentials.
     // Throws if values are missing/missing the input is malformed.
     public parseRawCredentials(rawCredentials: object, authMode: NangoIntegrationAuthModes): NangoAuthCredentials {
@@ -221,12 +239,74 @@ export class ConnectionsManager {
         return parsedNangoAuthCredentials;
     }
 
+    // Checks if the OAuth2 credentials need to be refreshed and refreshes them if neccessary.
+    // If credentials get refreshed it also updates the user's connection object.
+    // Once the refresh or check is complete the new/old credentials are returned, always use these moving forward.
+    public async refreshOauth2CredentialsIfNeeded(
+        credentials: NangoOAuth2Credentials,
+        userId: string,
+        integration: string,
+        integrationConfig: NangoIntegrationConfig
+    ): Promise<NangoOAuth2Credentials> {
+        // Check if a refresh is already running for this user & integration
+        // If it is wait for that to complete
+        let runningRefresh: NangoCredentialsRefresh | undefined = undefined;
+        for (const refresh of this.runningCredentialsRefreshes) {
+            if (refresh.userId === userId && refresh.integration === integration) {
+                runningRefresh = refresh;
+            }
+        }
+
+        if (runningRefresh) {
+            return runningRefresh.promise;
+        }
+
+        // Check if we need to refresh the credentials
+        if (credentials.refreshToken && credentials.expiresAt) {
+            const safeExpirationDate = new Date();
+            safeExpirationDate.setMinutes(safeExpirationDate.getMinutes() + 15); // Surprisingly this does handle the wraparound correct
+
+            // Check if the expiration is less than 15 minutes away (or has already happened): If so, refresh
+            if (credentials.expiresAt < safeExpirationDate) {
+                const promise = new Promise<NangoOAuth2Credentials>(async (resolve, reject) => {
+                    try {
+                        const newCredentials = await refreshOAuth2Credentials(credentials, integrationConfig);
+
+                        this.updateConnectionCredentials(userId, integration, newCredentials.raw, NangoIntegrationAuthModes.OAuth2);
+
+                        // Remove ourselves from the array of running refreshes
+                        this.runningCredentialsRefreshes = this.runningCredentialsRefreshes.filter((value) => {
+                            return !(value.integration === integration && value.userId === userId);
+                        });
+
+                        resolve(newCredentials);
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+
+                const refresh = {
+                    userId: userId,
+                    integration: integration,
+                    promise: promise
+                } as NangoCredentialsRefresh;
+
+                this.runningCredentialsRefreshes.push(refresh);
+
+                return promise;
+            }
+        }
+
+        // All good, no refresh needed
+        return credentials;
+    }
+
     /** -------------------- Private Methods -------------------- */
 
     private constructor() {}
 
     private parseCredentials(rawCredentials: string): NangoAuthCredentials {
-        const credentialsObj = JSON.parse(rawCredentials);
+        const credentialsObj = parseJsonDateAware(rawCredentials);
         return credentialsObj as NangoAuthCredentials;
     }
 

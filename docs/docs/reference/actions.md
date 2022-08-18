@@ -24,6 +24,12 @@ It's return value will also be passed back as the return value of the `triggerAc
     }
 ```
 
+## Error handling & exceptions in Actions
+If your action code encounters an error which prevents it from completing its work you may throw an exception. Some automatic background processes, such as the OAuth 2 access token refresh, may also throw exceptions if they encounter unrecoverable issues. These are always clearly marked in their error message so you can tell that these exceptions were thrown by Nango and not your action code.
+
+The Nango server itself catches any unhandled exceptions from the action execution and will return it as an error back to your main application. It will also log the error with the log level `error` to the Nango server log. You can find the details of this error object in the [Nango SDK reference](reference/SDKs/node.md#nangoMessageHandlerResult).
+
+
 ## Available properties
 
 ### this.logger {#logger}
@@ -67,7 +73,7 @@ cd /usr/nango-server
 ### this.httpRequest {#httpRequest}
 Signature:
 ```ts
-protected async httpRequest(endpoint: string, method: axios.Method, params?: axios.HttpParams, body?: any, headers?: axios.HttpHeader): Promise<AxiosResponse>
+protected async httpRequest(endpoint: string, method: axios.Method, params?: axios.HttpParams, body?: any, headers?: axios.HttpHeader): Promise<NangoHttpResponse>
 ```
 
 You should **always** use this builtin method to make HTTP requests inside of your action. Only HTTP requests initiated through the method are properly tracked, authenticated, logged and retried by Nango.
@@ -76,8 +82,10 @@ You should **always** use this builtin method to make HTTP requests inside of yo
 Because Nango will possibly queue and retry your HTTP request (e.g. if it detects a rate-limit issue or the access token needs to be refreshed) it may take a long time for your HTTP request to complete. In certain situations Nango may also transparently retry HTTP requests issues through this method and only resolve the promise once the request has succeeded. In this case it will always add appropriate log messages on the `info` log level.
 :::
 
-#### Authorization of the API call
+#### Authorization of the API call & access token refresh
 When you make an HTTP request through this method Nango will automatically add the necessary authorization to the request. How it does this is dictated by the [`auth_mode` as well as the `requests` settings of the integration](reference/configuration.md#integrationsYaml). In the very rare case that you need to interact with this take a look at [guide on requests authorization](guides/auth.md#requestAuth) but 99% of times it should just work™️.
+
+If the authentication method of the Integration is set to "OAuth 2" NangoAction will check the freshness of the access token before every HTTP call. If the token needs to be refreshed (because it has already expired or will expire soon) this will be done before the HTTP call executes. Due to this some HTTP calls may take longer to complete. If there is an error during the refresh process an exception will be thrown, which, if left unhandled by your action, results in the action failing.
 
 #### Parameter reference
 | Parameter | Example value | Description |
@@ -95,8 +103,20 @@ Nango will automatically log details of every HTTP request sent and responses re
 Nango automatically sets a timeout on every HTTP request based on the timeout configuration you specify. If a request fails due to a timeout it's promise will be rejected. Please check the documentation on [`default_http_request_timeout_seconds` in `nango-config.yaml`](reference/configuration.md#nangoConfigYaml) as well the documentation on [`http_request_timeout_seconds` in the integration config](reference/configuration.md#integrationsYaml) for details on how to set the timeout.
 
 #### Returned promise & response object
-Calling `httpRequest` returns a promise that resolves when the HTTP request finishes. Nango will only reject the promise if the HTTP request failed, e.g. due to a network issue. So even a 404 or 500 response will lead to a resolved promise.
-Nango returns the full [Axios response object](https://axios-http.com/docs/res_schema) to you when the request finishes, please check the linked documentation for a full reference.
+Calling `httpRequest` returns a promise that resolves when the HTTP request finishes. Nango will only reject the promise if the HTTP request failed, e.g. due to a network issue. **So even a 404 or 500 response will lead to a resolved promise.**
+Nango returns the full [Axios response object](https://axios-http.com/docs/res_schema) to you when the promise resolves, please check the linked documentation for a full reference.
+
+In addition to the standard Axios response object properties Nango will add a `json` property with the result of `JSON.parse(response.data)` to the response object if the returned body data could be parsed as JSON:
+```ts
+const response = await this.httpRequest('/example', 'GET');
+
+if (response.json) { // The data in "response.data" could be parsed as JSON
+    const hello = `Yay JSON, you can directly access properties like ${response.json.name}`;
+} else { // "response.data" does not appear to be valid JSON
+    const hello = `Mhm response.data is actually: ${response.data}`;
+}
+
+```
 
 
 ### this.getCurrentConnection {#getCurrentConnection}

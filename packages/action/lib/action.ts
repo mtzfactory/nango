@@ -10,7 +10,8 @@ import {
     NangoIntegrationAuthConfigOAuth1,
     NangoIntegrationAuthModes,
     NangoIntegrationConfig,
-    NangoOAuth1Credentials
+    NangoOAuth1Credentials,
+    NangoOAuth2Credentials
 } from '@nangohq/core';
 import * as core from '@nangohq/core';
 import type * as winston from 'winston';
@@ -22,12 +23,22 @@ export interface NangoHttpResponse<T = any, D = any> extends AxiosResponse<T, D>
     json?: Record<string, any>;
 }
 
+export interface ConnectionsManager {
+    refreshOauth2CredentialsIfNeeded(
+        credentials: NangoOAuth2Credentials,
+        userId: string,
+        integration: string,
+        integrationConfig: NangoIntegrationConfig
+    ): Promise<NangoOAuth2Credentials>;
+}
+
 class NangoAction {
     private nangoConfig: NangoConfig;
     private integrationConfig: NangoIntegrationConfig;
     private userConnection: NangoConnection;
     private axiosInstance: Axios;
     private actionName: string;
+    private connectionsManagerInstance: ConnectionsManager;
 
     private executionStartTime: [number, number];
 
@@ -37,6 +48,7 @@ class NangoAction {
         nangoConfig: NangoConfig,
         integrationConfig: NangoIntegrationConfig,
         userConnection: NangoConnection,
+        connectionsManager: ConnectionsManager,
         logger: winston.Logger,
         actionName: string
     ) {
@@ -45,6 +57,7 @@ class NangoAction {
         this.nangoConfig = nangoConfig;
         this.integrationConfig = integrationConfig;
         this.userConnection = userConnection;
+        this.connectionsManagerInstance = connectionsManager;
         this.logger = logger;
         this.actionName = actionName;
 
@@ -79,6 +92,24 @@ class NangoAction {
 
         const fullURL = new URL(endpoint, this.integrationConfig.requests.base_url).href;
 
+        // Check if we have an OAuth2 integration. If so, refresh the access token if needed.
+        if (this.integrationConfig.auth.auth_mode === NangoIntegrationAuthModes.OAuth2) {
+            // TODO: This can shoot, we should wrap it and retry if (depending on the error) if it fails.
+            // As is it will abort the whole action call if a refresh fails (e.g. because the refresh server is down)
+            const newCredentials = await this.connectionsManagerInstance.refreshOauth2CredentialsIfNeeded(
+                this.userConnection.credentials as NangoOAuth2Credentials,
+                this.userConnection.userId,
+                this.userConnection.integration,
+                this.integrationConfig
+            );
+
+            if (newCredentials !== this.userConnection.credentials) {
+                this.userConnection.credentials = newCredentials;
+                this.logger.info(`Successfully refreshed OAuth 2 access token`);
+            }
+        }
+
+        // Interpolation for the variables in the "requests" part of the integration config
         const interpolationVariables: Record<string, any> = {};
         if (this.integrationConfig.app_api_key) {
             interpolationVariables['app_api_key'] = this.integrationConfig.app_api_key;
@@ -91,7 +122,6 @@ class NangoAction {
             interpolationVariables['oauth_client_secret'] = this.integrationConfig.oauth_client_secret;
         }
 
-        // Add credentials variables
         const userCredentials = this.userConnection.credentials;
         switch (userCredentials.type) {
             case NangoIntegrationAuthModes.OAuth2:

@@ -5,11 +5,15 @@
 import {
     NangoIntegrationAuthConfigOAuth1,
     NangoIntegrationAuthConfigOAuth2,
+    NangoIntegrationAuthModes,
     NangoIntegrationConfig,
+    NangoOAuth2Credentials,
     OAuthAuthorizationMethod,
     OAuthBodyFormat
 } from '@nangohq/core';
 import oAuth1 from 'oauth';
+import { AuthorizationCode } from 'simple-oauth2';
+import { ConnectionsManager } from '../connections-manager.js';
 
 type OAuth1RequestTokenResult = {
     request_token: string;
@@ -175,4 +179,33 @@ export function getSimpleOAuth2ClientConfig(integrationConfig: NangoIntegrationC
     };
 
     return config;
+}
+
+export async function refreshOAuth2Credentials(
+    credentials: NangoOAuth2Credentials,
+    integrationConfig: NangoIntegrationConfig
+): Promise<NangoOAuth2Credentials> {
+    const client = new AuthorizationCode(getSimpleOAuth2ClientConfig(integrationConfig));
+    const oldAccessToken = client.createToken({
+        access_token: credentials.accessToken,
+        expires_at: credentials.expiresAt,
+        refresh_token: credentials.refreshToken
+    });
+
+    let additionalParams = {};
+    if (integrationConfig.auth.token_params) {
+        additionalParams = integrationConfig.auth.token_params;
+    }
+
+    try {
+        const rawNewAccessToken = await oldAccessToken.refresh(additionalParams);
+        const newNangoCredentials = ConnectionsManager.getInstance().parseRawCredentials(
+            rawNewAccessToken.token,
+            NangoIntegrationAuthModes.OAuth2
+        ) as NangoOAuth2Credentials;
+
+        return newNangoCredentials;
+    } catch (e) {
+        throw new Error(`There was a problem refreshing the OAuth 2 credentials, operation failed: ${(e as Error).message}`);
+    }
 }

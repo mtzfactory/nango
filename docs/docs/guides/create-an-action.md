@@ -73,6 +73,14 @@ return { status: response.status, statusText: response.statusText };
 Note that the returned data here is just an example: You can return any data you want as long as it is JSON serializable and Nango will return it in the `triggerAction` call in your application. You can find more details on input & return values from actions in the [NangoAction reference](reference/actions.md#inputReturnValues).
 
 
+## Diving deeper: More complex Action examples
+Actions in Nango are typically small, well contained pieces of code. But they can, and do, get a bit more complex than the very simple and straightforward example above.
+
+To get a better idea of what is possible with Actions in Nango, and to really understand the execution framework they run in, we recommend you take a look at these resources:
+- The [Nango Action reference](reference/actions.md) explains the execution environment, available methods & behaviours in detail. If you are unsure how something works this is the place to start
+- Take a look at the [Hubspot contacts importer example](https://github.com/NangoHQ/nango/tree/main/examples/hubspot-contacts-import) for an example of a more complex Action with multiple HTTP calls, dynamic requests construction and an example of retrieving paged content.
+- [Nango's own Nango Folder](https://github.com/NangoHQ/nango/tree/main/nango-integrations) also contains a number of different Actions doing everything from sending Slack messages and tweets to importing larger amounts of data.
+
 ## Next steps
 
 Congratulations, your Integration now has an Action and is ready to be called from your code.

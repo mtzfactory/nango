@@ -8,8 +8,7 @@ versions:
             auth_mode: OAUTH2
             authorization_url: https://app.hubspot.com/oauth/authorize
             token_url: https://api.hubapi.com/oauth/v1/token
-            token_params:
-                grant_type: authorization_code
+
         requests:
             base_url: https://api.hubapi.com/
             headers:

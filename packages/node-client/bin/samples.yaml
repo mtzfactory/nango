@@ -19,7 +19,7 @@ samples:
         action: get-all-contacts
         skipRegister: true
         input:
-            #limit: 86
+            limit: 86
     twitter:
         integration: twitter
         action: tweet

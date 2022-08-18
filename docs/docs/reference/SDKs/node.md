@@ -286,7 +286,7 @@ Let's look at each parameter:
 - `userId` is the id of the user for which the action should be called. This must be an id for which a connection was registered for this integration prior to calling `triggerAction`
 - `input` is any input that should be passed to the action for its execution. Note that the object you pass in here **must be JSON serializable**.
 
-When the promise resolves it does so with a [`NangoMessageHandlerResult` object](#nangoMessageHandlerResult). In case of success, the `returnValue` of this object will be whatever has been [returned by the `executeAction` method](reference/actions.md#inputReturnValues).
+When the promise resolves or rejects it does so with a [`NangoMessageHandlerResult` object](#nangoMessageHandlerResult). In case of success, the `returnValue` of this object will be whatever has been [returned by the `executeAction` method](reference/actions.md#inputReturnValues). Note that Actions can (and will) also fail, for instance if the user has revoked authorization of your Integration or another unrecoverable issue is encountered during Action execution. **You should always expect and handle the error case as well!**
 
 ```ts
 // Usual shorthand form

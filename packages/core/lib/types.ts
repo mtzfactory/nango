@@ -166,6 +166,16 @@ export interface NangoIntegrationRequestsConfig {
 }
 
 //////////////////////
+// ConnectionsManager
+//////////////////////
+
+export interface NangoCredentialsRefresh {
+    integration: string;
+    userId: string;
+    promise: Promise<NangoOAuth2Credentials>;
+}
+
+//////////////////////
 // Client <-> Server Messages
 //////////////////////
 
