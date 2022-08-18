@@ -57,7 +57,7 @@ Soon, we plan to support:
 
 ## 📘 Blueprints
 
-Our [22+ Blueprints](https://docs.nango.dev/blueprint-catalog/blueprint-overview), such as [Intercom](https://docs.nango.dev/blueprint-catalog/blueprint-intercom), [Airtable](https://docs.nango.dev/blueprint-catalog/blueprint-airtable), [Asana](https://docs.nango.dev/blueprint-catalog/blueprint-asana), [Hubspot](https://docs.nango.dev/blueprint-catalog/blueprint-hubspot) or [Xero](https://docs.nango.dev/blueprint-catalog/blueprint-xero), help you kickstart your next integration.
+Our [22+ Blueprints](https://docs.nango.dev/blueprint-catalog/blueprint-overview), such as [Intercom](https://docs.nango.dev/blueprint-catalog/blueprint-intercom), [Airtable](https://docs.nango.dev/blueprint-catalog/blueprint-airtable), [Asana](https://docs.nango.dev/blueprint-catalog/blueprint-asana), [Hubspot](https://docs.nango.dev/blueprint-catalog/blueprint-hubspot) or [Xero](https://docs.nango.dev/blueprint-catalog/blueprint-xero), help you kickstart your next integration.  
 Add two lines of code to your frontend & Nango config (see Quickstart) and you get:
 
 -   Builtin & pre-configured OAuth flow (see Quickstart)
@@ -89,6 +89,19 @@ nango.triggerAction('slack', 'notify', userId, {
 });
 ```
 
+<details>
+<summary>Tell me more about these "actions" that get triggered</summary>
+</br>
+Actions are lambda functions with your code that interacts with the external API. They are stored in your repo and run in the Nango server in a special runtime that handles auth, retries, rate-limits, logging, queuing etc. for you.</br></br>
+<b>Some examples of actions:</b>
+<ul>
+<li>The code which powers the "notify" action above <a href="https://github.com/NangoHQ/nango/blob/main/nango-integrations/slack/notify.action.ts" >looks like this</a></br></li>
+<li>This one <a href="https://github.com/NangoHQ/nango/blob/main/examples/hubspot-contacts-import/nango-integrations/hubspot/get-all-contacts.action.ts" >downloads all contacts from a customer's Hubspot CRM</a></li>
+<li>And this <a href="https://github.com/NangoHQ/nango/blob/main/nango-integrations/github/star.action.ts">stars a repo on GitHub</a>
+</ul>
+To learn more take a look at the <a href="https://docs.nango.dev/architecture">Nango architecture</a>
+</details>
+
 And in your frontend, run a full OAuth flow with a single line of code (using Nango's builtin OAuth server):
 
 ```js
@@ -112,4 +125,5 @@ nango
 ⭐  Like Nango? Follow our development by starring us here on GitHub ⭐
 
 -   Understand Nango with the [Architecture](https://docs.nango.dev/architecture)
+-   Check some examples in the [examples folder](https://github.com/NangoHQ/nango/tree/main/examples)
 -   Please share your feedback on the [Slack community](https://nango.dev/slack)!
