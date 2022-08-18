@@ -1,8 +1,8 @@
 {
-    "label": "Blueprint Catalog",
+    "label": "Blueprints Catalog",
     "position": 9,
     "link": {
         "type": "generated-index",
-        "description": "Leverage Blueprints for common standard use-cases."
+        "description": "Leverage Blueprints to quickly get up and running for many APIs"
     }
 }

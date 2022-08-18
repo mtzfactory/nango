@@ -90,6 +90,10 @@ const config = {
             label: 'Docs',
           },
           {
+            label: 'Blueprints',
+            to: '/category/blueprints-catalog'
+          },
+          {
             label: 'Community Slack',
             href: 'https://nango.dev/slack',
             position: 'right',
@@ -114,6 +118,14 @@ const config = {
               {
                 label: 'Quickstart 🚀',
                 to: '/quickstart/node',
+              },
+              {
+                label: 'Architecture',
+                to: '/architecture',
+              },
+              {
+                label: 'Blueprints Catalog',
+                to: '/category/blueprints-catalog',
               },
             ],
           },
