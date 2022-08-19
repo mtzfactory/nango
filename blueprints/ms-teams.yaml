@@ -9,6 +9,10 @@ versions:
             authorization_url: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
             token_url: https://login.microsoftonline.com/common/oauth2/v2.0/token
 
+            authorization_params:
+                response_type: code
+                response_mode: query
+
         requests:
             base_url: https://graph.microsoft.com/v1.0/
             headers:

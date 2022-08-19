@@ -72,3 +72,15 @@ integrations:
         oauth_client_secret: ${DISCORD_CLIENT_SECRET}
         oauth_scopes:
             - identify
+
+    ms-teams:
+        extends_blueprint: ms-teams:v0
+        log_level: debug
+
+        oauth_client_id: 90d48712-eaa6-4e68-8cd9-100db5c32e38
+        oauth_client_secret: ${MS_TEAMS_CLIENT_SECRET}
+        oauth_scopes:
+            - offline_access
+            - Team.ReadBasic.All
+            - Channel.ReadBasic.All
+            - ChannelMessage.Send
