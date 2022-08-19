@@ -57,7 +57,7 @@ Soon, we plan to support:
 
 ## 📘 Blueprints
 
-Our [22+ Blueprints](https://docs.nango.dev/blueprint-catalog/blueprint-overview), such as [Intercom](https://docs.nango.dev/blueprint-catalog/blueprint-intercom), [Airtable](https://docs.nango.dev/blueprint-catalog/blueprint-airtable), [Asana](https://docs.nango.dev/blueprint-catalog/blueprint-asana), [Hubspot](https://docs.nango.dev/blueprint-catalog/blueprint-hubspot) or [Xero](https://docs.nango.dev/blueprint-catalog/blueprint-xero), help you kickstart your next integration.  
+Our [27+ Blueprints](https://docs.nango.dev/blueprint-catalog/blueprint-overview), such as [Intercom](https://docs.nango.dev/blueprint-catalog/blueprint-intercom), [Airtable](https://docs.nango.dev/blueprint-catalog/blueprint-airtable), [Asana](https://docs.nango.dev/blueprint-catalog/blueprint-asana), [Hubspot](https://docs.nango.dev/blueprint-catalog/blueprint-hubspot) or [Xero](https://docs.nango.dev/blueprint-catalog/blueprint-xero), help you kickstart your next integration.  
 Add two lines of code to your frontend & Nango config (see Quickstart) and you get:
 
 -   Builtin & pre-configured OAuth flow (see Quickstart)

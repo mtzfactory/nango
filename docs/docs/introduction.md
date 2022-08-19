@@ -42,7 +42,7 @@ Native integrations designate the features in your product, for the benefit of y
     <div>
     Nango is fully API agnostic and works with every HTTP based API. Writing an Integration for an API with Nango is typically at least as fast a using a standard HTTP requests library.
     <br/>
-    In addition Nango has 25+ Blueprints for commonly used APIs, with these you get OAuth, token refreshes, rate-limit handling and error handling just by adding a single line to your config file. We are expanding the Blueprints library every week. 
+    In addition Nango has <a href="/category/blueprints-catalog">27+ Blueprints</a> for commonly used APIs, with these you get OAuth, token refreshes, rate-limit handling and error handling just by adding a single line to your config file. We are expanding the Blueprints library every week. 
     </div>
   </div>
 </details>
