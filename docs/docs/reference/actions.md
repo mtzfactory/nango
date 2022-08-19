@@ -27,7 +27,13 @@ It's return value will also be passed back as the return value of the `triggerAc
 ## Error handling & exceptions in Actions
 If your action code encounters an error which prevents it from completing its work you may throw an exception. Some automatic background processes, such as the OAuth 2 access token refresh, may also throw exceptions if they encounter unrecoverable issues. These are always clearly marked in their error message so you can tell that these exceptions were thrown by Nango and not your action code.
 
-The Nango server itself catches any unhandled exceptions from the action execution and will return it as an error back to your main application. It will also log the error with the log level `error` to the Nango server log. You can find the details of this error object in the [Nango SDK reference](reference/SDKs/node.md#nangoMessageHandlerResult).
+The Nango server itself catches any unhandled exceptions from the action execution and will return it as an error back to your main application. It will also log the error with the log level `error` to the Nango server log.
+
+```ts
+override async executeAction(input: any) {
+    throw new Error('I am an error message that will get logged and passed back to the main application');
+}
+```
 
 
 ## Available properties

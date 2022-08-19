@@ -45,7 +45,7 @@ export default class Nango {
         userId: string,
         credentials: NangoAuthCredentials,
         additionalConfig?: Record<string, unknown>
-    ): Promise<NangoMessageHandlerResult<undefined>> {
+    ): Promise<undefined> {
         const msg = {
             integration: integration,
             userId: userId,
@@ -57,11 +57,7 @@ export default class Nango {
         return this.sendMessageToServer(msg);
     }
 
-    public async updateConnectionCredentials(
-        integration: string,
-        userId: string,
-        credentials: NangoAuthCredentials
-    ): Promise<NangoMessageHandlerResult<undefined>> {
+    public async updateConnectionCredentials(integration: string, userId: string, credentials: NangoAuthCredentials): Promise<undefined> {
         const msg = {
             integration: integration,
             userId: userId,
@@ -72,11 +68,7 @@ export default class Nango {
         return this.sendMessageToServer(msg);
     }
 
-    public async updateConnectionConfig(
-        integration: string,
-        userId: string,
-        additionalConfig: Record<string, unknown>
-    ): Promise<NangoMessageHandlerResult<undefined>> {
+    public async updateConnectionConfig(integration: string, userId: string, additionalConfig: Record<string, unknown>): Promise<undefined> {
         const msg = {
             integration: integration,
             userId: userId,
@@ -87,7 +79,7 @@ export default class Nango {
         return this.sendMessageToServer(msg);
     }
 
-    public async getConnectionsForUserId(userId: string): Promise<NangoMessageHandlerResult<NangoConnectionPublic[]>> {
+    public async getConnectionsForUserId(userId: string): Promise<NangoConnectionPublic[]> {
         const msg = {
             userId: userId,
             action: NangoMessageAction.GET_USER_ID_CONNECTIONS
@@ -96,7 +88,7 @@ export default class Nango {
         return this.sendMessageToServer(msg);
     }
 
-    public async getConnectionsForIntegration(integration: string): Promise<NangoMessageHandlerResult<NangoConnectionPublic[]>> {
+    public async getConnectionsForIntegration(integration: string): Promise<NangoConnectionPublic[]> {
         const msg = {
             integration: integration,
             action: NangoMessageAction.GET_INTEGRATION_CONNECTIONS
@@ -105,12 +97,7 @@ export default class Nango {
         return this.sendMessageToServer(msg);
     }
 
-    public async triggerAction(
-        integration: string,
-        triggerAction: string,
-        userId: string,
-        input: Record<string, unknown>
-    ): Promise<NangoMessageHandlerResult<any>> {
+    public async triggerAction(integration: string, triggerAction: string, userId: string, input: Record<string, unknown>): Promise<any> {
         const msg = {
             integration: integration,
             triggeredAction: triggerAction,
@@ -154,10 +141,10 @@ export default class Nango {
         );
     }
 
-    private async sendMessageToServer(nangoMsg: NangoMessage): Promise<NangoMessageHandlerResult<any>> {
+    private async sendMessageToServer(nangoMsg: NangoMessage): Promise<any> {
         let correlationId: string = core.makeId(8);
 
-        let promise = new Promise<NangoMessageHandlerResult<any>>((resolve, reject) => {
+        let promise = new Promise<any>((resolve, reject) => {
             this.correlationIdToPromise[correlationId] = { resolve: resolve, reject: reject };
 
             this.channel?.sendToQueue(this.sendQueueId, Buffer.from(JSON.stringify(nangoMsg), 'utf8'), {

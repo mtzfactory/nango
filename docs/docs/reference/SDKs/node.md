@@ -15,6 +15,12 @@ It is written in TypeScript and includes types in its npm package for direct use
 
 If you want to go even deeper, the [full source code of node-client](https://github.com/NangoHQ/nango/tree/main/packages/node-client) is available in our GitHub repo (check the `lib` folder for the source files).
 
+## Success and error: Results in the Nango SDK {#successError}
+All methods that interact with the Nango server (which is most of them) return a Promise. This promise gets resolved or rejected depending on the result from the server:
+- If the operation succeeded the promise is resolved and the `result` passed in is the return value of the server (see method signatures below for the type).
+- If the operation failed the promise is rejected and the `error` passed in is a string which contains the error message.
+
+
 ## Nango class
 You use the node-client by importing the Nango class into your module:
 
@@ -61,7 +67,7 @@ public async registerConnection(
         userId: string,
         credentials: NangoAuthCredentials,
         additionalConfig?: Record<string, unknown>
-): Promise<NangoMessageHandlerResult<undefined>>
+): Promise<undefined>
 ```
 
 Let's briefly look at each one:
@@ -148,8 +154,6 @@ nango.registerConnection('example', '1', credentials, { config: 'ZZZZZZZ' })
 
 </Tabs>
 
-The result and error variable in the example above are a [`NangoMessageHandlerResult` object](#nangoMessageHandlerResult).
-
 :::info
 Note that connections are unique per user and integration: Attempting to register a connection for the same user id and integration twice will result in an error.
 :::
@@ -166,7 +170,7 @@ public async updateConnectionConfig(
     integration: string,
     userId: string,
     additionalConfig: Record<string, unknown>
-): Promise<NangoMessageHandlerResult<undefined>>
+): Promise<undefined>
 ```
 
 An example call looks like this:
@@ -178,7 +182,7 @@ let newConfig = {
 // Assuming the connection for 'slack' with userId '1' exists
 nango.updateConnectionConfig('example', '1', newConfig)
     .catch((error) => {
-        console.log(`There was a problem: ${error.errorMsg}`);
+        console.log(`There was a problem: ${error}`);
     })
     .then(() => {
         console.log('Config updated successfully');
@@ -193,7 +197,7 @@ public async updateConnectionCredentials(
     integration: string,
     userId: string,
     credentials: NangoAuthCredentials
-): Promise<NangoMessageHandlerResult<undefined>>
+): Promise<undefined>
 ```
 
 An example call looks like this:
@@ -206,7 +210,7 @@ let credentials = {
 // and user with id '1' has an existing Connection:
 nango.updateConnectionCredentials('example', '1', credentials)
     .catch((error) => {
-        console.log(`There was a problem: ${error.errorMsg}`);
+        console.log(`There was a problem: ${error}`);
     })
     .then(() => {
         console.log('Credentials updated successfully');
@@ -218,7 +222,7 @@ Use this method to retrieve all active Connections for a particular userId. Many
 
 ```ts
 public async getConnectionsForUserId(userId: string):
-    Promise<NangoMessageHandlerResult<NangoConnectionPublic[]>>
+    Promise<NangoConnectionPublic[]>
 ```
 
 If a user id does not have any Connections registered in Nango this method will return an empty array.
@@ -226,7 +230,7 @@ If a user id does not have any Connections registered in Nango this method will 
 ```ts
 nango.getConnectionsForUserId('1')
     .catch((error) => {
-        console.log(`There was a problem: ${error.errorMsg}`);
+        console.log(`There was a problem: ${error}`);
     })
     .then((connections) => {
         console.log('The user with id "1" has the following connections setup:', connections);
@@ -250,7 +254,7 @@ This method works the same way as the `getConnectionsForUserId` method above, bu
 
 ```ts
 public async getConnectionsForIntegration(integration: string):
-    Promise<NangoMessageHandlerResult<NangoConnectionPublic[]>>
+    Promise<NangoConnectionPublic[]>
 ```
 
 If a integration does not have any Connections registered in Nango this method will return an empty array.
@@ -258,7 +262,7 @@ If a integration does not have any Connections registered in Nango this method w
 ```ts
 nango.getConnectionsForIntegration('example')
     .catch((error) => {
-        console.log(`There was a problem: ${error.errorMsg}`);
+        console.log(`There was a problem: ${error}`);
     })
     .then((connections) => {
         console.log('The integration "example" has the following connections setup:', connections);
@@ -277,7 +281,7 @@ public async triggerAction(
     triggerAction: string,
     userId: string,
     input: Record<string, unknown>
-): Promise<NangoMessageHandlerResult<any>>
+): Promise<any>
 ```
 
 Let's look at each parameter:
@@ -286,20 +290,20 @@ Let's look at each parameter:
 - `userId` is the id of the user for which the action should be called. This must be an id for which a connection was registered for this integration prior to calling `triggerAction`
 - `input` is any input that should be passed to the action for its execution. Note that the object you pass in here **must be JSON serializable**.
 
-When the promise resolves or rejects it does so with a [`NangoMessageHandlerResult` object](#nangoMessageHandlerResult). In case of success, the `returnValue` of this object will be whatever has been [returned by the `executeAction` method](reference/actions.md#inputReturnValues). Note that Actions can (and will) also fail, for instance if the user has revoked authorization of your Integration or another unrecoverable issue is encountered during Action execution. **You should always expect and handle the error case as well!**
+When the promise resolves, which means the Action trigger was successful, the returned `result` will be whatever has been [returned by the `executeAction` method](reference/actions.md#inputReturnValues). Note that Actions can (and will) also fail, for instance if the user has revoked authorization of your Integration or another unrecoverable issue is encountered during Action execution. In this case the promise will be rejected and the `errror` returned is a string which contains the error message. **You should always expect and handle the error case as well!**
 
 ```ts
-// Usual shorthand form
+// Shorthand form, beware that this can throw exceptions in the case of errors
 let result = await nango.triggerAction('slack', 'notify', 1, { msg: 'Please post this message' });
-console.log(`Got this return value from slack.notify: ${result.returnValue}`);
+console.log(`Got this return value from slack.notify: ${result}`);
 
 // Or handle the promise manually
 nango.triggerAction('slack', 'notify', 1, { msg: 'Please post this message' })
 .then((result) => {
-    // Success, access the return value at result.returnValue
+    // Success, result is what we returned in the action
 })
 .catch((error) => {
-    // Error, learn more by reading error.errorMsg
+    // Error, the "error" variable contains the error message
 });
 ```
 
@@ -313,19 +317,3 @@ nango.close()
 ```
 
 If you do not call `close` nango will keep an open TCP connection which will prevent your node process from exiting automatically.
-
-## NangoMessageHandlerResult object {#nangoMessageHandlerResult}
-All messages sent to the Nango server will return a `NangoMessageHandlerResult` object that contains the result of the message's execution.
-
-It's structure looks like this:
-```ts
-interface NangoMessageHandlerResult<T extends any> {
-    success: boolean;
-    errorMsg?: string;
-    returnValue?: T;
-}
-```
-
-If the operation succeeded `success` is set to `true` and `returnValue` is set to the result of the operation.
-
-If the operation failed `success` is set to `false` and `errorMsg` contains a detailed error message describing the problem.
