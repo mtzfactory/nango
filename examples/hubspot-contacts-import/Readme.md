@@ -1,19 +1,23 @@
 # Nango example: Hubspot Contacts Import
 
-This example demonstrates how Nango can be used to import data from an external API to your application.
+This example demonstrates how Nango can be used to:
+- Authenticate a user with the builtin-in OAuth server
+- Import data from an external API to your application: Here we import all contacts from a Hubspot account
+- Push data back out to an external system: Here we add a note to a contact in Hubspot
+- Store per-user-per-integration configuration data in Nango (here the Hubspot e-mail address of the Note's owner)
 
-In this example we will import all the contacts of a user's Hubspot account and show the contacts in a table in the frontend.
 Of course in a real application you could store the retrieved contacts in your database, link them with other content of your application etc.
 
 ## How to use this example
-Explore the code in this directory if you are curious how such an import works with Nango. Here is an overview of the components:
+Explore the code in this directory if you are curious how these features work with Nango. Here is an overview of the components:
 
-- `app.js` is a small (Express) web server which exposes a REST API for our tiny frontend. Check this file to see all the backend Action with Nango (checking if the user has setup the integration, fetching the contacts)
-- `frontend/index.html` is a tiny frontend. Check this file if you want to see how you can easily trigger an OAuth flow with Nango from your frontend with just 2 lines of code.
+- `app.js` is a small (Express) web server which exposes a REST API for our tiny frontend. Check this file to see all the backend Action with Nango using the Nango SDK
+- `frontend/index.html` is a tiny frontend. Check this file (line 93 & following) if you want to see how you can easily trigger an OAuth flow with Nango from your frontend with just 2 lines of code.
 - `nango-integrations` is the [Nango Folder](https://docs.nango.dev/reference/nango-folder) of this example and it contains
     - `nango-config.yaml` the main Nango configuration file (we don't need to touch it for this simple example)
     - `integrations.yaml` which contains all our Integrations config. Check it out to see how we set our "hubspot" integration up for this example by using the [Hubspot Blueprint](https://docs.nango.dev/blueprint-catalog/blueprint-hubspot)
     - `hubspot/get-all-contacts.action.ts` contains our "get-all-contacts" action for Hubspot and does all the interaction with the Hubspot API. Take a look to see how easy it is to fetch paginated data with Nango
+    - `hubspot/add-contact-note.action.ts` contains our "add-contact-note" action for Hubspot and runs a few different Hubspot API calls to add the note to the Hubspot contact
 
 ### What Nango handles for you
 So why should you use Nango to fetch the Hubspot contacts instead of calling the Hubspot API directly?

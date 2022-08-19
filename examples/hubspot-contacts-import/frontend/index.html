@@ -3,14 +3,36 @@
         <meta charset="utf-8" />
         <title>Nango Hubspot contacts import example</title>
         <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+        <style type="text/css">
+            h2 {
+                margin-top: 50px;
+            }
+
+            form {
+                display: flex;
+                align-items: flex-end;
+            }
+
+            button.small {
+                padding: 10px;
+                width: 100%;
+            }
+        </style>
     </head>
     <body style="width: 1024px; margin-left: auto; margin-right: auto;">
         <noscript>JavaScript is required to proceed with the authentication.</noscript>
         <h1>Nango example: Hubspot contacts importer</h1>
+        <p>This is a simple example that demonstrates how Nango can be used to:</p>
+        <ul>
+            <li>Easily add an OAuth based integration</li>
+            <li>Load data from an external system: Try <b>Import Hubspot contacts</b></li>
+            <li>Push data back into an external system: Try the <b>Add a note to a Hubspot contact</b></li>
+        </ul>
+
         <h2>Integration status</h2>
         <div>
             <div id="integration-missing">
-                <p style="color: red">Integration is not setup, please authenticate via OAuth below</p>
+                <p style="color: red">Integration is not setup, please authenticate via OAuth first to use the features on this page</p>
                 <button id="oauth-button">Start OAuth</button>
                 <p>Result from OAuth:</p>
                 <p id="result">Idle, please start OAuth process</p>
@@ -18,7 +40,24 @@
             <p id="integration-ok" style="color: green">Integration is setup, ready to fetch contacts!</p>
         </div>
 
-        <h2>Hubspot contacts list</h2>
+        <h2>Add a note to a Hubspot contact</h2>
+        <p>First, tell us the e-mail of the Hubspot user which should own the note:</p>
+        <form>
+            <input type="email" placeholder="john@doe.com" id="ownerEmail">
+            <button class="small" id="saveOwnerEmail" style="margin-left: 20px;">Save owner email</button>
+            <p id="saveOwnerResult" style="margin-left: 20px"></p>
+        </form>
+
+        <p>Then save a note (load contacts list below to find a contact id)</p>
+        <form>
+            <input type="text" placeholder="123" id="contactId">
+            <input type="text" placeholder="Type your note here..." id="note" style="margin-left: 20px;">
+            <button class="small" id="addNote" style="margin-left: 20px;">Add Note</button>
+            <p id="addNoteResult" style="margin-left: 20px"></p>
+        </form>
+
+        <h2>Import Hubspot contacts</h2>
+        <p>Use this feature to import all the contacts from the linked Hubspot account</p>
         <div>
             <button id="refresh-contacts">Refresh contacts</button>
         </div>
@@ -41,11 +80,15 @@
 
             reloadIntegrationStatus();
 
+            /* ---------------- OAuth & Integration status ---------------- */
+
             // OAuth process
             var link = document.getElementById('oauth-button');
             link.addEventListener(
                 'click',
-                () => {
+                (e) => {
+
+                    // Trigger the OAuth process
                     var nango = new Nango('http://localhost:3003');
                     nango
                         .connect('hubspot', '1')
@@ -55,7 +98,6 @@
                             reloadIntegrationStatus();
                         })
                         .catch((error) => {
-                            console.log('Error');
                             var resultElement = document.getElementById('result');
                             resultElement.innerHTML = `OAuth error: ${JSON.stringify(error)}`;
                             reloadIntegrationStatus();
@@ -63,6 +105,83 @@
                 },
                 false
             );
+
+            async function reloadIntegrationStatus() {
+                const response = await fetch('/integrationStatus');
+                if (response.status === 200) {
+                    document.getElementById('integration-missing').hidden = true;
+                    document.getElementById('integration-ok').hidden = false;
+                } else {
+                    document.getElementById('integration-missing').hidden = false;
+                    document.getElementById('integration-ok').hidden = true;
+                }
+            }
+
+            /* ---------------- Store owner & add note to Hubspot ---------------- */
+
+            // Store owner email
+            var link = document.getElementById('saveOwnerEmail');
+            link.addEventListener(
+                'click',
+                async (e) => {
+                    e.preventDefault();
+
+                    const body = {
+                        ownerEmail: document.getElementById('ownerEmail').value
+                    };
+
+                    const fetchOptions = {
+                        method: 'POST',
+                        body: JSON.stringify(body),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    };
+
+                    const response = await fetch('/setOwnerEmail', fetchOptions);
+
+                    if (response.status === 200) {
+                        document.getElementById('saveOwnerResult').innerText = `✅ Owner E-mail saved`;
+                    } else {
+                        document.getElementById('saveOwnerResult').innerText = `Error saving owner: ${response.json()}`;
+                    }
+                },
+                false
+            );
+
+            // Add note
+            var link = document.getElementById('addNote');
+            link.addEventListener(
+                'click',
+                async (e) => {
+                    e.preventDefault();
+
+                    const body = {
+                        contactId: document.getElementById('contactId').value,
+                        note: document.getElementById('note').value
+                    };
+
+                    const fetchOptions = {
+                        method: 'POST',
+                        body: JSON.stringify(body),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    };
+
+                    const response = await fetch('/addNote', fetchOptions);
+
+                    if (response.status === 200) {
+                        document.getElementById('addNoteResult').innerText = `✅ Note added: ${document.getElementById('note').value}`;
+                    } else {
+                        document.getElementById('addNoteResult').innerText = `Error adding note: ${response.json()}`;
+                    }
+                },
+                false
+            );
+
+
+            /* ---------------- Import Hubspot contacts ---------------- */
 
             // Reload contacts & then refresh the table
             var link = document.getElementById('refresh-contacts');
@@ -93,17 +212,6 @@
                 },
                 false
             );
-
-            async function reloadIntegrationStatus() {
-                const response = await fetch('/integrationStatus');
-                if (response.status === 200) {
-                    document.getElementById('integration-missing').hidden = true;
-                    document.getElementById('integration-ok').hidden = false;
-                } else {
-                    document.getElementById('integration-missing').hidden = false;
-                    document.getElementById('integration-ok').hidden = true;
-                }
-            }
 
         </script>
     </body>

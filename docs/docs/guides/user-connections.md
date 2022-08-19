@@ -31,10 +31,11 @@ Before we dive in, this is what a Connection object looks like in Nango:
             refresh_token: 'yyyyyyyyyyy',
             server_response: 'I also got returned with the token'
         }
-    }       
+    },       
     additionalConfig: {                     // Additional configuration set by your app for this connection
         sample: 'value'                     // You can store any JSON serializable object here
-    }                     
+    }
+}                     
 ```
 
 ## How to register a new Connection
