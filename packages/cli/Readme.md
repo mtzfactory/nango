@@ -25,7 +25,7 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
 
 ## ⭐ Why
 
-Building native integrations is costly, particularly as you support more integrations, deeper integrations and higher traffic. Most companies end up building the same infrastructure: scheduling, queueing, error handling, retries, authentication, logging, local development environment, CI/CD, etc. Nango's goal is to make integration developers 10x more productive by providing them with this common infrastructure.
+Building native integrations is costly and time consuming, particularly as you support more integrations, deeper integrations and higher traffic. Most companies end up building the same infrastructure: scheduling, queueing, error handling, retries, authentication, logging, local development environment, CI/CD, etc. Nango's goal is to make integration developers 10x more productive by providing them with this common infrastructure.
 
 ## 🎁 A packaged micro-service for native integrations
 
@@ -37,13 +37,13 @@ Nango comes with bullet-proof infrastructure focused on native integrations:
 
 -   📁 A lightweight code framework to standardize integrations development
 -   ⏱ Built-in infrastructure for scheduling, queuing and retries
--   🔒 Builtin OAuth support with UI components for authenticating end-users + token refresh
+-   🔒 Builtin OAuth support with automatic token refresh & UI components
 -   🛠 Delightful local development to test integrations as you code
 -   🔍 Powerful logging, monitoring and debugging
 -   ❤️  Simple setup with a CLI and native SDKs
 -   ⛔️ Automatic rate-limit detection & mitigation
 -   👥 Community-contributed blueprints for common integration use-cases
--   🧩 Universal: Works with any API and any programming language & framework
+-   🧩 Universal: Works with any API, any programming language & framework
 -   💻  Self-hostable, single docker container for easy local development
 
 Soon, we plan to support:
@@ -55,23 +55,52 @@ Soon, we plan to support:
 
 …and many more capabilities.
 
+## 📘 Blueprints
+
+Our [27+ Blueprints](https://docs.nango.dev/blueprint-catalog/blueprint-overview), such as [Intercom](https://docs.nango.dev/blueprint-catalog/blueprint-intercom), [Airtable](https://docs.nango.dev/blueprint-catalog/blueprint-airtable), [Asana](https://docs.nango.dev/blueprint-catalog/blueprint-asana), [Hubspot](https://docs.nango.dev/blueprint-catalog/blueprint-hubspot) or [Xero](https://docs.nango.dev/blueprint-catalog/blueprint-xero), help you kickstart your next integration.  
+Add two lines of code to your frontend & Nango config (see Quickstart) and you get:
+
+-   Builtin & pre-configured OAuth flow (see Quickstart)
+-   Builtin & pre-configured requests authorization
+-   Automatic auth credentials handling & access token refresh
+-   Automatic retries on timeouts
+-   Automatic rate-limit handling
+-   Full access to the API: Use any endpoint & raw requests/response
+-   Community contributed gotchas & learnings which cover everything the API docs missed (add yours too!)
+
+Nango also works with every other API, Blueprints are optional. We add more Blueprints every week.
+
 ## 🚀 Quickstart
 
-Follow our [Quickstart guide](https://docs.nango.dev/quickstart/node) to **build a Slack integration from scratch**!
+Follow our [Quickstart guide](https://docs.nango.dev/quickstart/node) to **build a Slack integration from scratch in 10 minutes**!
 
-With Nango, your integration code will look like this (node.JS example, [see other languages](https://docs.nango.dev/quickstart/other)):
+With Nango, your integration code will look like this (Node.js example, [see other languages](https://docs.nango.dev/quickstart/other)):
 
 ```ts
 import { Nango } from '@nangohq/node-client';
 
 const nango = new Nango();
 
-// Post a message to a Slack channel
+// Actions are defined by you and live in your repo as code
+// For example: Post a message to a Slack channel
 nango.triggerAction('slack', 'notify', userId, {
     channelId: 'XXXXXXX',
     msg: 'Hello @channel, this is a notification triggered by Nango :tada:'
 });
 ```
+
+<details>
+<summary>Tell me more about these "actions" that get triggered</summary>
+</br>
+Actions are lambda functions with your code that interacts with the external API. They are stored in your repo and run in the Nango server in a special runtime that handles auth, retries, rate-limits, logging, queuing etc. for you.</br></br>
+<b>Some examples of actions:</b>
+<ul>
+<li>The code which powers the "notify" action above <a href="https://github.com/NangoHQ/nango/blob/main/nango-integrations/slack/notify.action.ts" >looks like this</a></br></li>
+<li>This one <a href="https://github.com/NangoHQ/nango/blob/main/examples/hubspot-contacts-import/nango-integrations/hubspot/get-all-contacts.action.ts" >downloads all contacts from a customer's Hubspot CRM</a></li>
+<li>And this <a href="https://github.com/NangoHQ/nango/blob/main/nango-integrations/github/star.action.ts">stars a repo on GitHub</a>
+</ul>
+To learn more take a look at the <a href="https://docs.nango.dev/architecture">Nango architecture</a>
+</details>
 
 And in your frontend, run a full OAuth flow with a single line of code (using Nango's builtin OAuth server):
 
@@ -96,4 +125,5 @@ nango
 ⭐  Like Nango? Follow our development by starring us here on GitHub ⭐
 
 -   Understand Nango with the [Architecture](https://docs.nango.dev/architecture)
+-   Check some examples in the [examples folder](https://github.com/NangoHQ/nango/tree/main/examples)
 -   Please share your feedback on the [Slack community](https://nango.dev/slack)!
