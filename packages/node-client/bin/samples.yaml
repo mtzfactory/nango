@@ -5,6 +5,13 @@ samples:
         input:
             channelId: C02MPPQC8FK
             msg: 'Hello @robin, this is your friendly chat bot post to you through Nango :wave:'
+
+    slack-list-channels:
+        integration: slack
+        action: list-channels
+        skipRegister: true
+        input:
+
     github:
         integration: github
         action: star

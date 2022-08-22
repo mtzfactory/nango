@@ -195,7 +195,7 @@ export async function handleTriggerAction(nangoMsg: NangoTriggerActionMessage): 
     }
 
     // Check if the action (file) exists
-    if (integrationsManager.actionExists(nangoMsg.action, nangoMsg.triggeredAction)) {
+    if (!integrationsManager.actionExists(nangoMsg.integration, nangoMsg.triggeredAction)) {
         return createError(
             `Tried to trigger action "${nangoMsg.triggeredAction}" for integration "${nangoMsg.integration}" but the action file does not exist`
         );
