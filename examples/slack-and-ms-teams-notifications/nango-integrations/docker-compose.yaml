@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: nango-rabbit
+        ports:
+            - '5672:5672'
+            - '8082:15672'
+
+    server:
+        image: nangohq/server
+        container_name: nango-server
+        env_file:
+            - .dev-secrets
+        ports:
+            - '3003:3003'
+        volumes:
+            - type: bind
+              source: ${NANGO_INTEGRATIONS_DIR}
+              target: /usr/nango-server/src/nango-integrations
+        depends_on:
+            - rabbitmq

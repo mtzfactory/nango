@@ -1,0 +1,21 @@
+{
+  "name": "nango-example-notifications",
+  "version": "0.0.1",
+  "description": "An example of how to send notifications with Nango",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NangoHQ/nango",
+    "directory": "examples/slack-and-ms-teams-notifications"
+  },
+  "author": "Nango",
+  "license": "SEE LICENSE IN NANGO MAIN REPO LICENSE.MD",
+  "dependencies": {
+    "@nangohq/node-client": "^0.2.1",
+    "express": "^4.18.1"
+  }
+}

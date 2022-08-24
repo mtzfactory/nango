@@ -1,0 +1,22 @@
+integrations:
+    slack:
+        extends_blueprint: slack:v0
+        log_level: debug
+
+        oauth_client_id: '2710526930471.3741879872599' # Replace with your own client id
+        oauth_client_secret: ${SLACK_CLIENT_SECRET} # Make sure this environment variable is set in .dev-secrets file within the nango-integrations folder
+        oauth_scopes:
+            - channels:read
+            - chat:write
+
+    ms-teams:
+        extends_blueprint: ms-teams:v0
+        log_level: debug
+
+        oauth_client_id: 90d48712-eaa6-4e68-8cd9-100db5c32e38 # Replace with your own client id
+        oauth_client_secret: ${MS_TEAMS_CLIENT_SECRET} # Make sure this environment variable is set in .dev-secrets file within the nango-integrations folder
+        oauth_scopes:
+            - offline_access
+            - Team.ReadBasic.All
+            - Channel.ReadBasic.All
+            - ChannelMessage.Send

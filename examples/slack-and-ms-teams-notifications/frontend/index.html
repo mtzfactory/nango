@@ -1,0 +1,280 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Nango Notifications example: Slack & MS Teams</title>
+        <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+        <style type="text/css">
+            h2 {
+                margin-top: 50px;
+            }
+
+            form {
+                display: flex;
+                align-items: flex-end;
+            }
+
+            button.small {
+                padding: 10px;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body style="width: 1024px; margin-left: auto; margin-right: auto;">
+        <noscript>JavaScript is required to proceed with the authentication.</noscript>
+
+        <div>
+            <div style="width: 50%; border-right: 1px lightgray solid;">
+                <h2>Slack configuration</h2>
+                <p>Connect to Slack here to set the integration up & receive notifications there</p>
+                
+                <div id="slack-integration-missing">
+                    <p style="color: red">Integration is not setup, please authenticate via OAuth first</p>
+                    <button id="slack-oauth-button">Start OAuth</button>
+                    <p>Result from OAuth:</p>
+                    <p id="slack-oauth-result">Idle, please start OAuth process</p>
+                </div>
+                <div id="slack-integration-ok">
+                    <p style="color: green">Integration is setup, ready to fetch channels!</p>
+                    
+                    <h4>Select channel:</h4>
+                    <a href="#" id="slack-load-channels">Load channels</a>
+                    <div style="display:flex">
+                        <select id="slack-channel">
+                        </select>
+                        <button id="slack-save-channel">Save channel</button>
+                    </div>
+                    <p id="slack-save-channel-result"></p>
+                </div>
+
+            </div>
+            <div style="width: 50%;">
+            </div>
+        </div>
+
+        <script type="module">
+            import Nango from 'https://cdn.jsdelivr.net/npm/@nangohq/frontend/dist/index.js';
+
+            reloadIntegrationStatus();
+
+            /* ---------------- OAuth & Integration status ---------------- */
+
+            // OAuth process Slack
+            var link = document.getElementById('slack-oauth-button');
+            link.addEventListener(
+                'click',
+                (e) => {
+
+                    // Trigger the OAuth process
+                    var nango = new Nango('http://localhost:3003');
+                    nango
+                        .connect('slack', '1')
+                        .then((result) => {
+                            var resultElement = document.getElementById('slack-oauth-result');
+                            resultElement.innerHTML = `OAuth success: ${JSON.stringify(result)}`;
+                            reloadIntegrationStatus();
+                        })
+                        .catch((error) => {
+                            var resultElement = document.getElementById('slack-oauth-result');
+                            resultElement.innerHTML = `OAuth error: ${JSON.stringify(error)}`;
+                            reloadIntegrationStatus();
+                        });
+                },
+                false
+            );
+
+            // OAuth process Teams
+            var link = document.getElementById('teams-oauth-button');
+            link.addEventListener(
+                'click',
+                (e) => {
+
+                    // Trigger the OAuth process
+                    var nango = new Nango('http://localhost:3003');
+                    nango
+                        .connect('ms-teams', '1')
+                        .then((result) => {
+                            var resultElement = document.getElementById('teams-oauth-result');
+                            resultElement.innerHTML = `OAuth success: ${JSON.stringify(result)}`;
+                            reloadIntegrationStatus();
+                        })
+                        .catch((error) => {
+                            var resultElement = document.getElementById('teams-oauth-result');
+                            resultElement.innerHTML = `OAuth error: ${JSON.stringify(error)}`;
+                            reloadIntegrationStatus();
+                        });
+                },
+                false
+            );
+
+            async function reloadIntegrationStatus() {
+                let response = await fetch('/integrationStatus?integration=slack');
+                if (response.status === 200) {
+                    document.getElementById('slack-integration-missing').hidden = true;
+                    document.getElementById('slack-integration-ok').hidden = false;
+                } else {
+                    document.getElementById('slack-integration-missing').hidden = false;
+                    document.getElementById('slack-integration-ok').hidden = true;
+                }
+
+                response = await fetch('/integrationStatus?integration=ms-teams');
+                if (response.status === 200) {
+                    document.getElementById('teams-integration-missing').hidden = true;
+                    document.getElementById('teams-integration-ok').hidden = false;
+                } else {
+                    document.getElementById('teams-integration-missing').hidden = false;
+                    document.getElementById('teams-integration-ok').hidden = true;
+                }
+            }
+
+            /* ---------------- Load channels & save favorite channel ---------------- */
+
+            // Load Slack channels
+            var link = document.getElementById('slack-load-channels');
+            link.addEventListener(
+                'click',
+                async (e) => {
+                    e.preventDefault();
+
+                    const response = await fetch('/listChannels?integration=slack');
+
+                    if (response.status === 200) {
+                        let channelOptions = '';
+                        for (const channel of response.json()) {
+                            channelOptions += `<option value="${channel.id}">${channel.name}</option>`;
+                        }
+                        document.getElementById('slack-channel').innerText = channelOptions;
+                    } else {
+                        document.getElementById('slack-channel').innerText = '';
+                        document.getElementById('slack-save-channel-result').innerText = 'There was an error retrieving the slack channels: '+ response.body;
+                    }
+                },
+                false
+            );
+
+            // Load Teams channels
+            var link = document.getElementById('teams-load-channels');
+            link.addEventListener(
+                'click',
+                async (e) => {
+                    e.preventDefault();
+
+                    const response = await fetch('/listChannels?integration=ms-teams');
+
+                    if (response.status === 200) {
+                        let channelOptions = '';
+                        for (const team of response.json()) {
+                            for (const channel of team.teamChannels) {
+                                channelOptions += `<option value="${team.teamId}-:-${channel.channelId}">${team.teamDisplayName}: ${channel.channelDisplayName}</option>`;
+                            }
+                        }
+                        document.getElementById('teams-channel').innerText = channelOptions;
+                    } else {
+                        document.getElementById('teams-channel').innerText = '';
+                        document.getElementById('teams-save-channel-result').innerText = 'There was an error retrieving the teams channels: '+ response.body;
+                    }
+                },
+                false
+            );
+
+            // Save favorite slack channel
+            var link = document.getElementById('slack-save-channel');
+            link.addEventListener(
+                'click',
+                async (e) => {
+                    e.preventDefault();
+
+                    const body = {
+                        channelId: document.getElementById('slack-channel').value,
+                    };
+
+                    const fetchOptions = {
+                        method: 'POST',
+                        body: JSON.stringify(body),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    };
+
+                    const response = await fetch('/saveChannel?integration=slack', fetchOptions);
+
+                    if (response.status === 200) {
+                        document.getElementById('slack-save-channel-result').innerText = `✅  Slack channel saved`;
+                    } else {
+                        document.getElementById('slack-save-channel-result').innerText = `Error saving channel: ${response.json()}`;
+                    }
+                },
+                false
+            );
+
+            // Save favorite Teams channel
+            var link = document.getElementById('teams-save-channel');
+            link.addEventListener(
+                'click',
+                async (e) => {
+                    e.preventDefault();
+
+                    const valueString = document.getElementById('teams-channel').value;
+                    const split = valueString.split('-:-');
+                    const teamId = split[0];
+                    const channelId = split[1];
+
+                    const body = {
+                        teamId: teamId,
+                        channelId: channelId
+                    };
+
+                    const fetchOptions = {
+                        method: 'POST',
+                        body: JSON.stringify(body),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    };
+
+                    const response = await fetch('/saveChannel?integration=ms-teams', fetchOptions);
+
+                    if (response.status === 200) {
+                        document.getElementById('teams-save-channel-result').innerText = `✅  Slack channel saved`;
+                    } else {
+                        document.getElementById('teams-save-channel-result').innerText = `Error saving channel: ${response.json()}`;
+                    }
+                },
+                false
+            );
+
+
+            /* ---------------- Import Hubspot contacts ---------------- */
+
+            // Reload contacts & then refresh the table
+            var link = document.getElementById('refresh-contacts');
+            link.addEventListener(
+                'click',
+                async () => {
+                    document.getElementById('refresh-status').innerText = 'Refresh in progress, please wait. This can take several seconds...';
+                    const response = await fetch('/refreshContacts');
+                    const jsonBody = await response.json();
+
+                    const tableBody = document.getElementById('contacts-table-body');
+                    tableBody.innerHTML = '';
+
+                    let newBody = '';
+                    for (const contact of jsonBody) {
+                        newBody += `
+                            <tr>
+                                <td>${contact.id}</td>
+                                <td>${contact.properties.firstname}</td>
+                                <td>${contact.properties.lastname}</td>
+                            </tr>
+                            `;
+                    }
+
+                    tableBody.innerHTML = newBody;
+
+                    document.getElementById('refresh-status').innerText = `Refresh complete, currently showing ${jsonBody.length} contacts.`;
+                },
+                false
+            );
+
+        </script>
+    </body>
+</html>

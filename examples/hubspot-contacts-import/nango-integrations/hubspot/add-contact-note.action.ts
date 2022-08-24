@@ -20,7 +20,7 @@ class HubspotAddContactNoteAction extends NangoAction {
         // Check if the user has an owner e-mail address set on this Nango Connection
         // To learn more about config stored on Nango Connections check this guide: https://docs.nango.dev/guides/user-connections
         let ownerId = '';
-        const userConnection = this.getCurrentConnectionConfig();
+        const userConnection = this.getCurrentConnection();
         if (userConnection.additionalConfig && userConnection.additionalConfig.ownerEmail) {
             // Query hubspot to turn the owner e-mail into an owner id
             // Check API docs for details: https://developers.hubspot.com/docs/api/crm/owners
