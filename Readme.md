@@ -4,10 +4,10 @@
 
 </div>
 
-<h1 align="center">Open-source infrastructure for native integrations</h1>
+<h1 align="center">A single API for all CRM integrations</h1>
 
 <div align="center">
-Native, customer-facing integrations for your B2B SaaS made simple, reliable and extensible.
+Nango is an open source API that unlocks many CRM integrations at once. Close more deals, minimize engineering work.
 </div>
 
 <p align="center">
@@ -16,7 +16,9 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
     <br />
 
   <br/>
-    <a href="https://docs.nango.dev/quickstart/node">Quickstart 🚀</a>
+    <a href="https://docs.nango.dev/docs/supported-crms">Supported CRMs</a>
+    ·
+    <a href="https://docs.nango.dev/reference">Standard API Endpoints</a>
     ·
     <a href="https://github.com/nangohq/nango/issues">Report Bug</a>
     ·
@@ -25,105 +27,58 @@ Native, customer-facing integrations for your B2B SaaS made simple, reliable and
 
 ## ⭐ Why
 
-Building native integrations is costly and time consuming, particularly as you support more integrations, deeper integrations and higher traffic. Most companies end up building the same infrastructure: scheduling, queueing, error handling, retries, authentication, logging, local development environment, CI/CD, etc. Nango's goal is to make integration developers 10x more productive by providing them with this common infrastructure.
+Building CRM integrations one-by-one is slow and costly.
 
-## 🎁 A packaged micro-service for native integrations
+There are hundreds of CRMs out there with very different APIs. For each one, you need to understand their API reference, data modeling, developer approval process, authentication system, rate limiting, etc.
 
-Nango is an independent micro-service that centralizes interactions with external APIs. It can be run locally, self-hosted or managed by Nango Cloud. Nango runs your own integration-specific code, abstracting away the common infrastructure across integrations. It supports integrations of arbitrary complexity and scale, while remaining simple to use, reliable and extensible.
+Most companies end up building the same infrastructure: scheduling, queueing, error handling, retries, authentication, logging, local development environment, CI/CD, etc.
 
-## ✅ Features
+Nango's goal is to make integration developers 10x more productive by providing them with a single CRM API, abstracting away all external CRM APIs and underlying integrations infrastructure.
 
-Nango comes with bullet-proof infrastructure focused on native integrations:
+## ✅ How It Works
 
--   📁 A lightweight code framework to standardize integrations development
--   ⏱ Built-in infrastructure for scheduling, queuing and retries
--   🔒 Builtin OAuth support with automatic token refresh & UI components
--   🛠 Delightful local development to test integrations as you code
--   🔍 Powerful logging, monitoring and debugging
--   ❤️  Simple setup with a CLI and native SDKs
--   ⛔️ Automatic rate-limit detection & mitigation
--   👥 Community-contributed blueprints for common integration use-cases
--   🧩 Universal: Works with any API, any programming language & framework
--   💻  Self-hostable, single docker container for easy local development
+1. Simply embed Nango's UI component to let users pick and authenticate to their favorite CRM.
 
-Soon, we plan to support:
+<div align="center">
+  
+  ![How To - Image 1](https://uploads-ssl.webflow.com/62a9f4a7a5a3d9ef1439982a/6311bbe9fab5d2063576bc61_howto1.png)
 
--   📺  Central dashboard with sync history, API errors, latency, live connections, etc.
--   🧠  Unified endpoints for multiple 3rd-party APIs & smart data transformation
--   🚨 Advanced alerting & monitoring, exportable to Datadog, Sentry, etc.
--   ☁️ Cloud-hosted edition
+</div>
 
-…and many more capabilities.
+2. Nango will periodically perform two-way syncs with all connected CRMs, abstracting away the various CRM APIs and complex infrastructure.
 
-## 📘 Blueprints
+<div align="center">
+  
+  ![How To - Image 2](https://uploads-ssl.webflow.com/62a9f4a7a5a3d9ef1439982a/6311bbe956585b4cffb1756a_howto2.png)
 
-Our [27+ Blueprints](https://docs.nango.dev/blueprint-catalog/blueprint-overview), such as [Intercom](https://docs.nango.dev/blueprint-catalog/blueprint-intercom), [Airtable](https://docs.nango.dev/blueprint-catalog/blueprint-airtable), [Asana](https://docs.nango.dev/blueprint-catalog/blueprint-asana), [Hubspot](https://docs.nango.dev/blueprint-catalog/blueprint-hubspot) or [Xero](https://docs.nango.dev/blueprint-catalog/blueprint-xero), help you kickstart your next integration.  
-Add two lines of code to your frontend & Nango config (see Quickstart) and you get:
+</div>
 
--   Builtin & pre-configured OAuth flow (see Quickstart)
--   Builtin & pre-configured requests authorization
--   Automatic auth credentials handling & access token refresh
--   Automatic retries on timeouts
--   Automatic rate-limit handling
--   Full access to the API: Use any endpoint & raw requests/response
--   Community contributed gotchas & learnings which cover everything the API docs missed (add yours too!)
+3. You can query Nango's Standard API Endpoints and receive standard models. This way, you integrate once with a modern API to unlock many CRM integrations at once.
 
-Nango also works with every other API, Blueprints are optional. We add more Blueprints every week.
+<div align="center">
+  
+  ![How To - Image 3](https://uploads-ssl.webflow.com/62a9f4a7a5a3d9ef1439982a/6311bbe90d09390ddaca9e80_howto3.png)
+
+</div>
 
 ## 🚀 Quickstart
 
-Follow our [Quickstart guide](https://docs.nango.dev/quickstart/node) to **build a Slack integration from scratch in 10 minutes**!
+Let's fetch all contacts from any CRM system supported by Nango:
 
-With Nango, your integration code will look like this (Node.js example, [see other languages](https://docs.nango.dev/quickstart/other)):
-
-```ts
-import { Nango } from '@nangohq/node-client';
-
-const nango = new Nango();
-
-// Actions are defined by you and live in your repo as code
-// For example: Post a message to a Slack channel
-nango.triggerAction('slack', 'notify', userId, {
-    channelId: 'XXXXXXX',
-    msg: 'Hello @channel, this is a notification triggered by Nango :tada:'
-});
+```
+curl --request GET \
+     --url 'https://api.nango.dev/v1/contacts' \
+     --header 'Authorization: Bearer a6697f42-4b96-4138-9b2e-503b586e4b9d' \
+     --header 'X-User-Account: 6b693b41-bf22-42e6-aa31-b75cd41749ab'
 ```
 
-<details>
-<summary>Tell me more about these "actions" that get triggered</summary>
-</br>
-Actions are lambda functions with your code that interacts with the external API. They are stored in your repo and run in the Nango server in a special runtime that handles auth, retries, rate-limits, logging, queuing etc. for you.</br></br>
-<b>Some examples of actions:</b>
-<ul>
-<li>The code which powers the "notify" action above <a href="https://github.com/NangoHQ/nango/blob/main/nango-integrations/slack/notify.action.ts" >looks like this</a></br></li>
-<li>This one <a href="https://github.com/NangoHQ/nango/blob/main/examples/hubspot-contacts-import/nango-integrations/hubspot/get-all-contacts.action.ts" >downloads all contacts from a customer's Hubspot CRM</a></li>
-<li>And this <a href="https://github.com/NangoHQ/nango/blob/main/nango-integrations/github/star.action.ts">stars a repo on GitHub</a>
-</ul>
-To learn more take a look at the <a href="https://docs.nango.dev/architecture">Nango architecture</a>
-</details>
-
-And in your frontend, run a full OAuth flow with a single line of code (using Nango's builtin OAuth server):
-
-```js
-import Nango from '@nangohq/frontend';
-
-var nango = new Nango('http://localhost:3003');
-
-// Trigger an OAuth flow for 'slack' for the user with user-id 1
-nango
-    .connect('slack', '1')
-    .then((result) => {
-        console.log(`OAuth flow succeeded, integration has been setup for the user 🎉`);
-    })
-    .catch((error) => {
-        console.error(`There was an error in the OAuth flow: ${error.error.type} - ${error.error.message}`);
-    });
-```
+Explore our [Standard API Endpoints](https://docs.nango.dev/reference) to understand all the ways you can query the Nango API.
 
 ## 🔍 Learn more
 
 ⭐  Like Nango? Follow our development by starring us here on GitHub ⭐
 
--   Understand Nango with the [Architecture](https://docs.nango.dev/architecture)
--   Check some examples in the [examples folder](https://github.com/NangoHQ/nango/tree/main/examples)
--   Please share your feedback on the [Slack community](https://nango.dev/slack)!
+-   Check out the list of [supported CRMs](https://docs.nango.dev/docs/supported-crms)
+-   Explore Nango's [Standard API Endpoints](https://docs.nango.dev/reference)
+-   Share feedback or ask questions on the [Slack community](https://nango.dev/slack)
+-   [Chat with a member of the team](https://nango.dev/demo)
