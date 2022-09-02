@@ -1,6 +1,6 @@
 <div align="center">
   
-  ![Nango Logo](https://uploads-ssl.webflow.com/62a9f4a7a5a3d9ef1439982a/62aa0f9de9ebfd31d66f4ef7_Nango-logo-tight.png)
+  ![Nango Logo](https://uploads-ssl.webflow.com/62a9f4a7a5a3d9ef1439982a/6311c3168e100d016dcf1ced_logo-backgrond.png)
 
 </div>
 
