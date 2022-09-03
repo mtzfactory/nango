@@ -5,7 +5,8 @@
     "type": "module",
     "main": "dist/server.js",
     "scripts": {
-        "start": "node dist/server.js"
+        "start": "node dist/server.js",
+        "worker-start": "node dist/worker.js"
     },
     "keywords": [],
     "repository": {
