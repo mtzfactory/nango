@@ -21,6 +21,7 @@
     },
     "devDependencies": {},
     "engines": {
-        "node": ">=16.7"
+        "node": ">=16.7",
+        "npm": ">= 4.4.0"
     }
 }
