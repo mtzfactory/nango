@@ -1,1 +1,4 @@
-console.log("I'm a worker");
+import { HubspotContactsSync } from './integrations/crm/hubspot/sync/contacts.js';
+
+let contactsSync = new HubspotContactsSync();
+contactsSync.sync();
