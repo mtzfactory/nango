@@ -1,23 +1,18 @@
 import axios from 'axios';
+import knex from 'knex';
 class HubspotContactsSync {
     async sync() {
-        var config = this.enrichWithToken({});
-        let res = await axios.get('https://api.hubapi.com/crm/v3/properties/contacts', config).catch((err) => {
-            console.log(err.response.data.message);
-        });
-        if (res == null) {
-            return;
-        }
-        let contactProperties = [];
-        for (const field of res.data.results) {
-            if (field.groupName === 'contactinformation') {
-                contactProperties.push(field.name);
-            }
-        }
-        let hubspotContacts = [];
+        let contactProperties = await this.getContactProperties();
+        let contacts = await this.getContacts(contactProperties);
+        let rawObjects = this.contactstoRawObjects(contacts);
+        this.persistRawObjects(rawObjects);
+    }
+    async getContacts(contactProperties) {
+        let contacts = [];
         let done = false;
         let pageCursor = null;
         let maxNumberOfRecords = 20;
+        var config = this.enrichWithToken({});
         while (!done) {
             config = {
                 params: {
@@ -31,18 +26,54 @@ class HubspotContactsSync {
                 console.log(err.response.data.message);
             });
             if (res == null) {
-                return;
+                break;
             }
-            hubspotContacts = hubspotContacts.concat(res.data.results);
-            if (res.data.paging && hubspotContacts.length < maxNumberOfRecords) {
+            contacts = contacts.concat(res.data.results);
+            if (res.data.paging && contacts.length < maxNumberOfRecords) {
                 pageCursor = res.data.paging.next.after;
             }
             else {
                 done = true;
             }
         }
-        console.log(`Contacts download complete, returning ${hubspotContacts.length} contacts.`);
-        console.log(hubspotContacts);
+        return contacts;
+    }
+    async getContactProperties() {
+        let config = this.enrichWithToken({});
+        let res = await axios.get('https://api.hubapi.com/crm/v3/properties/contacts', config).catch((err) => {
+            console.log(err.response.data.message);
+        });
+        let contactProperties = [];
+        if (res != null) {
+            for (const field of res.data.results) {
+                if (field.groupName === 'contactinformation') {
+                    contactProperties.push(field.name);
+                }
+            }
+        }
+        return contactProperties;
+    }
+    contactstoRawObjects(contacts) {
+        let raw_objects = [];
+        for (var contact of contacts) {
+            raw_objects.push({
+                raw: contact,
+                connection_id: 1,
+                object_type: 'contact'
+            });
+        }
+        return raw_objects;
+    }
+    persistRawObjects(raw_objects) {
+        let db = knex({
+            client: 'pg',
+            connection: process.env['DATABASE_URL'] || 'postgres://localhost'
+        });
+        db('raw_objects')
+            .insert(raw_objects)
+            .then(function (_) {
+            db.destroy();
+        });
     }
     enrichWithToken(config) {
         if (config == null) {
