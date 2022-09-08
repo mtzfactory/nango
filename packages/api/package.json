@@ -17,9 +17,10 @@
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
         "ejs": "^3.1.5",
-        "express": "^4.18.1"
+        "express": "^4.18.1",
+        "knex": "^2.3.0",
+        "ts-node": "^10.9.1"
     },
-    "devDependencies": {},
     "engines": {
         "node": ">=16.7",
         "npm": ">=6.14.11"
