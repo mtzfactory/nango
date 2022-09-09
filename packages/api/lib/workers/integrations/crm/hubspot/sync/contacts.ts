@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Knex } from 'knex';
-import type { Contact, RawContact } from '../../../../../models/contact.js';
-import type { Connection } from '../../../../../models/connection.js';
+import type { Contact, RawContact } from '../../../../../api/crm/v1/contacts/contact.js';
+import type { Connection } from '../../../../../api/crm/v1/connections/connection.js';
 
 class HubspotContactsSync {
     connection: Connection;

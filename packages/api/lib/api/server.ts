@@ -1,7 +1,7 @@
 import express from 'express';
 import * as http from 'http';
-import type { CommonRoutesConfig } from './common/common.routes.config';
-import { ContactsRoutes } from './contacts/contacts.routes.config.js';
+import type { CommonRoutesConfig } from './crm/v1/common/common.routes.config';
+import { ContactsRoutes } from './crm/v1/contacts/contacts.routes.config.js';
 import debug from 'debug';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
