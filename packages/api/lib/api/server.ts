@@ -29,7 +29,7 @@ if (!process.env['DEBUG']) {
 app.use(expressWinston.logger(loggerOptions));
 routes.push(new ContactsRoutes(app));
 
-const runningMessage = `Server running at http://localhost:${port}`;
+const runningMessage = `Server running on port: ${port}`;
 app.get('/', (_: express.Request, res: express.Response) => {
     res.status(200).send(runningMessage);
 });

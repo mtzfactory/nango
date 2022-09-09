@@ -1,28 +1,15 @@
 import axios from 'axios';
 import type { Knex } from 'knex';
-
-interface RawContact {
-    raw: any;
-    connection_id: number;
-    object_type: string;
-}
-
-interface Contact {
-    raw_id: number;
-    external_id?: string;
-    first_name?: string;
-    last_name?: string;
-    job_title?: string;
-    account?: string;
-    addresses?: string;
-    emails?: string;
-    phones?: string;
-    last_activity_at?: Date;
-    external_created_at?: Date;
-    external_modified_at?: Date;
-}
+import type { Contact, RawContact } from '../../../../../models/contact.js';
+import type { Connection } from '../../../../../models/connection.js';
 
 class HubspotContactsSync {
+    connection: Connection;
+
+    constructor(connection: Connection) {
+        this.connection = connection;
+    }
+
     async sync(db: Knex) {
         let contactProperties: string[] = await this.getContactProperties();
         let queryResult = await this.getContacts(contactProperties);
@@ -124,7 +111,7 @@ class HubspotContactsSync {
             config['headers'] = {};
         }
 
-        config['headers']['authorization'] = 'Bearer pat-na1-a633dbdc-d3b4-476f-94e9-03550581e15d';
+        config['headers']['authorization'] = `Bearer ${this.connection.access_token}`;
         return config;
     }
 
