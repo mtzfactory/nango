@@ -1,5 +1,4 @@
 import axios from 'axios';
-import knex from 'knex';
 import type { Knex } from 'knex';
 
 interface RawContact {
@@ -24,12 +23,7 @@ interface Contact {
 }
 
 class HubspotContactsSync {
-    async sync() {
-        let db = knex({
-            client: 'pg',
-            connection: process.env['DATABASE_URL'] || 'postgres://localhost'
-        });
-
+    async sync(db: Knex) {
         let contactProperties: string[] = await this.getContactProperties();
         let queryResult = await this.getContacts(contactProperties);
         let rawContacts = this.contactstoRawObjects(queryResult);
@@ -38,9 +32,8 @@ class HubspotContactsSync {
         if (rawContactIds != null && rawContactIds.length === rawContacts.length) {
             let contacts = this.mapToStandardContacts(rawContacts, rawContactIds);
             await this.persistContacts(db, contacts);
+            console.log(contacts[0]);
         }
-
-        db.destroy();
     }
 
     async getContacts(contactProperties: string[]): Promise<any[]> {

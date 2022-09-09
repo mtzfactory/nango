@@ -19,7 +19,7 @@ interface Contact {
     external_modified_at?: Date;
 }
 declare class HubspotContactsSync {
-    sync(): Promise<void>;
+    sync(db: Knex): Promise<void>;
     getContacts(contactProperties: string[]): Promise<any[]>;
     getContactProperties(): Promise<string[]>;
     contactstoRawObjects(contacts: any[]): RawContact[];
