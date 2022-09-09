@@ -5,8 +5,8 @@
     "type": "module",
     "main": "dist/server.js",
     "scripts": {
-        "start": "node dist/lib/api/server.js",
-        "worker-start": "node dist/lib/workers/worker.js",
+        "start": "tsc && node dist/lib/api/server.js",
+        "worker-start": "tsc && node dist/lib/workers/worker.js",
         "debug": "export DEBUG=* && npm run start"
     },
     "keywords": [],
