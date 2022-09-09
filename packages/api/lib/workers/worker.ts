@@ -1,6 +1,6 @@
 import { HubspotContactsSync } from './integrations/crm/hubspot/sync/contacts.js';
 import knex from 'knex';
-import { config } from '../../db/config';
+import { config } from '../../db/config.js';
 
 let env = process.env['NODE_ENV'];
 if (env == null || !['development', 'production'].includes(env)) {
