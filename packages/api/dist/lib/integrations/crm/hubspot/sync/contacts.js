@@ -2,10 +2,19 @@ import axios from 'axios';
 import knex from 'knex';
 class HubspotContactsSync {
     async sync() {
+        let db = knex({
+            client: 'pg',
+            connection: process.env['DATABASE_URL'] || 'postgres://localhost'
+        });
         let contactProperties = await this.getContactProperties();
-        let contacts = await this.getContacts(contactProperties);
-        let rawObjects = this.contactstoRawObjects(contacts);
-        this.persistRawObjects(rawObjects);
+        let queryResult = await this.getContacts(contactProperties);
+        let rawContacts = this.contactstoRawObjects(queryResult);
+        let rawContactIds = await this.persistRawObjects(db, rawContacts);
+        if (rawContactIds != null && rawContactIds.length === rawContacts.length) {
+            let contacts = this.mapToStandardContacts(rawContacts, rawContactIds);
+            await this.persistContacts(db, contacts);
+        }
+        db.destroy();
     }
     async getContacts(contactProperties) {
         let contacts = [];
@@ -54,26 +63,21 @@ class HubspotContactsSync {
         return contactProperties;
     }
     contactstoRawObjects(contacts) {
-        let raw_objects = [];
+        let rawContacts = [];
         for (var contact of contacts) {
-            raw_objects.push({
+            rawContacts.push({
                 raw: contact,
                 connection_id: 1,
                 object_type: 'contact'
             });
         }
-        return raw_objects;
+        return rawContacts;
     }
-    persistRawObjects(raw_objects) {
-        let db = knex({
-            client: 'pg',
-            connection: process.env['DATABASE_URL'] || 'postgres://localhost'
-        });
-        db('raw_objects')
-            .insert(raw_objects)
-            .then(function (_) {
-            db.destroy();
-        });
+    persistRawObjects(db, rawContacts) {
+        return db('raw_objects').insert(rawContacts, ['id']);
+    }
+    persistContacts(db, contacts) {
+        return db('contacts').insert(contacts);
     }
     enrichWithToken(config) {
         if (config == null) {
@@ -84,6 +88,62 @@ class HubspotContactsSync {
         }
         config['headers']['authorization'] = 'Bearer pat-na1-a633dbdc-d3b4-476f-94e9-03550581e15d';
         return config;
+    }
+    mapToStandardContacts(rawContacts, rawContactIds) {
+        let contacts = [];
+        for (let i = 0; i < rawContacts.length; i++) {
+            let rawContactId = rawContactIds[i];
+            let rawContact = rawContacts[i];
+            if (rawContactId != null && rawContact != null) {
+                let contact = {
+                    raw_id: rawContactId.id
+                };
+                contact.external_id = rawContact.raw['id'];
+                contact.first_name = rawContact.raw['properties']['firstname'];
+                contact.last_name = rawContact.raw['properties']['lastname'];
+                contact.job_title = rawContact.raw['properties']['jobtitle'];
+                contact.account = rawContact.raw['properties']['associatedcompanyid'];
+                let addresses = [];
+                let rawAddress = rawContact.raw['properties']['address'];
+                let rawCity = rawContact.raw['properties']['city'];
+                let rawCountry = rawContact.raw['properties']['country'];
+                if (rawAddress != null || rawCity != null || rawCountry != null) {
+                    addresses.push({
+                        address: rawAddress,
+                        city: rawCity,
+                        country: rawCountry
+                    });
+                }
+                contact.addresses = JSON.stringify(addresses);
+                let emails = [];
+                let rawEmail = rawContact.raw['properties']['email'];
+                if (rawEmail != null) {
+                    emails.push({
+                        email: rawEmail
+                    });
+                }
+                contact.emails = JSON.stringify(emails);
+                let phones = [];
+                let rawPhone = rawContact.raw['properties']['phone'];
+                let rawMobilePhone = rawContact.raw['properties']['mobilephone'];
+                if (rawPhone != null) {
+                    phones.push({
+                        phone: rawPhone
+                    });
+                }
+                if (rawMobilePhone != null) {
+                    phones.push({
+                        phone: rawMobilePhone
+                    });
+                }
+                contact.phones = JSON.stringify(phones);
+                contact.last_activity_at = rawContact.raw['properties']['hs_last_sales_activity_date'];
+                contact.external_created_at = rawContact.raw['createdAt'];
+                contact.external_modified_at = rawContact.raw['updatedAt'];
+                contacts.push(contact);
+            }
+        }
+        return contacts;
     }
 }
 export { HubspotContactsSync };

@@ -1,12 +1,46 @@
 import axios from 'axios';
 import knex from 'knex';
+import type { Knex } from 'knex';
+
+interface RawContact {
+    raw: any;
+    connection_id: number;
+    object_type: string;
+}
+
+interface Contact {
+    raw_id: number;
+    external_id?: string;
+    first_name?: string;
+    last_name?: string;
+    job_title?: string;
+    account?: string;
+    addresses?: string;
+    emails?: string;
+    phones?: string;
+    last_activity_at?: Date;
+    external_created_at?: Date;
+    external_modified_at?: Date;
+}
 
 class HubspotContactsSync {
     async sync() {
+        let db = knex({
+            client: 'pg',
+            connection: process.env['DATABASE_URL'] || 'postgres://localhost'
+        });
+
         let contactProperties: string[] = await this.getContactProperties();
-        let contacts = await this.getContacts(contactProperties);
-        let rawObjects = this.contactstoRawObjects(contacts);
-        this.persistRawObjects(rawObjects);
+        let queryResult = await this.getContacts(contactProperties);
+        let rawContacts = this.contactstoRawObjects(queryResult);
+        let rawContactIds = await this.persistRawObjects(db, rawContacts);
+
+        if (rawContactIds != null && rawContactIds.length === rawContacts.length) {
+            let contacts = this.mapToStandardContacts(rawContacts, rawContactIds);
+            await this.persistContacts(db, contacts);
+        }
+
+        db.destroy();
     }
 
     async getContacts(contactProperties: string[]): Promise<any[]> {
@@ -66,31 +100,26 @@ class HubspotContactsSync {
         return contactProperties;
     }
 
-    contactstoRawObjects(contacts: any[]): { raw: any; connection_id: number; object_type: string }[] {
-        let raw_objects: { raw: any; connection_id: number; object_type: string }[] = [];
+    contactstoRawObjects(contacts: any[]): RawContact[] {
+        let rawContacts: RawContact[] = [];
 
         for (var contact of contacts) {
-            raw_objects.push({
+            rawContacts.push({
                 raw: contact,
                 connection_id: 1,
                 object_type: 'contact'
             });
         }
 
-        return raw_objects;
+        return rawContacts;
     }
 
-    persistRawObjects(raw_objects: { raw: any; connection_id: number; object_type: string }[]) {
-        let db = knex({
-            client: 'pg',
-            connection: process.env['DATABASE_URL'] || 'postgres://localhost'
-        });
+    persistRawObjects(db: Knex, rawContacts: RawContact[]): Promise<{ id: number }[] | void> {
+        return db('raw_objects').insert(rawContacts, ['id']);
+    }
 
-        db('raw_objects')
-            .insert(raw_objects)
-            .then(function (_) {
-                db.destroy();
-            });
+    persistContacts(db: Knex, contacts: Contact[]): Promise<void> {
+        return db('contacts').insert(contacts);
     }
 
     enrichWithToken(config: any) {
@@ -104,6 +133,73 @@ class HubspotContactsSync {
 
         config['headers']['authorization'] = 'Bearer pat-na1-a633dbdc-d3b4-476f-94e9-03550581e15d';
         return config;
+    }
+
+    mapToStandardContacts(rawContacts: RawContact[], rawContactIds: { id: number }[]): Contact[] {
+        let contacts: Contact[] = [];
+
+        for (let i = 0; i < rawContacts.length; i++) {
+            let rawContactId = rawContactIds[i];
+            let rawContact = rawContacts[i];
+
+            if (rawContactId != null && rawContact != null) {
+                let contact: Contact = {
+                    raw_id: rawContactId.id
+                };
+
+                contact.external_id = rawContact.raw['id'];
+                contact.first_name = rawContact.raw['properties']['firstname'];
+                contact.last_name = rawContact.raw['properties']['lastname'];
+                contact.job_title = rawContact.raw['properties']['jobtitle'];
+                contact.account = rawContact.raw['properties']['associatedcompanyid'];
+
+                let addresses: { address?: string; city?: string; country?: string; zipcode?: string }[] = [];
+                let rawAddress = rawContact.raw['properties']['address'];
+                let rawCity = rawContact.raw['properties']['city'];
+                let rawCountry = rawContact.raw['properties']['country'];
+                if (rawAddress != null || rawCity != null || rawCountry != null) {
+                    addresses.push({
+                        address: rawAddress,
+                        city: rawCity,
+                        country: rawCountry
+                    });
+                }
+                contact.addresses = JSON.stringify(addresses);
+
+                let emails: { email: string }[] = [];
+                let rawEmail = rawContact.raw['properties']['email'];
+                if (rawEmail != null) {
+                    emails.push({
+                        email: rawEmail
+                    });
+                }
+                contact.emails = JSON.stringify(emails);
+
+                let phones: { phone: string }[] = [];
+                let rawPhone = rawContact.raw['properties']['phone'];
+                let rawMobilePhone = rawContact.raw['properties']['mobilephone'];
+                if (rawPhone != null) {
+                    phones.push({
+                        phone: rawPhone
+                    });
+                }
+
+                if (rawMobilePhone != null) {
+                    phones.push({
+                        phone: rawMobilePhone
+                    });
+                }
+                contact.phones = JSON.stringify(phones);
+
+                contact.last_activity_at = rawContact.raw['properties']['hs_last_sales_activity_date'];
+                contact.external_created_at = rawContact.raw['createdAt'];
+                contact.external_modified_at = rawContact.raw['updatedAt'];
+
+                contacts.push(contact);
+            }
+        }
+
+        return contacts;
     }
 }
 
