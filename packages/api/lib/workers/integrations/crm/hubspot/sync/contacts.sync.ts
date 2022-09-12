@@ -1,7 +1,7 @@
 import axios from 'axios';
-import type { Knex } from 'knex';
 import type { Contact, RawContact } from '../../../../../api/crm/v1/contacts/contact.js';
 import type { Connection } from '../../../../../api/crm/v1/connections/connection.js';
+import db from '../../../../../api/crm/v1/common/database.js';
 
 class HubspotContactsSync {
     connection: Connection;
@@ -10,15 +10,21 @@ class HubspotContactsSync {
         this.connection = connection;
     }
 
-    async sync(db: Knex) {
+    sync() {
+        // Check previous syncs.
+        // If previous sync, fetch sync_at field and sync after this.
+        // Else historical sync
+    }
+
+    async historicalSync() {
         let contactProperties: string[] = await this.getContactProperties();
         let queryResult = await this.getContacts(contactProperties);
         let rawContacts = this.contactstoRawObjects(queryResult);
-        let rawContactIds = await this.persistRawObjects(db, rawContacts);
+        let rawContactIds = await this.persistRawObjects(rawContacts);
 
         if (rawContactIds != null && rawContactIds.length === rawContacts.length) {
             let contacts = this.mapToStandardContacts(rawContacts, rawContactIds);
-            await this.persistContacts(db, contacts);
+            await this.persistContacts(contacts);
             console.log(contacts[0]);
         }
     }
@@ -94,12 +100,12 @@ class HubspotContactsSync {
         return rawContacts;
     }
 
-    persistRawObjects(db: Knex, rawContacts: RawContact[]): Promise<{ id: number }[] | void> {
-        return db('raw_objects').insert(rawContacts, ['id']);
+    persistRawObjects(rawContacts: RawContact[]): Promise<{ id: number }[] | void> {
+        return db.knex('raw_objects').insert(rawContacts, ['id']);
     }
 
-    persistContacts(db: Knex, contacts: Contact[]): Promise<void> {
-        return db('contacts').insert(contacts);
+    persistContacts(contacts: Contact[]): Promise<void> {
+        return db.knex('contacts').insert(contacts);
     }
 
     enrichWithToken(config: any) {
