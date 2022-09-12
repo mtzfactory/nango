@@ -1,5 +1,5 @@
 import type express from 'express';
-import connectionService from '../connections/connections.service.js';
+import connectionService from '../../../../shared/services/connections.service.js';
 
 class ContactsMiddleware {
     async validateAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -25,7 +25,7 @@ class ContactsMiddleware {
             return;
         }
 
-        let connection = await connectionService.readById(connectionId);
+        let connection = await connectionService.readByAccountId(connectionId);
 
         if (connection !== null) {
             next();

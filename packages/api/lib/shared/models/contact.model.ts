@@ -1,9 +1,3 @@
-export interface RawContact {
-    raw: any;
-    connection_id: number;
-    object_type: string;
-}
-
 export interface Contact {
     raw_id: number;
     external_id?: string;

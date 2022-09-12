@@ -1,5 +1,5 @@
 import type express from 'express';
-import usersService from './contacts.service.js';
+import usersService from '../../../../shared/services/contacts.service.js';
 
 class ContactsController {
     async listContacts(_: express.Request, res: express.Response) {

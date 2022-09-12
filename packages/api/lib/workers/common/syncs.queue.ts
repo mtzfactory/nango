@@ -26,7 +26,7 @@ class SyncsQueue {
         });
     }
 
-    public consume(callback: (connectionId: string) => void) {
+    public consume(callback: (connectionId: number) => void) {
         if (this.channel == null) {
             console.log('RabbitMQ not connected.');
             return;
