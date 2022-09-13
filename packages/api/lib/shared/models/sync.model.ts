@@ -1,5 +1,5 @@
 export interface Sync {
-    id: number;
+    id?: number;
     connection_id: number;
     sync_at: Date;
     type?: string;

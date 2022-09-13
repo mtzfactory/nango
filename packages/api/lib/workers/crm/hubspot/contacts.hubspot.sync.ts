@@ -15,6 +15,7 @@ class HubspotContactsSync {
     }
 
     async sync() {
+        let now = new Date();
         let lastSync: Sync | null = await syncsService.getLastSync(this.connection.id);
         let lastSyncAt: Date | null = lastSync != null ? lastSync.sync_at : null;
 
@@ -26,17 +27,24 @@ class HubspotContactsSync {
 
         if (rawContacts == null || rawContacts.length == 0) {
             console.log('Nothing to sync.');
-            return;
+        } else {
+            // Persist raw contacts.
+            let rawContactIds = await rawObjectsService.createFromList(rawContacts);
+
+            // Map and persist standard contacts.
+            if (rawContactIds != null && rawContactIds.length === rawContacts.length) {
+                let contacts = contactsMapper.map(rawContacts, rawContactIds);
+                await contactsService.upsertFromList(contacts);
+            }
         }
 
-        // Persist raw contacts.
-        let rawContactIds = await rawObjectsService.createFromList(rawContacts);
-
-        // Map and persist Contact objets.
-        if (rawContactIds != null && rawContactIds.length === rawContacts.length) {
-            let contacts = contactsMapper.map(rawContacts, rawContactIds);
-            await contactsService.createFromList(contacts);
-        }
+        // Persist sync information.
+        let sync: Sync = {
+            connection_id: this.connection.id,
+            sync_at: now,
+            type: lastSyncAt == null ? 'historical' : 'periodic'
+        };
+        await syncsService.createSync(sync);
     }
 }
 

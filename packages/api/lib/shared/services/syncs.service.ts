@@ -11,6 +11,10 @@ class SyncsService {
             return result[0];
         }
     }
+
+    async createSync(sync: Sync) {
+        await db.knex<Sync>('syncs').insert(sync);
+    }
 }
 
 export default new SyncsService();

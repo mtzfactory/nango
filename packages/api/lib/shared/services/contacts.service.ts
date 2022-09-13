@@ -6,7 +6,7 @@ class ContactsService {
         return await db.knex<Contact>('contacts').limit(100);
     }
 
-    public async createFromList(contacts: Contact[]): Promise<void | number[]> {
+    public async upsertFromList(contacts: Contact[]): Promise<void | number[]> {
         return db
             .knex<Contact>('contacts')
             .insert(contacts)
