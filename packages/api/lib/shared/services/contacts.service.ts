@@ -6,8 +6,15 @@ class ContactsService {
         return await db.knex<Contact>('contacts').limit(100);
     }
 
-    public async createFromList(contacts: Contact[]): Promise<void> {
-        return db.knex<Contact>('contacts').insert(contacts);
+    public async createFromList(contacts: Contact[]): Promise<void | number[]> {
+        return db
+            .knex<Contact>('contacts')
+            .insert(contacts)
+            .onConflict('external_id')
+            .merge()
+            .catch((err) => {
+                console.error(`There was an error upserting contacts by external_id:`, err);
+            });
     }
 }
 

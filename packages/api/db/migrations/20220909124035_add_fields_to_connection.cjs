@@ -7,7 +7,7 @@ exports.up = function (knex, Promise) {
 
 exports.down = function (knex, Promise) {
     return knex.schema.table('connections', function (table) {
-        table.dopColumn('access_token');
-        table.dopColumn('account_id');
+        table.dropColumn('access_token');
+        table.dropColumn('account_id');
     });
 };

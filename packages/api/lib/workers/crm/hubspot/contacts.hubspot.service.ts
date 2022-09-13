@@ -8,19 +8,22 @@ class HubspotContactsService {
         let contacts: any[] = [];
         let done = false;
         let pageCursor = null;
-        let maxNumberOfRecords = 20;
+        let maxNumberOfRecords = 10000;
         let lastSyncTs = lastSyncAt == null ? null : lastSyncAt.getTime().toString();
 
         while (!done) {
             let body = {
-                limit: '20',
+                limit: '100',
                 properties: contactProperties,
                 after: pageCursor
             };
 
-            // if (lastSyncTs != null) {
-            //     body['filterGroups'] = { filters: [{ propertyName: 'createdate', operator: 'GTE', value: lastSyncTs, values: [] }] };
-            // }
+            if (lastSyncTs != null) {
+                body['filterGroups'] = [
+                    { filters: [{ propertyName: 'createdate', operator: 'GTE', value: lastSyncTs }] }, // Created after last sync.
+                    { filters: [{ propertyName: 'lastmodifieddate', operator: 'GTE', value: lastSyncTs }] } // Updated after last sync.
+                ];
+            }
 
             let config = this.enrichWithToken({}, connection);
 
@@ -50,10 +53,6 @@ class HubspotContactsService {
                 object_type: 'contact'
             });
         }
-
-        // TODO BB: remove logs
-        console.log(lastSyncTs);
-        console.log(rawContacts.length);
 
         return rawContacts;
     }

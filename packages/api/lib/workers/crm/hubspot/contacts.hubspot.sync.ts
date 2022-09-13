@@ -18,7 +18,10 @@ class HubspotContactsSync {
         let lastSync: Sync | null = await syncsService.getLastSync(this.connection.id);
         let lastSyncAt: Date | null = lastSync != null ? lastSync.sync_at : null;
 
+        // Fetch all contact properties from Hubspot.
         let contactProperties: string[] = await service.getContactProperties(this.connection);
+
+        // Fetch updated raw contacts from Hubspot.
         let rawContacts: RawObject[] = await service.getContacts(this.connection, contactProperties, lastSyncAt);
 
         if (rawContacts == null || rawContacts.length == 0) {
@@ -26,8 +29,10 @@ class HubspotContactsSync {
             return;
         }
 
+        // Persist raw contacts.
         let rawContactIds = await rawObjectsService.createFromList(rawContacts);
 
+        // Map and persist Contact objets.
         if (rawContactIds != null && rawContactIds.length === rawContacts.length) {
             let contacts = contactsMapper.map(rawContacts, rawContactIds);
             await contactsService.createFromList(contacts);

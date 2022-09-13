@@ -3,7 +3,7 @@ const { onUpdateTrigger } = require('../knexfile');
 exports.up = function (knex, Promise) {
     return knex.schema
         .createTable('raw_objects', function (table) {
-            table.increments('id');
+            table.increments('id').primary();
             table.timestamps(true, true);
             table.json('raw');
             table.integer('connection_id').references('id').inTable('connections');

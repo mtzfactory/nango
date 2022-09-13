@@ -3,10 +3,10 @@ const { onUpdateTrigger } = require('../knexfile');
 exports.up = function (knex, Promise) {
     return knex.schema
         .createTable('contacts', function (table) {
-            table.increments('id');
+            table.increments('id').primary();
             table.timestamps(true, true);
             table.integer('raw_id').references('id').inTable('raw_objects');
-            table.string('external_id');
+            table.string('external_id').unique();
             table.string('first_name');
             table.string('last_name');
             table.string('job_title');
