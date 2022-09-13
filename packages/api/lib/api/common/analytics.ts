@@ -1,4 +1,4 @@
-import * as Amplitude from '@amplitude/node';
+import Amplitude from '@amplitude/node';
 
 class Analytics {
     client;
@@ -8,10 +8,16 @@ class Analytics {
     }
 
     public log(name: string, properties?: any) {
-        this.client.logEvent({
+        let event: any = {
             event_type: name,
-            event_properties: properties
-        });
+            user_id: 'unknown user' // necessary
+        };
+
+        if (properties != null) {
+            event.event_properties = properties;
+        }
+
+        this.client.logEvent(event);
     }
 }
 
