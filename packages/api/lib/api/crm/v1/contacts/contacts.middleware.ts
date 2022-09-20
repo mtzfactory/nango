@@ -16,7 +16,7 @@ class ContactsMiddleware {
             let project = await projectService.readByToken(token);
 
             if (project != null) {
-                analytics.log('Customer API request', { project_id: project.id });
+                analytics.log('Customer API request', project.id);
                 next();
             } else {
                 res.status(401).send({

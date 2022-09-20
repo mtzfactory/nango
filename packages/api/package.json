@@ -20,7 +20,6 @@
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
-        "@amplitude/node": "^1.10.2",
         "amqplib": "^0.10.3",
         "axios": "^0.27.2",
         "cors": "^2.8.5",
@@ -29,6 +28,7 @@
         "express-winston": "^4.2.0",
         "knex": "^2.3.0",
         "pg": "^8.8.0",
+        "posthog-node": "^2.1.0",
         "ts-node": "^10.9.1",
         "winston": "^3.8.2"
     },
