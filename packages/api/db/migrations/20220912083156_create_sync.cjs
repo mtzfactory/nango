@@ -5,9 +5,11 @@ exports.up = function (knex, Promise) {
         .createTable('syncs', function (table) {
             table.increments('id').primary();
             table.timestamps(true, true);
-            table.integer('connection_id').references('id').inTable('connections');
-            table.dateTime('sync_at');
-            table.string('type');
+            table.string('url').notNullable();
+            table.json('headers');
+            table.json('body');
+            table.string('unique_key').notNullable();
+            table.string('response_path');
         })
         .then(() => knex.raw(onUpdateTrigger('syncs')));
 };

@@ -1,7 +1,7 @@
 import express from 'express';
 import * as http from 'http';
-import type { CommonRoutesConfig } from './crm/v1/common/common.routes.config';
-import { ContactsRoutes } from './crm/v1/contacts/contacts.routes.config.js';
+import type { CommonRoutesConfig } from './v1/common/common.routes.config';
+import { SyncsRoutes } from './v1/syncs/syncs.routes.config.js';
 import debug from 'debug';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
@@ -27,7 +27,7 @@ if (!process.env['DEBUG']) {
 }
 
 app.use(expressWinston.logger(loggerOptions));
-routes.push(new ContactsRoutes(app));
+routes.push(new SyncsRoutes(app));
 
 const runningMessage = `Server running on port: ${port}`;
 app.get('/', (_: express.Request, res: express.Response) => {
