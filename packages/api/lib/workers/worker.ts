@@ -1,18 +1,6 @@
-import syncsQueue from './syncs.queue.js';
+import syncService from './syncs.service.js';
 import type { Sync } from '../shared/models/sync.model.js';
-
-await syncsQueue.connect();
-
-// syncsQueue.consume((syncId: number) => {
-//     syncService.readById(syncId).then((sync: Sync | null) => {
-//         if (sync == null) {
-//             console.log("Unidentified syncId received from 'syncs' queue.");
-//             return;
-//         }
-
-//         // TODO BB: call sync executor
-//     });
-// });
+import { HttpRequestType } from '../shared/models/sync.model.js';
 
 class SyncExecutor {
     sync: Sync;
@@ -22,21 +10,24 @@ class SyncExecutor {
     }
 
     public run() {
-        // TODO BB: Fetch from endpoint
-        // TODO BB: Update DB schema
-        // TODO BB: Upsert in DB
+        syncService.getObjects(this.sync);
+        // TODO BB: Update DB schema (database schema utils)
+        // TODO BB: Upsert in DB (database utils)
     }
 }
 
 new SyncExecutor({
     id: 1,
     url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
+    request_type: HttpRequestType.Post,
     headers: {
         authorization: `Bearer fake-token`
     },
     body: {
-        limit: '100',
+        limit: '1',
         properties: []
     },
-    unique_key: 'id'
+    unique_key: 'id',
+    paging_request_path: 'after',
+    paging_result_path: 'paging.next.after'
 }).run();
