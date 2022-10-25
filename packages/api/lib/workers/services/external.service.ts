@@ -1,15 +1,16 @@
-import type { Sync } from '../shared/models/sync.model.js';
-import { HttpRequestType } from '../shared/models/sync.model.js';
+import type { Sync } from '../../shared/models/sync.model.js';
+import { HttpRequestType } from '../../shared/models/sync.model.js';
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import _ from 'lodash';
+import type { RawObject } from '../models/raw_object.model.js';
 
 class ExternalService {
-    async getObjects(sync: Sync): Promise<any[]> {
+    async getRawObjects(sync: Sync): Promise<any[]> {
         let results: any[] = [];
         let done = false;
         let pageCursor = null;
-        let maxNumberOfRecords = 2; // TODO BB: make configurable
+        let maxNumberOfRecords = 2;
         sync.body = sync.body || {};
 
         while (!done) {
@@ -20,7 +21,7 @@ class ExternalService {
             let config: AxiosRequestConfig = { headers: sync.headers || {} };
             var res: AxiosResponse<any, any> | void;
             let errorBlock = (err: any) => {
-                console.log(err.response.data.message);
+                console.log(err.resposnse.data.message);
             };
 
             switch (sync.request_type) {
@@ -59,8 +60,16 @@ class ExternalService {
             }
         }
 
-        console.log(results);
-        return results;
+        let rawObjs: RawObject[] = [];
+
+        for (var rawObj of results) {
+            rawObjs.push({
+                data: rawObj,
+                emitted_at: new Date()
+            });
+        }
+
+        return rawObjs;
     }
 }
 
