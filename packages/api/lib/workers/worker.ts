@@ -18,8 +18,7 @@ class SyncExecutor {
         let rawObjs = await externalService.getRawObjects(this.sync);
 
         if (rawObjs.length > 0) {
-            await dataService.createNewSyncTable(this.sync);
-            await dataService.upsertFromList(this.sync, rawObjs);
+            await dataService.upsertFromList(rawObjs);
         } else {
             console.log('No result from external query.');
         }

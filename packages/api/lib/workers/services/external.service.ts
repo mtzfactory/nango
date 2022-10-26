@@ -6,6 +6,10 @@ import type { RawObject } from '../models/raw_object.model.js';
 
 class ExternalService {
     async getRawObjects(sync: Sync): Promise<any[]> {
+        if (sync.id == null) {
+            return [];
+        }
+
         let results: any[] = [];
         let done = false;
         let pageCursor = null;
@@ -67,6 +71,7 @@ class ExternalService {
 
         for (var rawObj of results) {
             rawObjs.push({
+                sync_id: sync.id,
                 data: rawObj,
                 emitted_at: new Date()
             });

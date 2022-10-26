@@ -25,4 +25,4 @@ var res = await axios.post(url, body, { headers: headers }).catch((err) => {
     console.log(err);
 });
 
-console.log(res);
+console.log(res.data);
