@@ -1,10 +1,10 @@
 import type { Channel, Connection } from 'amqplib';
 import { connect } from 'amqplib';
+import _ from 'lodash';
 
 class SyncsQueue {
     channel?: Channel;
     queueName = 'syncs';
-    connectionIdParam = 'connection_id';
 
     public async connect() {
         return new Promise<void>((resolve, reject) => {
@@ -26,7 +26,7 @@ class SyncsQueue {
         });
     }
 
-    public consume(callback: (connectionId: number) => void) {
+    public consume(callback: (syncId: number) => void) {
         if (this.channel == null) {
             console.log('RabbitMQ not connected.');
             return;
@@ -41,17 +41,26 @@ class SyncsQueue {
 
             let payload = JSON.parse(msg.content.toString());
 
-            if (payload == null || !(this.connectionIdParam in payload)) {
+            if (payload == null || _.toInteger(payload) == null) {
                 console.log("Invalid RabbitMQ message from 'syncs' queue");
                 return;
             }
 
-            callback(payload[this.connectionIdParam]);
+            callback(_.toInteger(payload));
 
             if (this.channel != null) {
                 this.channel.ack(msg);
             }
         });
+    }
+
+    public async publish(syncId: number): Promise<any> {
+        if (this.channel == null) {
+            console.log('RabbitMQ not connected.');
+            return;
+        }
+
+        return this.channel.sendToQueue(this.queueName, Buffer.from(JSON.stringify(syncId), 'utf8'));
     }
 }
 

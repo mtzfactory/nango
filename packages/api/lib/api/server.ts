@@ -6,6 +6,7 @@ import debug from 'debug';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
 import cors from 'cors';
+import syncsQueue from '../shared/queues/syncs.queue.js';
 
 const port = process.env['PORT'] || 3000;
 
@@ -41,3 +42,5 @@ server.listen(port, () => {
 
     console.log(runningMessage);
 });
+
+await syncsQueue.connect();

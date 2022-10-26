@@ -1,6 +1,7 @@
 import type express from 'express';
 import type { Sync } from '../../../shared/models/sync.model.js';
 import syncsService from '../../../shared/services/syncs.service.js';
+import syncsQueue from '../../../shared/queues/syncs.queue.js';
 
 class SyncsController {
     async createSync(req: express.Request, res: express.Response) {
@@ -15,9 +16,17 @@ class SyncsController {
             paging_response_path: req['paging_response_path']
         };
 
-        let result = syncsService.createSync(params);
+        let result = await syncsService.createSync(params);
 
-        res.status(200).send({ result: result });
+        if (Array.isArray(result) && result.length === 1 && result[0] != null && 'id' in result[0]) {
+            let syncId = result[0]['id'];
+            syncsQueue.publish(syncId);
+            res.status(200).send({ sync_id: syncId });
+        } else {
+            res.status(500).send({
+                error: `There was an unknown error creating your sync.`
+            });
+        }
     }
 }
 
