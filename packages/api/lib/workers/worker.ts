@@ -36,19 +36,3 @@ syncsQueue.consume((syncId: number) => {
         new SyncExecutor(sync).run();
     });
 });
-
-// await new SyncExecutor({
-//     id: _.random(0, 10 ^ 6, false),
-//     url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
-//     method: HttpMethod.Post,
-//     headers: {
-//         authorization: `Bearer fake-token`
-//     },
-//     body: {
-//         limit: 1,
-//         properties: []
-//     },
-//     unique_key: 'id',
-//     paging_request_path: 'after',
-//     paging_response_path: 'paging.next.after'
-// }).run();

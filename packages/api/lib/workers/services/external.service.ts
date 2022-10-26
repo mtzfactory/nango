@@ -1,5 +1,4 @@
 import type { Sync } from '../../shared/models/sync.model.js';
-import { HttpMethod } from '../../shared/models/sync.model.js';
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import _ from 'lodash';
@@ -21,29 +20,33 @@ class ExternalService {
             let config: AxiosRequestConfig = { headers: sync.headers || {} };
             var res: AxiosResponse<any, any> | void;
             let errorBlock = (err: any) => {
-                console.log(err.resposnse.data.message);
+                console.log(err);
             };
 
             switch (sync.method) {
-                case HttpMethod.Get: {
+                case 'get': {
                     res = await axios.get(sync.url, config).catch(errorBlock);
                     break;
                 }
-                case HttpMethod.Post: {
+                case 'post': {
                     res = await axios.post(sync.url, sync.body, config).catch(errorBlock);
                     break;
                 }
-                case HttpMethod.Put: {
+                case 'put': {
                     res = await axios.put(sync.url, sync.body, config).catch(errorBlock);
                     break;
                 }
-                case HttpMethod.Patch: {
+                case 'patch': {
                     res = await axios.patch(sync.url, sync.body, config).catch(errorBlock);
                     break;
                 }
-                case HttpMethod.Delete: {
+                case 'delete': {
                     res = await axios.delete(sync.url, config).catch(errorBlock);
                     break;
+                }
+                default: {
+                    console.log('Unknown HTTP method.');
+                    return [];
                 }
             }
 

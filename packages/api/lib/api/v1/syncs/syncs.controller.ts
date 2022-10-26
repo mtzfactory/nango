@@ -12,8 +12,8 @@ class SyncsController {
             body: req.body['body'],
             unique_key: req.body['unique_key'],
             response_path: req.body['response_path'],
-            paging_request_path: req['paging_request_path'],
-            paging_response_path: req['paging_response_path']
+            paging_request_path: req.body['paging_request_path'],
+            paging_response_path: req.body['paging_response_path']
         };
 
         let result = await syncsService.createSync(params);
