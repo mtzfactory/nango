@@ -1,5 +1,6 @@
 import { CommonRoutesConfig } from '../common/common.routes.config.js';
 import SyncsController from './syncs.controller.js';
+import SyncsMiddleware from './syncs.middleware.js';
 import type express from 'express';
 
 export class SyncsRoutes extends CommonRoutesConfig {
@@ -8,7 +9,7 @@ export class SyncsRoutes extends CommonRoutesConfig {
     }
 
     configureRoutes() {
-        this.app.route(`/v1/syncs`).get(SyncsController.listSyncs);
+        this.app.route(`/v1/syncs`).post(SyncsMiddleware.validateCreateSyncRequest, SyncsController.createSync);
 
         return this.app;
     }

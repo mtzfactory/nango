@@ -1,5 +1,5 @@
 import type { Sync } from '../../shared/models/sync.model.js';
-import { HttpRequestType } from '../../shared/models/sync.model.js';
+import { HttpMethod } from '../../shared/models/sync.model.js';
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import _ from 'lodash';
@@ -24,24 +24,24 @@ class ExternalService {
                 console.log(err.resposnse.data.message);
             };
 
-            switch (sync.request_type) {
-                case HttpRequestType.Get: {
+            switch (sync.method) {
+                case HttpMethod.Get: {
                     res = await axios.get(sync.url, config).catch(errorBlock);
                     break;
                 }
-                case HttpRequestType.Post: {
+                case HttpMethod.Post: {
                     res = await axios.post(sync.url, sync.body, config).catch(errorBlock);
                     break;
                 }
-                case HttpRequestType.Put: {
+                case HttpMethod.Put: {
                     res = await axios.put(sync.url, sync.body, config).catch(errorBlock);
                     break;
                 }
-                case HttpRequestType.Patch: {
+                case HttpMethod.Patch: {
                     res = await axios.patch(sync.url, sync.body, config).catch(errorBlock);
                     break;
                 }
-                case HttpRequestType.Delete: {
+                case HttpMethod.Delete: {
                     res = await axios.delete(sync.url, config).catch(errorBlock);
                     break;
                 }
@@ -53,8 +53,8 @@ class ExternalService {
 
             results = results.concat(res.data.results);
 
-            if (sync.paging_result_path != null && _.get(res.data, sync.paging_result_path) && results.length < maxNumberOfRecords) {
-                pageCursor = _.get(res.data, sync.paging_result_path);
+            if (sync.paging_response_path != null && _.get(res.data, sync.paging_response_path) && results.length < maxNumberOfRecords) {
+                pageCursor = _.get(res.data, sync.paging_response_path);
             } else {
                 done = true;
             }

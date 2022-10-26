@@ -2,7 +2,7 @@ import type { Sync } from '../../shared/models/sync.model.js';
 import db from '../../shared/database.js';
 import type { RawObject } from '../models/raw_object.model.js';
 
-class DatabaseHelper {
+class DataService {
     async createNewSyncTable(sync: Sync): Promise<void> {
         return db.knex.schema.createTable(`_nango_${sync.id}`, function (table) {
             table.increments('_nango_id').primary();
@@ -23,4 +23,4 @@ class DatabaseHelper {
     }
 }
 
-export default new DatabaseHelper();
+export default new DataService();

@@ -1,7 +1,7 @@
 import type { AxiosRequestHeaders } from 'axios';
 
-export enum HttpRequestType {
-    Get = 1,
+export enum HttpMethod {
+    Get = 0,
     Post,
     Put,
     Patch,
@@ -9,7 +9,7 @@ export enum HttpRequestType {
 }
 
 export interface Sync {
-    id: number;
+    id?: number;
     url: string;
     headers?: AxiosRequestHeaders;
     body?: object;
@@ -17,7 +17,7 @@ export interface Sync {
     response_path?: string;
     created_at?: Date;
     updated_at?: Date;
-    request_type: HttpRequestType;
+    method: HttpMethod;
     paging_request_path?: string;
-    paging_result_path?: string;
+    paging_response_path?: string;
 }

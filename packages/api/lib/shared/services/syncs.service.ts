@@ -15,6 +15,15 @@ class SyncsService {
             return result[0];
         }
     }
+
+    async createSync(sync: Sync): Promise<void | Pick<Sync, 'id'>[]> {
+        return db
+            .knex(`syncs`)
+            .insert(sync, ['id'])
+            .catch((err) => {
+                console.error(`There was an error upserting objects by id:`, err);
+            });
+    }
 }
 
 export default new SyncsService();
