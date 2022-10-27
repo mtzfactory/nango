@@ -12,13 +12,8 @@
         "directory": "packages/node-client"
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
-    "dependencies": {
-        "@nangohq/core": "^0.2.1",
-        "amqplib": "^0.10.2"
-    },
-    "devDependencies": {
-        "@types/amqplib": "^0.8.2"
-    },
+    "dependencies": {},
+    "devDependencies": {},
     "engines": {
         "node": ">=16.7"
     },

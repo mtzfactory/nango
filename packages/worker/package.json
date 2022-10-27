@@ -1,20 +1,24 @@
 {
-    "name": "@nangohq/core",
+    "name": "@nangohq/worker",
     "version": "0.2.1",
-    "description": "Nango's shared components.",
+    "description": "Nango's worker.",
     "type": "module",
-    "main": "dist/lib/index.js",
-    "typings": "dist/lib/index.d.ts",
-    "scripts": {},
+    "main": "dist/lib/worker.js",
+    "scripts": {
+        "start": "tsc && node dist/lib/worker.js",
+        "debug": "export DEBUG=* && npm run start"
+    },
     "keywords": [],
     "repository": {
         "type": "git",
         "url": "https://github.com/NangoHQ/nango",
-        "directory": "packages/core"
+        "directory": "packages/worker"
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
+        "@nangohq/core": "^0.2.1",
         "amqplib": "^0.10.3",
+        "axios": "^0.27.2",
         "cors": "^2.8.5",
         "ejs": "^3.1.5",
         "knex": "^2.3.0",
