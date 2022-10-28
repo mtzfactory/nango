@@ -6,13 +6,11 @@ class KnexDatabase {
     knex: Knex;
 
     constructor() {
-        let env = process.env['NODE_ENV'];
-        if (env == null || !['development', 'production'].includes(env)) {
-            process.exit(1);
-        }
+        this.knex = knex(config.development);
+    }
 
-        let knexConfig = env === 'development' ? config.development : config.production;
-        this.knex = knex(knexConfig);
+    async migrate(directory: string): Promise<any> {
+        return this.knex.migrate.latest({ directory: directory });
     }
 }
 

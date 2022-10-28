@@ -3,8 +3,8 @@
     "version": "0.2.1",
     "description": "Nango's NodeJS client.",
     "type": "module",
-    "main": "dist/nango.js",
-    "typings": "dist/nango.d.ts",
+    "main": "dist/lib/nango.js",
+    "typings": "dist/lib/nango.d.ts",
     "keywords": [],
     "repository": {
         "type": "git",

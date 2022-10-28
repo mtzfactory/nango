@@ -4,10 +4,11 @@ let config: { development: Knex.Config<any>; production: Knex.Config<any>; onUpd
     development: {
         client: 'pg',
         connection: {
-            host: 'localhost',
+            host: process.env['NANGO_SERVER_RUN_MODE'] === 'DOCKERIZED' ? 'nango-db' : 'localhost',
             port: 5432,
-            user: 'bb',
-            database: 'bb'
+            user: 'nango',
+            database: 'nango',
+            password: 'nango'
         },
         migrations: {
             directory: './migrations',
@@ -18,10 +19,11 @@ let config: { development: Knex.Config<any>; production: Knex.Config<any>; onUpd
     production: {
         client: 'pg',
         connection: {
-            connectionString: process.env['DATABASE_URL'] || '',
-            ssl: {
-                rejectUnauthorized: false
-            }
+            host: process.env['NANGO_SERVER_RUN_MODE'] === 'DOCKERIZED' ? 'nango-db' : 'localhost',
+            port: 5432,
+            user: 'nango',
+            database: 'nango',
+            password: 'nango'
         },
         migrations: {
             directory: './migrations',

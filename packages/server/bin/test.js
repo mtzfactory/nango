@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-var url = 'http://localhost:3000/v1/syncs';
+var url = 'http://localhost:3003/v1/syncs';
 
 var headers = {
     'Content-Type': 'application/json'
@@ -21,8 +21,10 @@ var body = {
     paging_response_path: 'paging.next.after'
 };
 
-var res = await axios.post(url, body, { headers: headers }).catch((err) => {
+let res = await axios.post(url, body, { headers: headers }).catch((err) => {
     console.log(err);
 });
 
-console.log(res.data);
+if (res != null) {
+    console.log(res.data);
+}
