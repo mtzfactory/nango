@@ -1,22 +1,46 @@
 version: '3.9'
 services:
-    rabbitmq:
+    nango-rabbit:
         image: rabbitmq:3-management
         container_name: nango-rabbit
         ports:
             - '5672:5672'
             - '8082:15672'
 
-    server:
+    nango-db:
+        image: postgres
+        container_name: nango-db
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: nango
+            POSTGRES_USER: nango
+            POSTGRES_DB: nango
+        ports:
+            - '5432:5432'
+
+    nango-db-admin:
+        image: adminer
+        container_name: nango-db-admin
+        restart: always
+        ports:
+            - '8080:8080'
+
+    nango-server:
         image: nangohq/server
         container_name: nango-server
-        env_file:
-            - .dev-secrets
+        restart: always
         ports:
             - '3003:3003'
-        volumes:
-            - type: bind
-              source: ${NANGO_INTEGRATIONS_DIR}
-              target: /usr/nango-server/src/nango-integrations
         depends_on:
-            - rabbitmq
+            - nango-rabbit
+            - nango-db
+
+    nango-worker:
+        image: nangohq/worker
+        container_name: nango-worker
+        restart: always
+        ports:
+            - '3004:3004'
+        depends_on:
+            - nango-rabbit
+            - nango-db

@@ -1,46 +1,47 @@
 import express from 'express';
-import * as http from 'http';
-import type { CommonRoutesConfig } from './v1/common/common.routes.config';
-import { SyncsRoutes } from './v1/syncs/syncs.routes.config.js';
-import debug from 'debug';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
 import cors from 'cors';
-import { syncsQueue } from '@nangohq/core';
+import { syncsQueue, db } from '@nangohq/core';
+import SyncsController from './v1/syncs/syncs.controller.js';
+import SyncsMiddleware from './v1/syncs/syncs.middleware.js';
 
-const port = process.env['PORT'] || 3000;
+const port = process.env['PORT'] || 3003;
 
-const app: express.Application = express();
-const server: http.Server = http.createServer(app);
-const routes: Array<CommonRoutesConfig> = [];
-const debugLog: debug.IDebugger = debug('app');
+const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-const loggerOptions: expressWinston.LoggerOptions = {
-    transports: [new winston.transports.Console()],
-    format: winston.format.combine(winston.format.json(), winston.format.prettyPrint(), winston.format.colorize({ all: true }))
-};
+app.use(
+    expressWinston.logger({
+        transports: [new winston.transports.Console()],
+        format: winston.format.combine(winston.format.colorize(), winston.format.json(), winston.format.prettyPrint())
+    })
+);
 
-if (!process.env['DEBUG']) {
-    loggerOptions.meta = false;
-}
+app.route(`/v1/syncs`).post(SyncsMiddleware.validateCreateSyncRequest, SyncsController.createSync);
 
-app.use(expressWinston.logger(loggerOptions));
-routes.push(new SyncsRoutes(app));
+app.use(
+    expressWinston.errorLogger({
+        transports: [new winston.transports.Console()],
+        format: winston.format.combine(winston.format.colorize(), winston.format.json(), winston.format.prettyPrint())
+    })
+);
 
-const runningMessage = `Server running on port: ${port}`;
-app.get('/', (_: express.Request, res: express.Response) => {
-    res.status(200).send(runningMessage);
-});
-
-server.listen(port, () => {
-    routes.forEach((route: CommonRoutesConfig) => {
-        debugLog(`Routes configured for ${route.getName()}`);
+db.migrate(process.env['NANGO_DB_MIGRATION_FOLDER'] || '../core/db/migrations')
+    .then(() => {
+        syncsQueue
+            .connect()
+            .then(() => {
+                app.listen(port, () => {
+                    console.log(`✅ Nango Server is listening on port ${port}.`);
+                });
+            })
+            .catch((error) => {
+                console.log(`❌ Could connect to RabbitMQ: ${error}\n`);
+            });
+    })
+    .catch((error) => {
+        console.log(`❌ Could connect to DB or execute schema migration: ${error}`);
     });
-
-    console.log(runningMessage);
-});
-
-await syncsQueue.connect();

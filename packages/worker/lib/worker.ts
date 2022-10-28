@@ -4,8 +4,6 @@ import _ from 'lodash';
 import dataService from './services/data.service.js';
 import { syncsQueue, syncsService } from '@nangohq/core';
 
-await syncsQueue.connect();
-
 class SyncExecutor {
     sync: Sync;
 
@@ -24,13 +22,17 @@ class SyncExecutor {
     }
 }
 
-syncsQueue.consume((syncId: number) => {
-    syncsService.readById(syncId).then((sync: Sync | null) => {
-        if (sync == null) {
-            console.log("Unidentified sync ID received from 'syncs' queue.");
-            return;
-        }
+await syncsQueue.connect().then(() => {
+    console.log(`✅ Nango Worker is on.`);
 
-        new SyncExecutor(sync).run();
+    syncsQueue.consume((syncId: number) => {
+        syncsService.readById(syncId).then((sync: Sync | null) => {
+            if (sync == null) {
+                console.log("Unidentified sync ID received from 'syncs' queue.");
+                return;
+            }
+
+            new SyncExecutor(sync).run();
+        });
     });
 });
