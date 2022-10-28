@@ -4,45 +4,40 @@ sidebar_position: 1
 sidebar_label: Introduction
 ---
 
-# Introduction
+# Nango: The best way to sync data from external APIs
 
-Nango provides open-source infrastructure for native integrations.
+Nango continuously syncs data from any API endpoint to your local database and keeps it fresh for you.
 
-## Why?
 
-Building native integrations is costly, particularly as you support more integrations, deeper integrations and higher traffic. Most companies end up building the same infrastructure: scheduling, queueing, error handling, retries, authentication, logging, local development environment, CI/CD, etc. Nango's goal is to make integration developers 10x more productive by providing them with this common infrastructure.
+## ⭐ How does it work?
 
-## A packaged micro-service for native integrations {#server}
+You do:
+```ts
+Nango.sync('https://api.hubspot.com/crm/v3/contacts', ...); // Start sync job for HubSpot contacts
+```
 
-Nango is an independent micro-service that centralizes interactions with external APIs. It can be run [locally](local-development.md), [self-hosted](nango-hosted.md) or managed by [Nango Cloud](nango-cloud.md). Nango runs your own integration-specific code, abstracting away the common infrastructure across integrations. It supports integrations of arbitrary complexity and scale, while remaining simple to use, reliable and extensible.
+We do:
+- Pagination & full first sync
+- Periodic refresh with incremental syncs
+- Deduplication of records & upserts of changed data
+- Detecting schema changes & alert you
+- Automatic retries & rate-limit handling
+- Making your syncs robust, so you never again have to worry about stuck/stale syncs or manual restarts
 
-![Nango Server](/img/introduction.png)
+## 🧑‍💻 Cool, who uses it?
 
-Nango comes with bullet-proof infrastructure focused on native integrations:
-- Queuing & scheduling
-- Retries & error handling
-- OAuth & token refresh
-- Rate limit handling
-- Logging & monitoring
-- Delightful local development & testing
-- CI/CD
-- Many more features companies end up building from scratch!
+- Smart engineers in SaaS companies that build native CRM, payments or marketing integrations for their customers as part of their products
+- Awesome weekend-warriors who automate their lifes by syncing bank transactions or saved recipes for further processing
+- Sleep deprived hackathon hackers who want to focus on getting all the real-estate listings into a DB fast instead of building infra
+- Chuck Norris.
 
-## What is a native integration?
+## 🔍 Sounds good, how can I check it out?
 
-Native integrations designate the features in your product, for the benefit of your users, that are reliant on external services that your users also use. Native integrations are sometimes called "embedded", "customer-facing" or "product" integrations. Your product integrates to the external service via their public API. Users provide you with credentials to the 3rd-party service, usually via OAuth directly from your product. [Here](https://capsulecrm.com/integrations/) [are](https://linear.app/integrations) [example](https://reply.io/integrations) [pages](https://www.deel.com/integrations) advertising native integrations.
+The fastest way to see Nango in action is with our [Quickstart 🚀](quickstart.md), head over there and sync data to your local machine in less than 3 minutes!
 
-## FAQ
+You can also check out some [real-world examples](real-world-examples.md) of cool things you can build with Nango, or hop on our [Slack community](https://nango.dev/slack) to see what others are building with Nango.
 
-<details>
-  <summary>Which APIs does Nango work with?</summary>
-  <div>
-    <div>Every API!</div>
-    <br/>
-    <div>
-    Nango is fully API agnostic and works with every HTTP based API. Writing an Integration for an API with Nango is typically at least as fast a using a standard HTTP requests library.
-    <br/>
-    In addition Nango has <a href="/category/blueprints-catalog">27+ Blueprints</a> for commonly used APIs, with these you get OAuth, token refreshes, rate-limit handling and error handling just by adding a single line to your config file. We are expanding the Blueprints library every week. 
-    </div>
-  </div>
-</details>
+## 🤔 Do you always talk like this?
+
+Maybe 💁  
+Skim through the docs and find out ;)
