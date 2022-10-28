@@ -1,11 +1,11 @@
 ---
-sidebar_label: 'SDK: Node'
-sidebar_position: 1
+sidebar_label: 'Node SDK'
+sidebar_position: 2
 ---
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# SDK: Node
+# Node SDK
 
 This is the reference for the Nango node.js client SDK, which we call node-client and is published on npm as [@nangohq/node-client](https://www.npmjs.com/package/@nangohq/node-client).
 

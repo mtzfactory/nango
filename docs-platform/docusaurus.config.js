@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Nango Docs',
-  tagline: 'Documentation for the Nango framework',
+  tagline: 'Documentation for the Nango project',
   url: 'https://docs.nango.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -66,10 +66,10 @@ const config = {
     ({
       metadata: [{
         name: 'keywords',
-        content: 'nango, documentation, native integrations, integrations framework, integrations, customer-facing integrations, open-source framework, open-source, nango docs, nango documentation'
+        content: 'nango, sync api, sync endpoint, data sync, sync to database, sync to db, continuous sync, native integrations, integrations, customer-facing integrations, open-source framework, open-source, nango docs, nango documentation'
       }, {
         name: 'description',
-        content: 'The documentation for the native integrations framework Nango'
+        content: 'The documentation for the api endpoint sync project Nango'
       }],
       docs: {
         sidebar: {
@@ -88,10 +88,6 @@ const config = {
             docId: 'introduction',
             position: 'left',
             label: 'Docs',
-          },
-          {
-            label: 'Blueprints',
-            to: '/category/blueprints-catalog'
           },
           {
             label: 'Community Slack',
@@ -117,15 +113,11 @@ const config = {
               },
               {
                 label: 'Quickstart 🚀',
-                to: '/quickstart/node',
+                to: '/quickstart',
               },
               {
-                label: 'Architecture',
-                to: '/architecture',
-              },
-              {
-                label: 'Blueprints Catalog',
-                to: '/category/blueprints-catalog',
+                label: 'Community & Help',
+                to: '/community',
               },
             ],
           },
@@ -155,7 +147,7 @@ const config = {
               },
               {
                 label: 'Nango Website',
-                href: 'https://www.nango.dev/blog',
+                href: 'https://www.nango.dev',
               },
             ],
           },
