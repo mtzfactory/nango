@@ -1,6 +1,6 @@
 ---
 sidebar_label: Cloud Edition
-sidebar_position: 5
+sidebar_position: 7
 ---
 
 # Cloud Edition

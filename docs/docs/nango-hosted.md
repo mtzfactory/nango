@@ -1,6 +1,6 @@
 ---
 sidebar_label: Self-Hosted Edition
-sidebar_position: 4
+sidebar_position: 6
 ---
 
 # Self-Hosted Edition
