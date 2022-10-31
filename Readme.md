@@ -4,7 +4,7 @@
 
 </div>
 
-<h1 align="center">The best way to sync data from external APIs to your DB</h1>
+<h1 align="center">The best way to sync data from external APIs</h1>
 
 <div align="center">
 Nango continuously syncs data from any API endpoint to your local database and keeps it fresh for you.
@@ -26,53 +26,61 @@ Nango continuously syncs data from any API endpoint to your local database and k
 ## ⭐ Can you show me an example?
 
 You do:
+
 ```ts
-Nango.sync('https://api.hubspot.com/crm/v3/contacts', ...); // Start sync job for HubSpot contacts
+Nango.sync('https://api.hubspot.com/crm/v3/contacts', ...); // Starts syncing Hubspot's contacts forever!
 ```
 
 We do:
-* Pagination & full first sync
-* Periodic refresh with incremential syncs
-* Deduplication of records & upserts of changed data
-* Detecting schema changes & alert you
-* Automatic retries & rate-limit handling
-* Making your syncs robust, so you never again have to worry about stuck/stale syncs or manual restarts
 
+-   Pagination & full first sync
+-   Periodic refresh with incremental syncs
+-   Deduplication of records & upserts of changed data
+-   Detecting schema changes & alert you
+-   Automatic retries & rate-limit handling
+-   Making sure your sync is robust, so you never again have to worry about stuck/stale syncs or manual restarts
 
 ## 🧑‍💻 Cool, who uses it?
-* Smart engineers in SaaS companies that build native CRM, payments or marketing integrations for their customers as part of their products
-* Awesome weekend-warriors who automate their lifes by syncing bank transactions or saved recipes for further processing
-* Sleep deprived hackathon hackers who want to focus on getting all the real-estate listings into a DB fast instead of building infra
-* Chuck Norris.
 
+-   Smart engineers in SaaS companies who build in-app integrations related to CRM contacts, payment transactions, HRIS employees, etc.
+-   Awesome weekend-warriors who automate their lives by syncing bank transactions or saved receipts for further processing
+-   Sleep-deprived hackathon hackers who want to focus on getting all the real-estate listings into a DB fast instead of building infra
+-   Chuck Norris.
 
 ## 🚀 Ok seriously, do you have a quickstart?
 
-Let's setup a first sync job to pull in [a full list of pokemons](https://pokeapi.co/) (and keep it in sync, these bastards keep evolving!).
+Let's setup your first Sync in 3 minutes. It will pull [the full list of pokémons](https://pokeapi.co/) (and keep it in sync, these bastards keep evolving!).
 
-This uses our Node.JS SDK, but there is also REST API and support for other languages ([see docs](https://docs.nango.dev))
+Clone the repo and start Nango locally...
 
-```ts
-import Nango from '@nangohq/sync'
-
-let job = await Nango.sync('https://pokeapi.co/api/v2/pokemon', // The endpoint we should sync data from
-            'GET',                              // The HTTP request method to use
-            {},                                 // Query parameters, e.g. {'q': 'pikachu'} -> ?q=pikachu
-            {},                                 // The request body
-            'results',                          // The key for the results
-            'next',                             // The key for the pagination cursor
-            'name'                              // The key that is unique per item in the results, usually an id
-);
-
-let dbConnectionString = job.getDbConnectionString();
-let dbTableName = job.getDbTableName();
-
-job.firstSyncFinished()                         // Resolves when the first full sync finishes
-.then(() => {
-    // Let's go fetch the imported data from the DB!
-});
+```bash
+git clone https://github.com/NangoHQ/nango.git
+cd nango && docker compose up
 ```
 
+...and create a Sync with a simple CURL!
+
+```bash
+  curl --request POST \
+--url http://localhost:3003/v1/syncs \
+ --header "Content-type: application/json" \
+ --data '{"url": "https://pokeapi.co/api/v2/pokemon", "body": { "response_path": "results", "paging_url_path":"next"}}'
+```
+
+That's all it takes! You can check out [the list of all Pokémons in your local database](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_raw).
+
+In practice, you probably want to use one of our native SDKs to interact with Nango's API ([see docs](https://docs.nango.dev)), e.g. for Node.JS:
+
+```ts
+import { Nango, NangoSyncConfig } from '@nangohq/node-client';
+
+let config: NangoSyncConfig = {
+    response_path: 'results', // The path to the Pokémons objects in the response.
+    paging_url_path: 'next' // The path to the next page's url in the response.
+};
+
+await Nango.sync('https://pokeapi.co/api/v2/pokemon', config);
+```
 
 ## 🔍 Awesome, tell me more!
 
