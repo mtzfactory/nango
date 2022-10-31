@@ -29,26 +29,31 @@ cd nango && docker compose up  # cd nango && docker-compose up if you are on an 
 
 ## Step 2: Create a new Sync
 
-Run the CURL request bellow in the terminal, or use one of our SDKs:
+Run the CURL command bellow in the terminal:
+
+```bash
+  curl --request POST \
+    --url http://localhost:3003/v1/syncs \
+    --header "Content-type: application/json" \
+    --data '{"url": "https://pokeapi.co/api/v2/pokemon", "response_path": "results", "paging_url_path":"next"}'
+```
+
+That's it! You have just created your 1st Sync :)
+
+While CURL is great for testing, for production, you will probably prefer using one of our native SDKs: 
 
 <Tabs groupId="programming-language">
-  
-  <TabItem value="curl" label="REST API (curl)">
-
-  ```bash
-  curl --request POST \
---url http://localhost:3003/v1/syncs \
- --header "Content-type: application/json" \
- --data '{"url": "https://pokeapi.co/api/v2/pokemon", "body": { "response_path": "results", "paging_url_path":"next"}}'
-  ```
-  </TabItem>
 
   <TabItem value="node" label="Node SDK">
 
-```ts
+```js
 import { Nango, NangoSyncConfig } from '@nangohq/node-client';
+While CURL is great for testing, you will probably prefer using one of our native SDKs in your code, e.g. for Node: 
+```js
+import { Nango } from '@nangohq/node-client';
 
 let config: NangoSyncConfig = {
+let config = {
     response_path: 'results',
     paging_url_path: 'next'
 };
@@ -60,13 +65,14 @@ console.log(res.data);
   </TabItem>
 </Tabs>
 
+
 ## Step 3: Inspect the synced data
 
-You have just created your 1st Sync! It will keep your Pokémon list up-to-date forever:
+The Sync you just created will keep your Pokémon list up-to-date forever:
 - View [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_raw) in your local db
 - View [the Sync's config](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_syncs) in your local db
 
 
-## Step 4: There is no step 4. Celebrate?
+## Step 4: There is no step 4. Celebrate? 🎉
 
 Check out all the ways you can use and configure Nango in the rest of the docs.
