@@ -47,12 +47,9 @@ While CURL is great for testing, for production, you will probably prefer using 
   <TabItem value="node" label="Node SDK">
 
 ```js
-import { Nango, NangoSyncConfig } from '@nangohq/node-client';
-While CURL is great for testing, you will probably prefer using one of our native SDKs in your code, e.g. for Node: 
-```js
 import { Nango } from '@nangohq/node-client';
 
-let config: NangoSyncConfig = {
+let config = {
 let config = {
     response_path: 'results',
     paging_url_path: 'next'
