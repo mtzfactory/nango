@@ -40,7 +40,7 @@ Run the CURL command bellow in the terminal:
 
 That's it! You have just created your 1st Sync :)
 
-While CURL is great for testing, for production, you will probably prefer using one of our native SDKs: 
+While CURL is great for testing, for production, you will probably prefer using one of our native SDKs to create syncs on the fly from your code: 
 
 <Tabs groupId="programming-language">
 
@@ -49,7 +49,6 @@ While CURL is great for testing, for production, you will probably prefer using 
 ```js
 import { Nango } from '@nangohq/node-client';
 
-let config = {
 let config = {
     response_path: 'results',
     paging_url_path: 'next'
@@ -70,6 +69,15 @@ The Sync you just created will keep your Pokémon list up-to-date forever:
 - View [the Sync's config](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_syncs) in your local db
 
 
-## Step 4: There is no step 4. Celebrate? 🎉
+## Celebrate 🎉
 
-Check out all the ways you can use and configure Nango in the rest of the docs.
+Congratulations, you now have a local copy of all Pokémons in your database 🎉
+
+Whilst this is just a small toy example we hope it has shown you how Nango can create powerful syncs with a single line of code.
+
+Let's build cool things with Nango:
+* [Explore the Architecture](architecture.md)
+* [Join the Slack Community](https://nango.dev/slack)
+* [Explore more examples](real-world-examples.md)
+* [Contribute ❤️](contributing.md)
+
