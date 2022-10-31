@@ -8,11 +8,11 @@ import TabItem from '@theme/TabItem';
 
 # Quickstart
 
-From page load to freshly synced Pokémons in your local DB in 3 minutes. Let's go!
+From page load to freshly synced Pokémons in your local DB **in 3 minutes**. Let's go!
 
 ## Prerequisite
 
-Before we dive in make sure you have recent version of [Docker](https://www.docker.com/products/docker-desktop/) installed.
+Before we dive in, make sure you have a recent version of [Docker](https://www.docker.com/products/docker-desktop/) installed.
 
 ## Step 1: Download & run Nango
 
@@ -28,6 +28,8 @@ cd nango && docker compose up  # cd nango && docker-compose up if you are on an 
 ```
 
 ## Step 2: Create a new Sync
+
+Run the CURL request bellow in the terminal, or use one of our SDKs:
 
 <Tabs groupId="programming-language">
   
@@ -60,9 +62,11 @@ console.log(res.data);
 
 ## Step 3: Inspect the synced data
 
-View the [Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_raw) in your local db.
-
-View the [Sync's config](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_syncs) in your local db.
+You have just created your 1st Sync! It will keep your Pokémon list up-to-date forever:
+- View [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_raw) in your local db
+- View [the Sync's config](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_syncs) in your local db
 
 
 ## Step 4: There is no step 4. Celebrate?
+
+Check out all the ways you can use and configure Nango in the rest of the docs.
