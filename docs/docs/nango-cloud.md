@@ -1,13 +1,11 @@
 ---
 sidebar_label: Cloud Edition
-sidebar_position: 5
+sidebar_position: 7
 ---
 
 # Cloud Edition
 
 ## Overview
-
-![Nango Self-Hosted](/img/nango-cloud.png)
 
 Glad you asked! Yes, we plan on offering a cloud-hosted version which will take care of running the [Nango Server](architecture.md) for you. You will write Integrations code locally, in the Nango Folder, and deploy to the Nango Server with a single CLI command.
 
