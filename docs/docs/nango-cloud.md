@@ -7,8 +7,6 @@ sidebar_position: 5
 
 ## Overview
 
-![Nango Self-Hosted](/img/nango-cloud.png)
-
 Glad you asked! Yes, we plan on offering a cloud-hosted version which will take care of running the [Nango Server](architecture.md) for you. You will write Integrations code locally, in the Nango Folder, and deploy to the Nango Server with a single CLI command.
 
 If you are interested in Nango Cloud feel free to [add your voice to this issue](https://github.com/NangoHQ/nango/issues/4).

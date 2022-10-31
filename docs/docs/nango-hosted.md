@@ -7,7 +7,6 @@ sidebar_position: 4
 
 ## Overview
 
-![Nango Self-Hosted](/img/nango-hosted.png)
 
 Deploying Nango requires two simple steps that can easily be automated with a CI/CD pipeline:
 1. Clone the Nango repository and run `docker compose up` on a VM
