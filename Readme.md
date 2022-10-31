@@ -38,27 +38,27 @@ We do:
 -   Deduplication of records & upserts of changed data
 -   Detecting schema changes & alert you
 -   Automatic retries & rate-limit handling
--   Making your sync is robust, so you never again have to worry about stuck/stale syncs or manual restarts
+-   Making sure your sync is robust, so you never again have to worry about stuck/stale syncs or manual restarts
 
 ## 🧑‍💻 Cool, who uses it?
 
--   Smart engineers in SaaS companies that build native integrations (e.g. CRM, payments or marketing) for their customers as part of their products
--   Awesome weekend-warriors who automate their lives by syncing bank transactions or saved recipes for further processing
--   Sleep deprived hackathon hackers who want to focus on getting all the real-estate listings into a DB fast instead of building infra
+-   Smart engineers in SaaS companies who build in-app integrations related to CRM contacts, payment transactions, HRIS employees, etc.
+-   Awesome weekend-warriors who automate their lives by syncing bank transactions or saved receipts for further processing
+-   Sleep-deprived hackathon hackers who want to focus on getting all the real-estate listings into a DB fast instead of building infra
 -   Chuck Norris.
 
 ## 🚀 Ok seriously, do you have a quickstart?
 
-Let's setup your first Sync in <3min. It will pull [the full list of pokémons](https://pokeapi.co/) (and keep it in sync, these bastards keep evolving!).
+Let's setup your first Sync in 3 minutes. It will pull [the full list of pokémons](https://pokeapi.co/) (and keep it in sync, these bastards keep evolving!).
 
-Clone the repo and start Nango locally:
+Clone the repo and start Nango locally...
 
 ```bash
 git clone https://github.com/NangoHQ/nango.git
 cd nango && docker compose up
 ```
 
-Create the Sync:
+...and create a Sync with a simple CURL!
 
 ```bash
   curl --request POST \
@@ -67,11 +67,9 @@ Create the Sync:
  --data '{"url": "https://pokeapi.co/api/v2/pokemon", "body": { "response_path": "results", "paging_url_path":"next"}}'
 ```
 
-Go check [all the pokémons in your local database](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_raw).
+That's all it takes! You can check out [the list of all Pokémons in your local database](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_raw).
 
-That's all it takes!
-
-In practice, you probably want to use one of our SDKs to interact with Nango's API ([see docs](https://docs.nango.dev)). E.g. for Node.JS:
+In practice, you probably want to use one of our native SDKs to interact with Nango's API ([see docs](https://docs.nango.dev)), e.g. for Node.JS:
 
 ```ts
 import { Nango, NangoSyncConfig } from '@nangohq/node-client';
