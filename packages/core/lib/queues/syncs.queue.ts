@@ -29,7 +29,7 @@ class SyncsQueue {
                     if (connectionTries < 10) {
                         console.log(`RabbitMQ connection failure: ${error}\nWill retry ${10 - connectionTries} more times, next in 5 seconds...`);
                         setTimeout(() => {
-                            this.connect(connectionTries);
+                            resolve(this.connect(connectionTries));
                         }, 5000);
                     } else {
                         reject(error);

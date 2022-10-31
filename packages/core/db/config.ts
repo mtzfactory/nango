@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 
-let config: { development: Knex.Config<any>; production: Knex.Config<any>; onUpdateTrigger: any } = {
+let config: { development: Knex.Config<any>; production: Knex.Config<any> } = {
     development: {
         client: 'pg',
         connection: {
@@ -29,14 +29,7 @@ let config: { development: Knex.Config<any>; production: Knex.Config<any>; onUpd
             directory: './migrations',
             extension: 'ts'
         }
-    },
-
-    onUpdateTrigger: (table: Knex.Table) => `
-    CREATE TRIGGER ${table}_updated_at
-    BEFORE UPDATE ON ${table}
-    FOR EACH ROW
-    EXECUTE PROCEDURE on_update_timestamp();
-  `
+    }
 };
 
 export { config };
