@@ -1,21 +1,18 @@
-import https from 'https'
+import http from 'http'
 
 var body = {
     url: 'https://pokeapi.co/api/v2/pokemon',
-    method: 'get',
-    headers: {},
-    body: {},
-    unique_key: 'name',
-    paging_request_path: '',
-    paging_response_path: 'next'
+    response_path: 'results',
+    paging_url_path: 'next',
+    max_total: 100
 };
 
 var postData = JSON.stringify(body);
 
 var options = {
-  hostname: 'localhost:3000',
-  port: 3000,
-  path: 'v1/syncs',
+  hostname: 'localhost',
+  port: 3003,
+  path: '/v1/syncs',
   method: 'POST',
   headers: {
        'Content-Type': 'application/json',
@@ -23,7 +20,7 @@ var options = {
      }
 };
 
-var req = https.request(options, (res) => {
+var req = http.request(options, (res) => {
   console.log('statusCode:', res.statusCode);
   console.log('headers:', res.headers);
 

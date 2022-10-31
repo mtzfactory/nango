@@ -12,9 +12,9 @@ class SyncsMiddleware {
             return;
         }
 
-        if (method == null || !['get', 'post', 'put', 'patch', 'delete'].includes(method.toLowerCase())) {
+        if (method != null && !['get', 'post', 'put', 'patch', 'delete'].includes(method.toLowerCase())) {
             res.status(404).send({
-                error: `'method' parameter shoud be 'get', 'post', 'put', 'patch' or 'delete'.`
+                error: `Invalid 'method' parameter. It shoud be 'get', 'post', 'put', 'patch' or 'delete' (default is 'get').`
             });
             return;
         }

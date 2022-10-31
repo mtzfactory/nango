@@ -12,4 +12,6 @@ export interface Sync {
     method: string;
     paging_request_path?: string;
     paging_response_path?: string;
+    paging_url_path?: string;
+    max_total?: number;
 }

@@ -10,6 +10,8 @@ exports.up = function (knex, _) {
         table.string('response_path');
         table.string('paging_request_path');
         table.string('paging_response_path');
+        table.string('paging_url_path');
+        table.integer('max_total');
     });
 };
 

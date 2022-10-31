@@ -13,12 +13,14 @@ var body = {
         authorization: `Bearer fake-token`
     },
     body: {
-        limit: 1,
+        limit: 10,
         properties: []
     },
     unique_key: 'id',
     paging_request_path: 'after',
-    paging_response_path: 'paging.next.after'
+    paging_response_path: 'paging.next.after',
+    response_path: 'results',
+    max_total: 30
 };
 
 let res = await axios.post(url, body, { headers: headers }).catch((err) => {

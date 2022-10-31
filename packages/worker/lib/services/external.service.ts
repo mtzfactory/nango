@@ -10,10 +10,10 @@ class ExternalService {
             return [];
         }
 
-        let results: any[] = [];
+        var results: any[] = [];
         let done = false;
         let pageCursor = null;
-        let maxNumberOfRecords = 2;
+        let maxNumberOfRecords = sync.max_total || 10000;
         sync.body = sync.body || {};
 
         while (!done) {
@@ -58,13 +58,20 @@ class ExternalService {
                 break;
             }
 
-            results = results.concat(res.data.results);
+            let new_results = sync.response_path != null ? _.get(res.data, sync.response_path) : res.data;
+            results = results.concat(new_results);
 
             if (sync.paging_response_path != null && _.get(res.data, sync.paging_response_path) && results.length < maxNumberOfRecords) {
                 pageCursor = _.get(res.data, sync.paging_response_path);
+            } else if (sync.paging_url_path != null && this.isValidHttpUrl(_.get(res.data, sync.paging_url_path)) && results.length < maxNumberOfRecords) {
+                sync.url = _.get(res.data, sync.paging_url_path);
             } else {
                 done = true;
             }
+        }
+
+        if (results.length > maxNumberOfRecords) {
+            results = results.slice(0, maxNumberOfRecords);
         }
 
         let rawObjs: RawObject[] = [];
@@ -78,6 +85,19 @@ class ExternalService {
         }
 
         return rawObjs;
+    }
+
+    isValidHttpUrl(str: string) {
+        var pattern = new RegExp(
+            '^(https?:\\/\\/)?' + // protocol
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+                '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+                '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+                '(\\#[-a-z\\d_]*)?$',
+            'i'
+        ); // fragment locator
+        return !!pattern.test(str);
     }
 }
 
