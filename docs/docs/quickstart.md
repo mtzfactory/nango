@@ -64,7 +64,7 @@ console.log(res.data);
 
 ## Step 3: Inspect the synced data
 
-The Sync you just created will keep your Pokémon list up-to-date forever:
+The Sync you just created will keep your Pokémon list up-to-date forever (password is `nango`):
 - View [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_raw) in your local db
 - View [the Sync's config](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_syncs) in your local db
 

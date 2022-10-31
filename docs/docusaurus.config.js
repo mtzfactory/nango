@@ -116,8 +116,8 @@ const config = {
                 to: '/quickstart',
               },
               {
-                label: 'Community & Help',
-                to: '/community',
+                label: 'Architecture',
+                to: '/architecture',
               },
             ],
           },

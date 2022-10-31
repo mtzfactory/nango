@@ -8,7 +8,7 @@ sidebar_position: 3
 [![Nango Architecture](/img/nango-architecture.png)](/img/nango-architecture.png)
 
 ## Overview of Nango
-Nango runs as a [cloud service](nango-cloud.md) or a group of [self-hosted docker containers](nango-hosted.md).
+Nango runs as a cloud service or a group of self-hosted docker containers (see [deploying Nango to production](production-deployment.md)).
 
 The main way you interact with Nango from your application is the Nango SDK or REST API: With these APIs you can create new Syncs, query the status of Syncs, remove Syncs or (in the future) subscribe to updates from Syncs.
 
