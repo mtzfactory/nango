@@ -33,24 +33,24 @@ import {Nango, NangoHttpMethod} from '@nangohq/node-client'
 
 let nango_options = {
     // HTTP request related
-    method: NangoHttpMethod.Get,    // The HTTP method, e.g. GET, POST, PUT etc
-    headers: {                      // HTTP headers to send along with every request
+    method: NangoHttpMethod.Get,    // The HTTP method of the external REST API endpoint (GET, POST, etc.).
+    headers: {                      // HTTP headers to send along with every request to the external API (e.g. auth header).
         'Accept': 'application/json'
     },
-    body: {                         // HTTP body to send along with every request, will be JSON encoded
+    body: {                         // HTTP body to send along with every request to the external API.
         'mykey': 'A great value'
     },
 
     // To fetch results & uniquely identify records
-    response_path: 'results',       // The path in the response to the array with our results
-    unique_key: 'id',               // The key in the results object which identifies a unique record
+    response_path: 'results',       // The path to the result objects inside the external API response.
+    unique_key: 'id',               // The key in the result objects used for deduping (e.g. email, id).
 
     // For cursor based paging
-    paging_request_path: 'after',   // The name of the request parameter for the next page cursor
-    paging_response_path: 'paging.next.after',   // The path in the response to the cursor for the next page
+    paging_request_path: 'after',   // The name of the request parameter for the next page cursor.
+    paging_response_path: 'paging.next.after',   // The path in the response to the cursor for the next page.
 
     // For URL based paging
-    paging_url_path: 'next'        // The path in the response to the URL for the next page
+    paging_url_path: 'next'        // The path in the response to the URL for the next page.
 };
 
 // Add the Sync

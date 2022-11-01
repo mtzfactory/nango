@@ -26,10 +26,10 @@ We do:
 
 ## 🧑‍💻 Cool, who uses it?
 
-- Smart engineers in SaaS companies that build native CRM, payments or marketing integrations for their customers as part of their products
-- Awesome weekend-warriors who automate their lifes by syncing bank transactions or saved recipes for further processing
-- Sleep deprived hackathon hackers who want to focus on getting all the real-estate listings into a DB fast instead of building infra
-- Chuck Norris.
+-   Smart engineers in SaaS companies who build in-app integrations related to CRM contacts, payment transactions, HRIS employees, etc.
+-   Awesome weekend-warriors who automate their lives by syncing bank transactions or saved cooking recipes for further processing
+-   Sleep-deprived hackathon hackers who want to focus on getting all the real-estate listings into a DB fast instead of building infra
+-   Chuck Norris.
 
 ## 🔍 Sounds good, how can I check it out?
 
