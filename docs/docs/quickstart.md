@@ -8,11 +8,13 @@ import TabItem from '@theme/TabItem';
 
 # Quickstart
 
-From page load to freshly synced Pokémons in your local DB **in 3 minutes**. Let's go!
+**Goal**  
+Show you Nango in action by syncing a list of all Pokémons to your local DB **in 3 minutes**.
 
-## Prerequisite
-
+**Prerequisite**  
 Before we dive in, make sure you have a recent version of [Docker](https://www.docker.com/products/docker-desktop/) installed.
+
+Ready? Let's go!
 
 ## Step 1: Download & run Nango
 
@@ -29,7 +31,9 @@ cd nango && docker compose up  # cd nango && docker-compose up if you are on an 
 
 ## Step 2: Create a new Sync
 
-Run the CURL command bellow in the terminal:
+Next we need to tell Nango about our Sync job: Here we want it to fetch the latest details about all Pokémons from the [Poké API](https://pokeapi.co/) and sync it to our local database.
+
+To do this run the following CURL command in the terminal (we use Nango's REST API here to create a new Sync):
 
 ```bash
   curl --request POST \
@@ -40,8 +44,9 @@ Run the CURL command bellow in the terminal:
 
 That's it! You have just created your 1st Sync :)
 
-While CURL is great for testing, for production, you will probably prefer using one of our native SDKs to create syncs on the fly from your code: 
+While CURL is great for testing things locally, in your code you will probably prefer using one of our native SDKs to create syncs on the fly (e.g. when a user activates a new native integration).
 
+Here is what the above CURL command looks like with our SDKs:
 <Tabs groupId="programming-language">
 
   <TabItem value="node" label="Node SDK">
@@ -62,22 +67,23 @@ console.log(res.data);
 </Tabs>
 
 
-## Step 3: Inspect the synced data
+## Step 3: Inspect the synced ~~data~~ Pokémons
 
-The Sync you just created will keep your Pokémon list up-to-date forever (password is `nango`):
-- View [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_raw) in your local db
-- View [the Sync's config](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_syncs) in your local db
+The Sync you just created will keep your Pokémon list up-to-date forever:
+- View [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_raw) in your local db (password is `nango`)
+- View [the Sync's config](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_syncs) in your local db (same password)
 
 
-## Celebrate 🎉
+## That's it!
 
-Congratulations, you now have a local copy of all Pokémons in your database 🎉
+Congratulations, you now have a local copy of all Pokémons in your database 🎉 It's yours to keep.
 
 Whilst this is just a small toy example we hope it has shown you how Nango can create powerful syncs with a single line of code.
 
-Let's build cool things with Nango:
+When you are ready here are some suggestions to get the most out of Nango:
 * [Explore the Architecture](architecture.md)
-* [Join the Slack Community](https://nango.dev/slack)
+* [Join the Slack Community](https://nango.dev/slack) and give us feedback on the quickstart & Nango
 * [Explore more examples](real-world-examples.md)
+* [Open a GitHub Issue](https://github.com/NangoHQ/nango/issues/new) to tell us about problems or improvements you would like to see
 * [Contribute ❤️](contributing.md)
 

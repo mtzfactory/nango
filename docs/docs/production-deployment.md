@@ -5,12 +5,12 @@ sidebar_position: 6
 
 # Deploying Nango to production
 
-Nango is currently in an Alpha stage with big developments every week: It will be production ready very soon, but currently we recommend you talk to us in the [Slack community](https://nango.dev/slack) before deploying it in production.
+Nango is currently in an Alpha stage with big developments every week: It will be production ready very soon, but currently we recommend you talk to us in the [Slack community](https://nango.dev/slack) (we are online there all day long) before deploying it in production.
 
 We look forward to hearing from you!
 
 ## Self-hosted
-Nango is very simple to self-host on a single machine with the `docker compose up` command. This command will automatically set up a group of docker containers to you up and running:
+Nango is very simple to self-host on a single machine with the `docker compose up` command. This command will automatically run a group of docker containers for you:
 - Nango Server docker container
 - Nango Worker docker container (1 or more)
 - A rabbitMQ instance (for queuing)

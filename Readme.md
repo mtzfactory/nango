@@ -4,7 +4,7 @@
 
 </div>
 
-<h1 align="center">The best way to sync data from external APIs</h1>
+<h1 align="center">The easiest way to sync data from external APIs</h1>
 
 <div align="center">
 Nango continuously syncs data from any API endpoint to your local database and keeps it fresh for you.
@@ -25,13 +25,13 @@ Nango continuously syncs data from any API endpoint to your local database and k
 
 ## ⭐ Can you show me an example?
 
-You do:
+In your code you write:
 
 ```ts
 Nango.sync('https://api.hubspot.com/crm/v3/contacts', ...); // Starts syncing contacts forever!
 ```
 
-We do:
+Nango then takes care of:
 
 -   Pagination & full first sync
 -   Periodic refresh with incremental syncs
@@ -40,18 +40,17 @@ We do:
 -   Automatic retries & rate-limit handling
 -   Making sure your sync is robust, so you never again have to worry about stuck/stale syncs or manual restarts
 
-## 🧑‍💻 Cool, who uses it?
+## 🧑‍💻 Cool, what can I build with it?
 
--   Smart engineers in SaaS companies who build in-app integrations related to CRM contacts, payment transactions, HRIS employees, etc.
--   Awesome weekend-warriors who automate their lives by syncing bank transactions or saved cooking recipes for further processing
--   Sleep-deprived hackathon hackers who want to focus on getting all the real-estate listings into a DB fast instead of building infra
--   Chuck Norris.
+-   Teams in SaaS companies use Nango to **build native in-app integrations** related to CRM contacts, payment transactions, HRIS employees, etc.
+-   Some **automate their personal lives** with Nango by syncing bank transactions or saved cooking recipes for further processing
+-   Nango can help you **quickly build proof of concepts** (which are easy to make production-grade) for hackathon projects, internal evaluations or to test the technical feasibility of your next big idea
 
-## 🚀 Ok seriously, do you have a quickstart?
+## 🚀 Interesting, how can I try it?
 
 Let's setup your first Sync in 3 minutes!
 
-It will pull [the full list of Pokémons](https://pokeapi.co/) to a local Postgres database (and keep it in sync, these bastards keep evolving!).
+It will pull [the full list of Pokémons](https://pokeapi.co/) to a local Postgres database (and keep it in sync, they love to evolve!).
 
 Clone the repo and start Nango locally...
 
@@ -78,15 +77,15 @@ import { Nango } from '@nangohq/node-client';
 
 let config = {
     response_path: 'results', // The path to the Pokémons objects in the response.
-    paging_url_path: 'next' // The path to the next page's url in the response.
+    paging_url_path: 'next'   // The path to the next page's url in the response.
 };
 
 await Nango.sync('https://pokeapi.co/api/v2/pokemon', config);
 ```
 
-## 🔍 Awesome, tell me more!
+## 🔍 Neat, I would like to learn more
 
-⭐  Like Nango? Follow our development by starring us here on GitHub ⭐
+⭐  Follow our development by starring us here on GitHub ⭐
 
 -   Explore some [real world examples](https://docs.nango.dev)
 -   Share feedback or ask questions on the [Slack community](https://nango.dev/slack)
