@@ -1,12 +1,10 @@
-import type { AxiosRequestHeaders } from 'axios';
-
 export interface Sync {
     id?: number;
     created_at?: Date;
     updated_at?: Date;
     url: string;
     method: string;
-    headers?: AxiosRequestHeaders;
+    headers?: { string: string | number | boolean };
     body?: object;
     unique_key: string;
     response_path?: string;
