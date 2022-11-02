@@ -1,4 +1,4 @@
-import { syncGithubStargazers } from './examples/github.js';
+import { syncGithubStargazers, syncGithubUserRepos } from './examples/github.js';
 import { syncHubspotContacts } from './examples/hubspot.js';
 import { syncPokemonList } from './examples/pokemon.js';
 
@@ -38,6 +38,9 @@ if (function_name == null) {
 switch (function_name) {
     case 'syncGithubStargazers':
         syncGithubStargazers(parseArguments(1)[0]!).then(logSuccess);
+        break;
+    case 'syncGithubUserRepos':
+        syncGithubUserRepos(parseArguments(1)[0]!).then(logSuccess);
         break;
     case 'syncHubspotContacts':
         syncHubspotContacts(parseArguments(1)[0]!).then(logSuccess);

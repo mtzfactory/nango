@@ -1,7 +1,7 @@
 import { Nango, NangoHttpMethod } from '@nangohq/node-client';
 
-// CLI command to test: 'npm start syncHubspotContacts [api-key]'
-// Endpoint documentation: https://developers.hubspot.com/docs/api/crm/contacts
+// CLI command: npm start syncHubspotContacts [api-key]
+// Endpoint docs: https://developers.hubspot.com/docs/api/crm/contacts
 export let syncHubspotContacts = async (api_token: string) => {
     let config = {
         method: NangoHttpMethod.POST,

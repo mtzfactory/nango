@@ -1,7 +1,7 @@
 import { Nango } from '@nangohq/node-client';
 
-// CLI command to test: 'npm start syncPokemonList'
-// Endpoint documentation: https://pokeapi.co/docs/v2#pokemon-section
+// CLI command: npm start syncPokemonList
+// Endpoint docs: https://pokeapi.co/docs/v2#pokemon-section
 export let syncPokemonList = async () => {
     let config = {
         response_path: 'results',
