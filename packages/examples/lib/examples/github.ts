@@ -13,11 +13,5 @@ export let syncGithubStargazers = async (api_token: string) => {
         paging_header_link_rel: 'next'
     };
 
-    Nango.sync(`https://api.github.com/repos/${owner}/${repo}/stargazers`, config)
-        .then((res) => {
-            console.log(res.data);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    return Nango.sync(`https://api.github.com/repos/${owner}/${repo}/stargazers`, config);
 };

@@ -17,11 +17,5 @@ export let syncHubspotContacts = async (api_token: string) => {
         max_total: 30
     };
 
-    Nango.sync('https://api.hubapi.com/crm/v3/objects/contacts/search', config)
-        .then((res) => {
-            console.log(res.data);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    return Nango.sync('https://api.hubapi.com/crm/v3/objects/contacts/search', config);
 };

@@ -84,7 +84,6 @@ class ExternalService {
 
                 if (linkHeader != null && sync.paging_header_link_rel in linkHeader && this.isValidHttpUrl(linkHeader[sync.paging_header_link_rel]['url'])) {
                     let nextPageUrl = linkHeader[sync.paging_header_link_rel]['url'];
-                    logger.debug(nextPageUrl); //TODO BB: remove
                     sync.url = nextPageUrl;
                     continue;
                 }

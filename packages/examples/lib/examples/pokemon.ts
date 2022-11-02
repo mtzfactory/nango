@@ -9,11 +9,5 @@ export let syncPokemonList = async () => {
         max_total: 100
     };
 
-    Nango.sync('https://pokeapi.co/api/v2/pokemon', config)
-        .then((res) => {
-            console.log(res.data);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    return Nango.sync('https://pokeapi.co/api/v2/pokemon', config);
 };
