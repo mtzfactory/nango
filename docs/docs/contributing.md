@@ -5,9 +5,8 @@ sidebar_position: 7
 
 # Contributing
 
-Nango is a community project: We, as a community, welcome any and all contributions that help solve tricky sync problems for engineers.
+Nango is a community project: We welcome any and all contributions that help solve tricky sync problems for engineers.
 
-If you want to get involved that would make our day 🙂  
 It is passionate members like you that push this project forward and help make syncing data from external APIs a problem of the past.
 
 Here are some ideas on how to get started:
