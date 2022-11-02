@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 export enum NangoHttpMethod {
-    Get = 'get',
-    Post = 'port',
-    Put = 'put',
-    Patch = 'patch',
-    Delete = 'delete'
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    PATCH = 'PATCH',
+    DELETE = 'DELETE'
 }
 
 export interface NangoSyncConfig {
@@ -25,7 +25,7 @@ export interface NangoSyncConfig {
 export class Nango {
     static async sync(url: string, config?: NangoSyncConfig) {
         config = config || {};
-        config.method = config.method || NangoHttpMethod.Get;
+        config.method = config.method || NangoHttpMethod.GET;
         config.nango_server = config.nango_server || 'http://localhost';
         config.nango_port = config.nango_port || '3003';
 
