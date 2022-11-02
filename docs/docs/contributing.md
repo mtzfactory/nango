@@ -5,8 +5,17 @@ sidebar_position: 7
 
 # Contributing
 
-Nango is under active development and we welcome all contributions and feedback!
+Nango is a community project: We, as a community, welcome any and all contributions that help solve tricky sync problems for engineers.
 
-You want to contribute? Awesome, we have collected some [good first issues](https://github.com/NangoHQ/nango/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for you and we would love to help you get setup with your local development environment.
+If you want to get involved that would make our day 🙂  
+It is passionate members like you that push this project forward and help make syncing data from external APIs a problem of the past.
 
-To contribute or share feedback, please join our [community Slack](https://nango.dev/slack) and let us know you want to participate (or just open a first PR, even better :)). Post in the [#general channel](https://nango-community.slack.com/archives/C03QBHSMPUM) or ping @robin and @bastien directly.  Thank you! ❤️
+Here are some ideas on how to get started:
+* Join the [Slack community](https://nango.dev/slack) to get the latest news and discuss Nango with fellow contributors
+* Contribute [an example](real-world-examples.md) of using Nango with your favorite API
+* We have marked some [good first issues](https://github.com/NangoHQ/nango/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for you
+* These docs are just [markdown pages in our repo](https://github.com/NangoHQ/nango/tree/main/docs/docs), feel free to edit them and submit PRs with improvements
+
+If you need help with setting up your local development environment, want to chat with us first or just get to know the people behind the project don't be shy: We are online in the Slack Community all day and look forward to seeing you there.
+
+Thank you for caring. Thank you for helping us improve Nango ❤️

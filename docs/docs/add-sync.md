@@ -10,7 +10,10 @@ import TabItem from '@theme/TabItem';
 Adding a Sync to Nango is quick & easy. If you are not sure yet what a Sync is please take a look at our [Architecture](architecture.md) page.
 
 ## Add a Sync in minutes
+
+:::tip
 You can think of Syncs as HTTP requests that Nango periodically runs for you to get the latest data.
+:::
 
 We recommend the following steps when you add a new Sync to Nango:
 1. Make sure the API request works as expected (using Postman, a script, CLI etc.)
