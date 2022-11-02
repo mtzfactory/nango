@@ -3,6 +3,7 @@ import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import _ from 'lodash';
 import type { RawObject } from '../models/raw_object.model.js';
+import { logger } from '@nangohq/core';
 
 class ExternalService {
     async getRawObjects(sync: Sync): Promise<any[]> {
@@ -57,6 +58,12 @@ class ExternalService {
             if (res == null) {
                 break;
             }
+
+            logger.debug(`External request's data:`);
+            logger.debug(res.data);
+
+            logger.debug(`External request's headers:`);
+            logger.debug(res.headers);
 
             let new_results = sync.response_path != null ? _.get(res.data, sync.response_path) : res.data;
             results = results.concat(new_results);

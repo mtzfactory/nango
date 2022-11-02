@@ -1,5 +1,5 @@
-import db from '../database.js';
-import type { Sync } from '../models/sync.model.js';
+import db from './database.js';
+import type { Sync } from './sync.model.js';
 
 class SyncsService {
     async getLastSync(): Promise<Sync | null> {

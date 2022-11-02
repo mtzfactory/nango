@@ -1,5 +1,6 @@
-import { syncPokemonList } from './examples/pokemon.js';
+import { syncGithubStargazers } from './examples/github.js';
 import { syncHubspotContacts } from './examples/hubspot.js';
+import { syncPokemonList } from './examples/pokemon.js';
 
 let parseArguments = (arg_count: number, function_name: string): string[] => {
     const args = process.argv.slice(3);
@@ -27,13 +28,16 @@ if (function_name == null) {
     console.log("Pass in a function name as argument (from the 'lib/examples/*.ts' files), e.g. 'npm start sync_pokemon_list'.");
     process.exit(1);
 }
+
 switch (function_name) {
-    case 'syncPokemonList':
-        syncPokemonList();
+    case 'syncGithubStargazers':
+        syncGithubStargazers(parseArguments(1, function_name)[0]!);
         break;
     case 'syncHubspotContacts':
-        let args = parseArguments(1, function_name);
-        syncHubspotContacts(args[0]!);
+        syncHubspotContacts(parseArguments(1, function_name)[0]!);
+        break;
+    case 'syncPokemonList':
+        syncPokemonList();
         break;
     default:
         console.log("Unknown function name, please pick a function name from the 'lib/examples/*.ts' files.'");
