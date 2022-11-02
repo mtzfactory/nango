@@ -11,6 +11,7 @@ exports.up = function (knex, _) {
         table.string('paging_request_path');
         table.string('paging_response_path');
         table.string('paging_url_path');
+        table.string('paging_header_link_rel');
         table.integer('max_total');
     });
 };

@@ -4,6 +4,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import type { RawObject } from '../models/raw_object.model.js';
 import { logger } from '@nangohq/core';
+import parseLinksHeader from 'parse-link-header';
 
 class ExternalService {
     async getRawObjects(sync: Sync): Promise<any[]> {
@@ -65,16 +66,31 @@ class ExternalService {
             logger.debug(`External request's headers:`);
             logger.debug(res.headers);
 
-            let new_results = sync.response_path != null ? _.get(res.data, sync.response_path) : res.data;
-            results = results.concat(new_results);
+            let newResults = sync.response_path != null ? _.get(res.data, sync.response_path) : res.data;
+            results = results.concat(newResults);
 
             if (sync.paging_response_path != null && _.get(res.data, sync.paging_response_path) && results.length < maxNumberOfRecords) {
                 pageCursor = _.get(res.data, sync.paging_response_path);
-            } else if (sync.paging_url_path != null && this.isValidHttpUrl(_.get(res.data, sync.paging_url_path)) && results.length < maxNumberOfRecords) {
-                sync.url = _.get(res.data, sync.paging_url_path);
-            } else {
-                done = true;
+                continue;
             }
+
+            if (sync.paging_url_path != null && this.isValidHttpUrl(_.get(res.data, sync.paging_url_path)) && results.length < maxNumberOfRecords) {
+                sync.url = _.get(res.data, sync.paging_url_path);
+                continue;
+            }
+
+            if (sync.paging_header_link_rel != null && res.headers['link'] != null) {
+                let linkHeader = parseLinksHeader(res.headers['link']);
+
+                if (linkHeader != null && sync.paging_header_link_rel in linkHeader && this.isValidHttpUrl(linkHeader[sync.paging_header_link_rel]['url'])) {
+                    let nextPageUrl = linkHeader[sync.paging_header_link_rel]['url'];
+                    logger.debug(nextPageUrl); //TODO BB: remove
+                    sync.url = nextPageUrl;
+                    continue;
+                }
+            }
+
+            done = true;
         }
 
         if (results.length > maxNumberOfRecords) {

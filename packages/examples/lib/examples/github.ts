@@ -9,7 +9,8 @@ export let syncGithubStargazers = async (api_token: string) => {
     let config = {
         headers: {
             authorization: `Bearer ${api_token}`
-        }
+        },
+        paging_header_link_rel: 'next'
     };
 
     Nango.sync(`https://api.github.com/repos/${owner}/${repo}/stargazers`, config)

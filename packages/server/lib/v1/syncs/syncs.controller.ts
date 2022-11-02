@@ -14,6 +14,7 @@ class SyncsController {
             paging_request_path: req.body['paging_request_path'],
             paging_response_path: req.body['paging_response_path'],
             paging_url_path: req.body['paging_url_path'],
+            paging_header_link_rel: req.body['paging_header_link_rel'],
             max_total: req.body['max_total']
         };
 

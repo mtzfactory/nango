@@ -11,5 +11,6 @@ export interface Sync {
     paging_request_path?: string;
     paging_response_path?: string;
     paging_url_path?: string;
+    paging_header_link_rel?: string;
     max_total?: number;
 }
