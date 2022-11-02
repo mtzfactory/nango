@@ -1,6 +1,6 @@
 {
     "name": "@nangohq/worker",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "Nango's worker.",
     "type": "module",
     "main": "dist/lib/worker.js",
@@ -16,7 +16,7 @@
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
-        "@nangohq/core": "^0.2.3",
+        "@nangohq/core": "^0.2.4",
         "amqplib": "^0.10.3",
         "axios": "^0.27.2",
         "cors": "^2.8.5",
