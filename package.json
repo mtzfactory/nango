@@ -9,7 +9,9 @@
         "prettier-format": "prettier --config .prettierrc './**/*.ts' --write",
         "prettier-watch": "onchange './**/*.ts' -- prettier --write {{changed}}",
         "lint": "eslint . --ext .ts",
-        "docker-build": "docker build -f packages/server/Dockerfile -t nangohq/server . && docker build -f packages/worker/Dockerfile -t nangohq/worker ."
+        "docker-build": "docker build -f packages/server/Dockerfile -t nangohq/server . && docker build -f packages/worker/Dockerfile -t nangohq/worker .",
+        "ts-build": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/server packages/worker packages/examples packages/node-client packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json",
+        "build": "npm run ts-build && npm run docker-build"
     },
     "devDependencies": {
         "@tsconfig/node18-strictest-esm": "^1.0.0",
