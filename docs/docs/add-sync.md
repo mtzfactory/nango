@@ -111,7 +111,9 @@ Example response:
 ### "Next URL" based pagination
 The API returns a URL where the next page of results can be fetched.
 
-Example response:
+**If the URL is returned in the body of the response:**
+
+Example response body:
 ```json
 {
     "results": [ ... ],
@@ -120,6 +122,15 @@ Example response:
 ```
 
 => Use the `paging_url_path` config parameter of Nango, here set to `next`
+
+**If the URL is returned as a Link header of the response:**
+
+Example response header:
+```json
+{ "link": "'<https://api.github.com/user/2560456/repos?per_page=10&page=2>; rel=\"next\", <https://api.github.com/user/2560456/repos?per_page=10&page=3>; rel=\"last\"'" }
+```
+
+=> Use the `paging_header_link_rel` config parameter of Nango, here set to `next`
 
 ## Problems with your Sync? We are happy to help!
 
