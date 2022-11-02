@@ -32,7 +32,7 @@ For all the "path" parameters you can use "." syntax to reference keys in nested
 import {Nango, NangoHttpMethod} from '@nangohq/node-client'
 
 let nango_options = {
-    // HTTP request related
+    // External API HTTP request related
     method: NangoHttpMethod.Get,    // The HTTP method of the external REST API endpoint (GET, POST, etc.).
     headers: {                      // HTTP headers to send along with every request to the external API (e.g. auth header).
         'Accept': 'application/json'
