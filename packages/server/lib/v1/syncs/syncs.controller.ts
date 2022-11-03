@@ -12,8 +12,9 @@ class SyncsController {
             query_params: req.body['query_params'],
             unique_key: req.body['unique_key'],
             response_path: req.body['response_path'],
-            paging_request_path: req.body['paging_request_path'],
-            paging_response_path: req.body['paging_response_path'],
+            paging_cursor_request_path: req.body['paging_cursor_request_path'],
+            paging_cursor_metadata_response_path: req.body['paging_cursor_metadata_response_path'],
+            paging_cursor_object_response_path: req.body['paging_cursor_object_response_path'],
             paging_url_path: req.body['paging_url_path'],
             paging_header_link_rel: req.body['paging_header_link_rel'],
             max_total: req.body['max_total']

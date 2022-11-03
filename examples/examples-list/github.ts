@@ -2,7 +2,7 @@ import { Nango } from '@nangohq/node-client';
 
 // CLI command: npm start syncGithubStargazers [api-key]
 // Endpoint documentation: https://docs.github.com/en/rest/activity/starring#list-stargazers
-export let syncGithubStargazers = async (api_token) => {
+export let syncGithubStargazers = async (api_token: string) => {
     let owner = 'nangohq';
     let repo = 'nango';
 
@@ -18,7 +18,7 @@ export let syncGithubStargazers = async (api_token) => {
 
 // CLI command: npm start syncGithubUserRepos [api-key]
 // Endpoint docs: https://docs.github.com/en/rest/repos/repos#list-repositories-for-a-user
-export let syncGithubUserRepos = async (api_token) => {
+export let syncGithubUserRepos = async (api_token: string) => {
     let username = 'bastienbeurier';
 
     let config = {

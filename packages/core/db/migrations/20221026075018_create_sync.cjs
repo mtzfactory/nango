@@ -9,8 +9,9 @@ exports.up = function (knex, _) {
         table.json('query_params');
         table.string('unique_key');
         table.string('response_path');
-        table.string('paging_request_path');
-        table.string('paging_response_path');
+        table.string('paging_cursor_request_path');
+        table.string('paging_cursor_metadata_response_path');
+        table.string('paging_cursor_object_response_path');
         table.string('paging_url_path');
         table.string('paging_header_link_rel');
         table.integer('max_total');

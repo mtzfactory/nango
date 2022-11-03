@@ -26,11 +26,11 @@ class ExternalService {
             };
 
             //  Fetching subsequent page with cursor.
-            if (pageCursor != null && sync.paging_request_path != null) {
+            if (pageCursor != null && sync.paging_cursor_request_path != null) {
                 if (['get', 'delete'].includes(sync.method)) {
-                    config.params[sync.paging_request_path] = pageCursor; // Cursor in query params.
+                    config.params[sync.paging_cursor_request_path] = pageCursor; // Cursor in query params.
                 } else if (['post', 'put', 'patch'].includes(sync.method)) {
-                    sync.body[sync.paging_request_path] = pageCursor; // Cursor in body params.
+                    sync.body[sync.paging_cursor_request_path] = pageCursor; // Cursor in body params.
                 }
             }
 
@@ -74,16 +74,33 @@ class ExternalService {
             let newResults = sync.response_path != null ? _.get(res.data, sync.response_path) : res.data;
             results = results.concat(newResults);
 
-            if (sync.paging_response_path != null && _.get(res.data, sync.paging_response_path) && results.length < maxNumberOfRecords) {
-                pageCursor = _.get(res.data, sync.paging_response_path);
+            // Cursor-based pagination (with cursor field in the metadata of the response).
+            if (
+                sync.paging_cursor_metadata_response_path != null &&
+                _.get(res.data, sync.paging_cursor_metadata_response_path) &&
+                results.length < maxNumberOfRecords
+            ) {
+                pageCursor = _.get(res.data, sync.paging_cursor_metadata_response_path);
                 continue;
             }
 
+            // Cursor-based pagination (with cursor field in the last object of the response).
+            if (
+                sync.paging_cursor_object_response_path != null &&
+                _.get(newResults[newResults.length - 1], sync.paging_cursor_object_response_path) &&
+                results.length < maxNumberOfRecords
+            ) {
+                pageCursor = _.get(newResults[newResults.length - 1], sync.paging_cursor_object_response_path);
+                continue;
+            }
+
+            // URL-based pagination (with URL field in the metadata of the response).
             if (sync.paging_url_path != null && this.isValidHttpUrl(_.get(res.data, sync.paging_url_path)) && results.length < maxNumberOfRecords) {
                 sync.url = _.get(res.data, sync.paging_url_path);
                 continue;
             }
 
+            // URL-based pagination (with URL field in the Link header).
             if (sync.paging_header_link_rel != null && res.headers['link'] != null) {
                 let linkHeader = parseLinksHeader(res.headers['link']);
 

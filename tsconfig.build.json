@@ -5,6 +5,7 @@
         { "path": "packages/core" },
         { "path": "packages/node-client" },
         { "path": "packages/server" },
-        { "path": "packages/worker" }
+        { "path": "packages/worker" },
+        { "path": "examples" }
     ]
 }

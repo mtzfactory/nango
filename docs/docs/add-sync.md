@@ -43,6 +43,9 @@ let nango_options = {
     body: {                         // HTTP body to send along with every request to the external API.
         'mykey': 'A great value'
     },
+    query_params: {
+      'mykey': 'A great value'      // URL query params to send along with every request to the external API.
+    },
 
     // To fetch results & uniquely identify records
     response_path: 'results',       // The path to the result objects inside the external API response.
@@ -72,6 +75,7 @@ Nango.sync('https://api.example.com/my/endpoint?query=A+query', nango_options);
 "method": "GET",
 "headers": { "Accept": "application/json"},
 "body": { "mykey": "A great value"},
+"query_params": { "mykey": "A great value"},
 
 "response_path": "results",
 "unique_key": "name",
@@ -92,6 +96,8 @@ Nango currently supports two types of pagination, with more in the works. Your f
 ### Cursor based pagination
 The API returns a cursor that points at the next page, which should be passed along with the request in a special parameter (for example `after`).
 
+**If the cursor field is in the metadata pf the response:**
+
 Example response:
 ```json
 {
@@ -105,7 +111,24 @@ Example response:
 }
 ```
 
-=> Use the `paging_response_path` (here set to `paging.next.after`) and `paging_request_path` (here set to `after`) config parameters of Nango.
+=> use the `paging_cursor_metadata_response_path` (here set to `paging.next.after`) and `paging_cursor_request_path` (here set to `after`) config parameters of Nango.
+
+**If the cursor field is in the last object of the response:**
+
+Example response:
+```json
+{
+  "results": [ 
+    {},
+    ...,
+    {
+      "cursor": "NTI1Cg%3D%3D"
+    }
+  ]
+}
+```
+
+=> If the cursor field is in the last object of the response, use the `paging_cursor_object_response_path` (here set to `cursor`) and `paging_cursor_request_path` (here set to `after`) config parameters of Nango.
 
 
 ### "Next URL" based pagination

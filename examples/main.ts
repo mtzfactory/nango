@@ -2,8 +2,9 @@ import {syncGithubStargazers, syncGithubUserRepos} from './examples-list/github.
 import {syncHubspotContacts} from './examples-list/hubspot.js'
 import {syncPokemonList} from './examples-list/pokemon.js'
 import {syncSlackMessages} from './examples-list/slack.js'
+import {syncTypeformResponses} from './examples-list/typeform.js'
 
-let parseArguments = (arg_count) => {
+let parseArguments = (arg_count: number) => {
     const args = process.argv.slice(3);
 
     if (args.length != arg_count) {
@@ -35,23 +36,27 @@ if (function_name == null) {
     console.log("Pass in a function name as argument (from the 'lib/examples/*.ts' files), e.g. 'npm start sync_pokemon_list'.");
     process.exit(1);
 }
-
+var args: string[] = [];
 switch (function_name) {
     case 'syncGithubStargazers':
-        syncGithubStargazers(parseArguments(1)[0]).then(logSuccess);
+        syncGithubStargazers(parseArguments(1)[0]!).then(logSuccess);
         break;
     case 'syncGithubUserRepos':
-        syncGithubUserRepos(parseArguments(1)[0]).then(logSuccess);
+        syncGithubUserRepos(parseArguments(1)[0]!).then(logSuccess);
         break;
     case 'syncHubspotContacts':
-        syncHubspotContacts(parseArguments(1)[0]).then(logSuccess);
+        syncHubspotContacts(parseArguments(1)[0]!).then(logSuccess);
         break;
     case 'syncPokemonList':
         syncPokemonList().then(logSuccess);
         break;
     case 'syncSlackMessages':
-        let args = parseArguments(2);
-        syncSlackMessages(args[0], args[1]).then(logSuccess);
+        args = parseArguments(2);
+        syncSlackMessages(args[0]!, args[1]!).then(logSuccess);
+        break;
+    case 'syncTypeformResponses':
+        args = parseArguments(2);
+        syncTypeformResponses(args[0]!, args[1]!).then(logSuccess);
         break;
     default:
         console.log("Unknown function name, please pick a function name from the 'lib/examples/*.ts' files.'");

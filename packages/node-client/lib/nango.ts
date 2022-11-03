@@ -17,8 +17,9 @@ export interface NangoSyncConfig {
     query_params?: Record<string, string | number | boolean>;
     unique_key?: string;
     response_path?: string;
-    paging_request_path?: string;
-    paging_response_path?: string;
+    paging_cursor_request_path?: string;
+    paging_cursor_metadata_response_path?: string;
+    paging_cursor_object_response_path?: string;
     paging_url_path?: string;
     paging_header_link_rel?: string;
     max_total?: number;
@@ -45,8 +46,9 @@ export class Nango {
             query_params: config.query_params,
             unique_key: config.unique_key,
             response_path: config.response_path,
-            paging_request_path: config.paging_request_path,
-            paging_response_path: config.paging_response_path,
+            paging_cursor_request_path: config.paging_cursor_request_path,
+            paging_cursor_metadata_response_path: config.paging_cursor_metadata_response_path,
+            paging_cursor_object_response_path: config.paging_cursor_object_response_path,
             paging_url_path: config.paging_url_path,
             paging_header_link_rel: config.paging_header_link_rel,
             max_total: config.max_total
