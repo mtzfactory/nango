@@ -2,7 +2,7 @@ import { Nango } from '@nangohq/node-client';
 
 // CLI command: npm start syncSlackMessages [app-token] [channel-id]
 // Endpoint docs: https://api.slack.com/methods/conversations.history
-export let syncSlackMessages = async (app_token: string, channel_id: string) => {
+export let syncSlackMessages = async (app_token, channel_id) => {
     let config = {
         response_path: 'messages',
         paging_response_path: 'response_metadata.next_cursor',
@@ -11,8 +11,7 @@ export let syncSlackMessages = async (app_token: string, channel_id: string) => 
             authorization: `Bearer ${app_token}`
         },
         query_params: {
-            channel: channel_id,
-            limit: 10
+            channel: channel_id
         }
     };
 

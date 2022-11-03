@@ -3,10 +3,9 @@
     "version": "0.2.4",
     "description": "Nango example use-cases.",
     "type": "module",
-    "main": "dist/lib/main.js",
-    "typings": "dist/lib/main.d.ts",
+    "main": "main.js",
     "scripts": {
-        "start": "tsc && node dist/lib/main.js",
+        "start": "node main.js",
         "debug": "export DEBUG=* && npm run start"
     },
     "keywords": [],

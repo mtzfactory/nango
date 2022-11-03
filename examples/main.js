@@ -1,9 +1,9 @@
-import { syncGithubStargazers, syncGithubUserRepos } from './examples/github.js';
-import { syncHubspotContacts } from './examples/hubspot.js';
-import { syncPokemonList } from './examples/pokemon.js';
-import { syncSlackMessages } from './examples/slack.js';
+import {syncGithubStargazers, syncGithubUserRepos} from './examples-list/github.js'
+import {syncHubspotContacts} from './examples-list/hubspot.js'
+import {syncPokemonList} from './examples-list/pokemon.js'
+import {syncSlackMessages} from './examples-list/slack.js'
 
-let parseArguments = (arg_count: number): string[] => {
+let parseArguments = (arg_count) => {
     const args = process.argv.slice(3);
 
     if (args.length != arg_count) {
@@ -22,7 +22,7 @@ let logSuccess = (res) => {
     );
 };
 
-var function_name: string | undefined;
+var function_name;
 
 try {
     function_name = process.argv.slice(2)[0];
@@ -38,20 +38,20 @@ if (function_name == null) {
 
 switch (function_name) {
     case 'syncGithubStargazers':
-        syncGithubStargazers(parseArguments(1)[0]!).then(logSuccess);
+        syncGithubStargazers(parseArguments(1)[0]).then(logSuccess);
         break;
     case 'syncGithubUserRepos':
-        syncGithubUserRepos(parseArguments(1)[0]!).then(logSuccess);
+        syncGithubUserRepos(parseArguments(1)[0]).then(logSuccess);
         break;
     case 'syncHubspotContacts':
-        syncHubspotContacts(parseArguments(1)[0]!).then(logSuccess);
+        syncHubspotContacts(parseArguments(1)[0]).then(logSuccess);
         break;
     case 'syncPokemonList':
         syncPokemonList().then(logSuccess);
         break;
     case 'syncSlackMessages':
         let args = parseArguments(2);
-        syncSlackMessages(args[0]!, args[1]!).then(logSuccess);
+        syncSlackMessages(args[0], args[1]).then(logSuccess);
         break;
     default:
         console.log("Unknown function name, please pick a function name from the 'lib/examples/*.ts' files.'");
