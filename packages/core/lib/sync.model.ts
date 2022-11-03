@@ -4,8 +4,9 @@ export interface Sync {
     updated_at?: Date;
     url: string;
     method: string;
-    headers?: { string: string | number | boolean };
+    headers?: Record<string, string | number | boolean>;
     body?: object;
+    query_params?: Record<string, string>;
     unique_key: string;
     response_path?: string;
     paging_request_path?: string;

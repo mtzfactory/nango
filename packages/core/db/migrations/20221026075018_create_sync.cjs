@@ -6,6 +6,7 @@ exports.up = function (knex, _) {
         table.string('method').notNullable();
         table.json('headers');
         table.json('body');
+        table.json('query_params');
         table.string('unique_key');
         table.string('response_path');
         table.string('paging_request_path');

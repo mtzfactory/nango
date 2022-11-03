@@ -9,6 +9,7 @@ class SyncsController {
             method: req.body['method']?.toLowerCase() || 'get',
             headers: req.body['headers'],
             body: req.body['body'],
+            query_params: req.body['query_params'],
             unique_key: req.body['unique_key'],
             response_path: req.body['response_path'],
             paging_request_path: req.body['paging_request_path'],

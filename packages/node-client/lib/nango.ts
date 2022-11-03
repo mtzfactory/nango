@@ -12,8 +12,9 @@ export interface NangoSyncConfig {
     nango_server?: string;
     nango_port?: string;
     method?: NangoHttpMethod;
-    headers?: object;
+    headers?: Record<string, string | number | boolean>;
     body?: object;
+    query_params?: Record<string, string | number | boolean>;
     unique_key?: string;
     response_path?: string;
     paging_request_path?: string;
@@ -41,6 +42,7 @@ export class Nango {
             method: config.method,
             headers: config.headers,
             body: config.body,
+            query_params: config.query_params,
             unique_key: config.unique_key,
             response_path: config.response_path,
             paging_request_path: config.paging_request_path,

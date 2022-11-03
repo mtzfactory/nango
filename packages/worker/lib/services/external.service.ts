@@ -19,15 +19,20 @@ class ExternalService {
         sync.body = sync.body || {};
 
         while (!done) {
-            if (pageCursor != null && sync.paging_request_path != null) {
-                sync.body[sync.paging_request_path] = pageCursor;
-            }
-
-            let config: AxiosRequestConfig = { headers: sync.headers || {} };
+            let config: AxiosRequestConfig = { headers: sync.headers || {}, params: sync.query_params || {} };
             var res: AxiosResponse<any, any> | void;
             let errorBlock = (err: any) => {
                 console.log(err);
             };
+
+            //  Fetching subsequent page with cursor.
+            if (pageCursor != null && sync.paging_request_path != null) {
+                if (['get', 'delete'].includes(sync.method)) {
+                    config.params[sync.paging_request_path] = pageCursor; // Cursor in query params.
+                } else if (['post', 'put', 'patch'].includes(sync.method)) {
+                    sync.body[sync.paging_request_path] = pageCursor; // Cursor in body params.
+                }
+            }
 
             switch (sync.method) {
                 case 'get': {

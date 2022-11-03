@@ -1,6 +1,7 @@
 import { syncGithubStargazers, syncGithubUserRepos } from './examples/github.js';
 import { syncHubspotContacts } from './examples/hubspot.js';
 import { syncPokemonList } from './examples/pokemon.js';
+import { syncSlackMessages } from './examples/slack.js';
 
 let parseArguments = (arg_count: number): string[] => {
     const args = process.argv.slice(3);
@@ -47,6 +48,10 @@ switch (function_name) {
         break;
     case 'syncPokemonList':
         syncPokemonList().then(logSuccess);
+        break;
+    case 'syncSlackMessages':
+        let args = parseArguments(2);
+        syncSlackMessages(args[0]!, args[1]!).then(logSuccess);
         break;
     default:
         console.log("Unknown function name, please pick a function name from the 'lib/examples/*.ts' files.'");
