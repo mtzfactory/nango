@@ -52,8 +52,8 @@ let nango_options = {
     unique_key: 'id',               // The key in the result objects used for deduping (e.g. email, id).
 
     // For cursor based paging
-    paging_request_path: 'after',   // The name of the request parameter for the next page cursor.
-    paging_response_path: 'paging.next.after',   // The path in the response to the cursor for the next page.
+    paging_cursor_request_path: 'after',   // The name of the request parameter for the next page cursor.
+    paging_cursor_metadata_response_path: 'paging.next.after',   // The path in the response to the cursor for the next page.
 
     // For URL based paging
     paging_url_path: 'next'        // The path in the response to the URL for the next page.
@@ -80,8 +80,8 @@ Nango.sync('https://api.example.com/my/endpoint?query=A+query', nango_options);
 "response_path": "results",
 "unique_key": "name",
 
-"paging_request_path": "after",
-"paging_response_path": "next",
+"paging_cursor_request_path": "after",
+"paging_cursor_metadata_response_path": "next",
 
 "paging_url_path": "next"
 }'

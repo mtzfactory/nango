@@ -17,8 +17,8 @@ var body = {
         properties: []
     },
     unique_key: 'id',
-    paging_request_path: 'after',
-    paging_response_path: 'paging.next.after',
+    paging_cursor_request_path: 'after',
+    paging_cursor_metadata_response_path: 'paging.next.after',
     response_path: 'results',
     max_total: 30
 };
