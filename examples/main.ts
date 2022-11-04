@@ -1,6 +1,7 @@
 import {syncGithubStargazers, syncGithubUserRepos} from './examples-list/github.js'
 import {syncHubspotContacts} from './examples-list/hubspot.js'
 import {syncPokemonList} from './examples-list/pokemon.js'
+import {syncRedditSubredditPosts} from './examples-list/reddit.js'
 import {syncSlackMessages} from './examples-list/slack.js'
 import {syncTypeformResponses} from './examples-list/typeform.js'
 
@@ -49,6 +50,10 @@ switch (function_name) {
         break;
     case 'syncPokemonList':
         syncPokemonList().then(logSuccess);
+        break;
+    case 'syncRedditSubredditPosts':
+        args = parseArguments(1);
+        syncRedditSubredditPosts(args[0]!).then(logSuccess);
         break;
     case 'syncSlackMessages':
         args = parseArguments(2);
