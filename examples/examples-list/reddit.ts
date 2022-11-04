@@ -5,8 +5,8 @@ import { Nango } from '@nangohq/node-client';
 export let syncRedditSubredditPosts = async (subreddit: string) => {
     let config = {
         response_path: 'data.children',
-        paging_cursor_metadata_response_path: 'data.after',
-        paging_cursor_request_path: 'data.before',
+        paging_cursor_object_response_path: 'data.name',
+        paging_cursor_request_path: 'after',
         max_total: 100
     };
 
