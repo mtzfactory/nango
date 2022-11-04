@@ -29,12 +29,12 @@ var function_name;
 try {
     function_name = process.argv.slice(2)[0];
 } catch (e) {
-    console.log("Pass in a function name as argument (from the 'lib/examples/*.ts' files), e.g. 'npm start sync_pokemon_list'.");
+    console.log("Pass in a function name as argument (from the 'examples-list/*.ts' files), e.g. 'npm run start syncPokemonList'.");
     process.exit(1);
 }
 
 if (function_name == null) {
-    console.log("Pass in a function name as argument (from the 'lib/examples/*.ts' files), e.g. 'npm start sync_pokemon_list'.");
+    console.log("Pass in a function name as argument (from the 'examples-list/*.ts' files), e.g. 'npm run start syncPokemonList'.");
     process.exit(1);
 }
 var args: string[] = [];
@@ -64,5 +64,5 @@ switch (function_name) {
         syncTypeformResponses(args[0]!, args[1]!).then(logSuccess);
         break;
     default:
-        console.log("Unknown function name, please pick a function name from the 'lib/examples/*.ts' files.'");
+        console.log("Unknown function name, please pick a function name from the 'examples-list/*.ts' files.'");
 }
