@@ -16,7 +16,7 @@ Nango continuously syncs data from any API endpoint to your local database and k
     <br />
 
   <br/>
-    <a href="https://docs.nango.dev">Examples</a>
+    <a href="https://docs.nango.dev/real-world-examples">Examples</a>
     ·
     <a href="https://github.com/nangohq/nango/issues">Report Bug</a>
     ·
@@ -77,7 +77,7 @@ import { Nango } from '@nangohq/node-client';
 
 let config = {
     response_path: 'results', // The path to the Pokémons objects in the response.
-    paging_url_path: 'next'   // The path to the next page's url in the response.
+    paging_url_path: 'next' // The path to the next page's url in the response.
 };
 
 await Nango.sync('https://pokeapi.co/api/v2/pokemon', config);
