@@ -3,8 +3,9 @@ import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
 import cors from 'cors';
 import { syncsQueue, db } from '@nangohq/core';
-import SyncsController from './v1/syncs/syncs.controller.js';
-import SyncsMiddleware from './v1/syncs/syncs.middleware.js';
+import syncsController from './syncs.controller.js';
+import syncsMiddleware from './syncs.middleware.js';
+import scheduler from './scheduler.js';
 
 const port = process.env['PORT'] || 3003;
 
@@ -20,7 +21,7 @@ app.use(
     })
 );
 
-app.route(`/v1/syncs`).post(SyncsMiddleware.validateCreateSyncRequest, SyncsController.createSync);
+app.route(`/v1/syncs`).post(syncsMiddleware.validateCreateSyncRequest, syncsController.createSync);
 
 app.use(
     expressWinston.errorLogger({
@@ -35,6 +36,7 @@ db.migrate(process.env['NANGO_DB_MIGRATION_FOLDER'] || '../core/db/migrations')
             .connect()
             .then(() => {
                 app.listen(port, () => {
+                    scheduler.start();
                     console.log(`✅ Nango Server is listening on port ${port}.`);
                 });
             })
