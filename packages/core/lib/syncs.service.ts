@@ -2,10 +2,6 @@ import db from './database.js';
 import type { Sync } from './sync.model.js';
 
 class SyncsService {
-    async getLastSync(): Promise<Sync | null> {
-        return null;
-    }
-
     async readById(syncId: number): Promise<Sync | null> {
         let result = await db.knex<Sync>('_nango_syncs').where({ id: syncId });
 
@@ -18,7 +14,7 @@ class SyncsService {
 
     async createSync(sync: Sync): Promise<void | Pick<Sync, 'id'>[]> {
         return db
-            .knex(`_nango_syncs`)
+            .knex<Sync>(`_nango_syncs`)
             .insert(sync, ['id'])
             .catch((err) => {
                 console.error(`There was an error upserting objects by id:`, err);

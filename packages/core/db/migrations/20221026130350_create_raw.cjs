@@ -3,6 +3,7 @@ exports.up = function (knex, _) {
         table.increments('id').primary();
         table.integer('sync_id').references('id').inTable('_nango_syncs');
         table.dateTime('emitted_at').notNullable();
+        table.string('unique_key');
         table.json('data').notNullable();
     });
 };

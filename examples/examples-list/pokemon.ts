@@ -6,7 +6,7 @@ export let syncPokemonList = async () => {
     let config = {
         response_path: 'results',
         paging_url_path: 'next',
-        max_total: 100
+        unique_key: 'name'
     };
 
     return Nango.sync('https://pokeapi.co/api/v2/pokemon', config);
