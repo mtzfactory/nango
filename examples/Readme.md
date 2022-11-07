@@ -9,17 +9,21 @@ Before you run examples from this directory install the dependencies:
 
 ```bash
 git clone https://github.com/NangoHQ/nango.git
-cd nango/examples
+cd nango
 npm i
 ```
 
 Then make sure Nango is running:
 ```bash
-cd ..
 docker compose up
 ```
 
 ## Running an example
+First make sure you are in the `examples` folder:
+```bash
+cd examples
+```
+
 Take a look at the example file to find the function name of the example you want to run, e.g. `syncGithubStargazers`
 
 You can then run it with
