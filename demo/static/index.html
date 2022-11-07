@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>Nango online demo</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+            crossorigin="anonymous"
+        />
+        <link rel="icon" href="favicon.png" />
+    </head>
+
+    <body>
+        <script type="application/javascript" src="demo.js"></script>
+
+        <div class="container">
+            <h1>Nango demo</h1>
+            <p class="lead">Nango syncs data from external APIs to your DB - with a single line of code</p>
+
+            <div class="row">
+                <div class="col">
+                    <h2>Nango code</h2>
+                    <textarea id="config" style="width: 100%; min-height: 300px">
+import { Nango } from '@nangohq/node-client'
+
+let config = {
+    response_path: 'data.children',
+    paging_cursor_object_response_path: 'data.name',
+    paging_cursor_request_path: 'after',
+    max_total: 100
+};
+
+Nango.sync('https://www.reddit.com/r/redditdev/new.json', config);</textarea
+                    >
+                    <button class="main" onclick="runCode();">Run!</button>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 50px">
+                <div class="col">
+                    <h2>Nango Syncs</h2>
+                    <table id="syncs" class="table">
+                        <thead style="font-family: monospace">
+                            <th>id</th>
+                            <th>url</th>
+                            <th>created_at</th>
+                            <th>updated_at</th>
+                        </thead>
+                        <tr>
+                            <td colspan="4">No Syncs yet, add one by running the example above 👆</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col">
+                    <h2>Synced data (raw)</h2>
+                    <table id="data" class="table">
+                        <thead style="font-family: monospace">
+                            <th>id</th>
+                            <th>sync_id</th>
+                            <th>emitted_at</th>
+                            <th>data</th>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>
