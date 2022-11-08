@@ -13,19 +13,57 @@
             crossorigin="anonymous"
         />
         <link rel="icon" href="favicon.png" />
+
+        <style type="">
+            .hideContent {
+                overflow: hidden;
+                line-height: 1em;
+                height: 4em;
+            }
+
+            .showContent {
+                line-height: 1em;
+                height: auto;
+            }
+            .showContent {
+                height: auto;
+            }
+
+            .show-more {
+                padding: 10px 0;
+                text-align: center;
+            }
+        </style>
     </head>
 
     <body>
-        <script type="application/javascript" src="demo.js"></script>
-
         <div class="container">
-            <h1>Nango demo</h1>
-            <p class="lead">Nango syncs data from external APIs to your DB - with a single line of code</p>
-
+            <div class="row align-items-center" style="margin-top: 50px">
+                <div class="col-8">
+                    <h1>Nango demo</h1>
+                </div>
+                <div class="col h3" style="text-align: right">
+                    <a href="https://docs.nango.dev/">Docs</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="https://github.com/NangoHQ/nango">GitHub Repo</a>
+                </div>
+            </div>
             <div class="row">
                 <div class="col">
-                    <h2>Nango code</h2>
-                    <textarea id="config" style="width: 100%; min-height: 300px">
+                    <p class="lead">
+                        This is a live demo of <a href="https://github.com/NangoHQ/nango">Nango</a>, an easy way to sync data from external APIs to your DB
+                    </p>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px">
+                <div class="col">
+                    <h2>1. Add a new sync with a few lines of code</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <textarea class="form-control" id="config" style="min-width: 35em; min-height: 17em">
 import { Nango } from '@nangohq/node-client'
 
 let config = {
@@ -37,13 +75,53 @@ let config = {
 
 Nango.sync('https://www.reddit.com/r/redditdev/new.json', config);</textarea
                     >
-                    <button class="main" onclick="runCode();">Run!</button>
+                </div>
+                <div class="col">
+                    <h4>How Nango works</h4>
+                    <p>You can think of Nango as periodically running an HTTP request for you and storing the updated results in a database.</p>
+                    <p>With the <span style="font-family: monospace">config</span> you tell Nango how to run these HTTP requests for you, as well as:</p>
+                    <ul>
+                        <li>Headers & query params we should pass along</li>
+                        <li>How pagination works for the API endpoint</li>
+                        <li>How to uniquely identify objects (so we can upsert/dedupe them for you)</li>
+                        <li>more, optional, options to tune Nango to your liking</li>
+                    </ul>
+                    <p>
+                        Find all the options
+                        <a href="https://docs.nango.dev/add-sync#nangosync-options">in our docs for <span style="font-family: monospace">Nango.sync()</span></a>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-secondary">
+                        ℹ This example here uses our <a href="https://www.npmjs.com/package/@nangohq/node-client">node SDK</a>, but Nango is language agnostic:
+                        It offers SDKs for different languages as well as a REST API
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-primary" onclick="runCode();">Run!</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div id="syncid" class="alert alert-secondary" style="margin-top: 30px; visibility: hidden"></div>
+                    <div id="status" class="alert alert-primary" style="visibility: hidden"></div>
                 </div>
             </div>
 
-            <div class="row" style="margin-top: 50px">
+            <div class="row">
                 <div class="col">
-                    <h2>Nango Syncs</h2>
+                    <h2>2. Inspect the syncs & synced data</h2>
+                    <p></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col table-responsive">
+                    <h4>Nango Syncs</h4>
                     <table id="syncs" class="table">
                         <thead style="font-family: monospace">
                             <th>id</th>
@@ -51,20 +129,23 @@ Nango.sync('https://www.reddit.com/r/redditdev/new.json', config);</textarea
                             <th>created_at</th>
                             <th>updated_at</th>
                         </thead>
-                        <tr>
-                            <td colspan="4">No Syncs yet, add one by running the example above 👆</td>
-                        </tr>
+                        <tbody id="syncs-body">
+                            <tr>
+                                <td colspan="4">No Syncs yet, add one by running the example above 👆</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
-                <div class="col">
-                    <h2>Synced data (raw)</h2>
+                <div class="col-8">
+                    <h4>Synced data (raw)</h4>
                     <table id="data" class="table">
                         <thead style="font-family: monospace">
                             <th>id</th>
                             <th>sync_id</th>
                             <th>emitted_at</th>
-                            <th>data</th>
+                            <th style="max-width: 300px; word-wrap: break-word">data</th>
                         </thead>
+                        <tbody id="data-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -75,5 +156,8 @@ Nango.sync('https://www.reddit.com/r/redditdev/new.json', config);</textarea
             integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
             crossorigin="anonymous"
         ></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+        <script type="application/javascript" src="demo.js"></script>
     </body>
 </html>

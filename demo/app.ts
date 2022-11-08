@@ -3,7 +3,8 @@ import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
 import cors from 'cors';
 import { Nango } from '@nangohq/node-client';
-import { Client } from 'pg';
+import pgClient from 'pg';
+const { Client } = pgClient;
 
 const port = process.env['PORT'] || 3005;
 const db = new Client({
@@ -81,7 +82,18 @@ app.post('/api/addSync', (req, res) => {
 });
 
 // Get syncs
-app.get('/api/getSyncs', (req, res) => {});
+// @ts-ignore
+app.get('/api/getSyncs', async (req, res) => {
+    let syncs = await db.query('SELECT * FROM _nango_syncs ORDER BY created_at DESC');
+    res.json(syncs.rows);
+});
+
+// Get synced data
+// @ts-ignore
+app.get('/api/getData', async (req, res) => {
+    let data = await db.query('SELECT * FROM _nango_raw ORDER BY sync_id DESC, id DESC LIMIT 1000');
+    res.json(data.rows);
+});
 
 app.listen(port, () => {
     console.log(`✅ Demo server running on ${port}.`);
