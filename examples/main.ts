@@ -4,6 +4,7 @@ import {syncPokemonList} from './examples-list/pokemon.js'
 import {syncRedditSubredditPosts} from './examples-list/reddit.js'
 import {syncSlackMessages} from './examples-list/slack.js'
 import {syncTypeformResponses} from './examples-list/typeform.js'
+import {syncGoogleCalendarEvents} from './examples-list/google-calendar.js'
 
 let parseArguments = (arg_count: number) => {
     const args = process.argv.slice(3);
@@ -62,6 +63,10 @@ switch (function_name) {
     case 'syncTypeformResponses':
         args = parseArguments(2);
         syncTypeformResponses(args[0]!, args[1]!).then(logSuccess);
+        break;
+    case 'syncGoogleCalendarEvents':
+        args = parseArguments(2);
+        syncGoogleCalendarEvents(args[0]!, args[1]!).then(logSuccess);
         break;
     default:
         console.log("Unknown function name, please pick a function name from the 'examples-list/*.ts' files.'");
