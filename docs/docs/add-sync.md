@@ -44,19 +44,24 @@ let nango_options = {
         'mykey': 'A great value'
     },
     query_params: {
-      'mykey': 'A great value'      // URL query params to send along with every request to the external API.
+        'mykey': 'A great value'    // URL query params to send along with every request to the external API.
     },
 
     // To fetch results & uniquely identify records
     response_path: 'results',       // The path to the result objects inside the external API response.
     unique_key: 'id',               // The key in the result objects used for deduping (e.g. email, id).
 
-    // For cursor based paging
-    paging_cursor_request_path: 'after',   // The name of the request parameter for the next page cursor.
-    paging_cursor_metadata_response_path: 'paging.next.after',   // The path in the response to the cursor for the next page.
+    // Providing paging information in external requests (required for paging)
+    paging_cursor_request_path: 'after',   // Provide the cursor request path for fetching the next page.
 
-    // For URL based paging
-    paging_url_path: 'next'        // The path in the response to the URL for the next page.
+    // Extracting paging information from external responses (one and only one required for paging)
+    paging_cursor_metadata_response_path: 'paging.next.after',   // Use a field in the response as cursor for the next page.
+    paging_url_path: 'next',        // Alternatively, use a field in the response as URL for the next page.
+    paging_cursor_object_response_path: 'id', // Alternatively, use a field of the response's last object as cursor for the next page.
+    paging_header_link_rel: 'next', // Alternatively, use the Link Header to fetch the next page.
+    
+    // Convenience
+    max_total: 100                  // Limit the total number of total objects synced for testing purposes.
 };
 
 // Add the Sync
@@ -65,25 +70,35 @@ Nango.sync('https://api.example.com/my/endpoint?query=A+query', nango_options);
   </TabItem>
   <TabItem value="curl" label="REST API (curl)">
 
-  ```bash
+  ```json
   curl --request POST \
 --url http://localhost:3003/v1/syncs \
  --header "Content-type: application/json" \
- --data '
- {
+ --data '{
+// External API endpoint URL
 "url": "https://api.example.com/my/endpoint?query=A+query",
-"method": "GET",
-"headers": { "Accept": "application/json"},
-"body": { "mykey": "A great value"},
-"query_params": { "mykey": "A great value"},
 
-"response_path": "results",
-"unique_key": "name",
+// External API HTTP request related
+"method": "GET", // The HTTP method of the external REST API endpoint (GET, POST, etc.).
+"headers": { "Accept": "application/json"}, // HTTP headers to send along with every request to the external API (e.g. auth header).
+"body": { "mykey": "A great value"}, // HTTP body to send along with every request to the external API.
+"query_params": { "mykey": "A great value"}, // URL query params to send along with every request to the external API.
 
-"paging_cursor_request_path": "after",
-"paging_cursor_metadata_response_path": "next",
+// To fetch results & uniquely identify records
+"response_path": "results", // The path to the result objects inside the external API response.
+"unique_key": "name", // The key in the result objects used for deduping (e.g. email, id).
 
-"paging_url_path": "next"
+// Providing paging information in external requests (required for paging)
+"paging_cursor_request_path": "after", // Provide the cursor request path for fetching the next page.
+
+// Extracting paging information from external responses (one and only one required for paging)
+"paging_cursor_metadata_response_path": "next", // Use a field in the response as cursor for the next page.
+"paging_url_path": "next", // Alternatively, use a field in the response as URL for the next page.
+"paging_cursor_object_response_path": "id", // Alternatively, use a field of the response last object as cursor for the next page.
+"paging_header_link_rel": "next", // Alternatively, use the Link Header to fetch the next page.
+
+// Convenience
+"max_total: 100 // Limit the total number of total objects synced for testing purposes.
 }'
   ```
   </TabItem>
