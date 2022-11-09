@@ -17,16 +17,16 @@
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
         "@nangohq/core": "^0.2.5",
+        "@types/lodash": "^4.14.188",
         "amqplib": "^0.10.3",
         "axios": "^0.27.2",
         "cors": "^2.8.5",
         "ejs": "^3.1.5",
         "knex": "^2.3.0",
-        "lodash": "^4.17.21",
+        "parse-link-header": "^2.0.0",
         "pg": "^8.8.0",
         "ts-node": "^10.9.1",
-        "winston": "^3.8.2",
-        "parse-link-header": "^2.0.0"
+        "winston": "^3.8.2"
     },
     "engines": {
         "node": ">=16.7",
