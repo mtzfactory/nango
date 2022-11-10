@@ -44,7 +44,7 @@ export class SyncTask {
             }
 
             // Perform auto JSON-to-SQL schema mapping.
-            if (this.sync.auto_mapping) {
+            if (this.sync.auto_mapping == null || this.sync.auto_mapping) {
                 // Update the schema of the DB for new results.
                 let flatObjects = await schemaManager.updateSyncSchemaAndFlattenObjects(
                     rawObjs.map((o) => o.data),
