@@ -20,7 +20,7 @@ We recommend the following steps when you add a new Sync to Nango:
 2. Look at the `Nango.sync` (or REST API) call options below and configure them for your Sync
 3. Run your code once and make sure Nango syncs your data as expected
 
-## `Nango.sync` options
+## `Nango.sync` options {#sync-options}
 
 This example shows you all the possible configuration options for a Nango Sync.
 
@@ -34,7 +34,7 @@ For all the "path" parameters you can use "." syntax to reference keys in nested
 ```ts
 import {Nango, NangoHttpMethod} from '@nangohq/node-client'
 
-let nango_options = {
+let config = {
     // External API HTTP request related
     method: NangoHttpMethod.Get,    // The HTTP method of the external REST API endpoint (GET, POST, etc.).
     headers: {                      // HTTP headers to send along with every request to the external API (e.g. auth header).
@@ -65,7 +65,7 @@ let nango_options = {
 };
 
 // Add the Sync
-Nango.sync('https://api.example.com/my/endpoint?query=A+query', nango_options);
+Nango.sync('https://api.example.com/my/endpoint?query=A+query', config);
 ```
   </TabItem>
   <TabItem value="curl" label="REST API (curl)">
@@ -104,13 +104,16 @@ Nango.sync('https://api.example.com/my/endpoint?query=A+query', nango_options);
   </TabItem>
 </Tabs>
 
-## Continuous & incremental syncing
+## Syncing modes
 
-Syncs run hourly by default. This frequency will be configurable both from code and the CLI in the near future.
+Sync jobs run hourly by default. This frequency will be configurable both from code and the CLI in the near future.
 
 Nango supports the following syncing modes:
-- **Full refresh overwrite**: sync all objects on each job and overwrite previous ones
-- **Incremental deduped history** (coming soon): only sync new/updated objects, append new objects, overwrite updated objects
+- **Full Refresh + Overwrite**: on each job, read all objects from API, overwrite by first deleting existing rows
+- **Full Refresh + Upsert**: on each job, read all objects from API, append new rows & update existing rows
+- **Incremental + Upsert** (coming soon): on each job, only read new/updated objects from API, append new rows & overwrite updated rows
+
+The **Full Refresh + Overwrite** mode is used by default. To use the **Full Refresh + Upsert** mode, provide a the right value to the `unique_key` field, used for deduping rows, in the [Sync config options](add-sync.md#sync-options).
 
 You can view your sync configurations in the SQL table `_nango_syncs` and your sync jobs in `_nango_jobs`.
 
@@ -130,6 +133,7 @@ JSON response:
 
 ```JSON
 {
+  'field': true,
   'parent': {'nested': 'string_value'},
   'nullField': null,
   'list': [1, 2]
@@ -138,9 +142,9 @@ JSON response:
 
 becomes in SQL: 
 
-| parentField_nestedField (string)      | list_0 (number) | list_1 (number) |
-| ----------- | ----------- | ----------- |
-| string_value      | 1       | 2       |
+| field (boolean) | parent_nested (string)      | list_0 (number) | list_1 (number) |
+| ----------- |----------- | ----------- | ----------- |
+| true | string_value      | 1       | 2       |
 
 
 
