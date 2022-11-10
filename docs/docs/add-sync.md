@@ -104,8 +104,60 @@ Nango.sync('https://api.example.com/my/endpoint?query=A+query', nango_options);
   </TabItem>
 </Tabs>
 
+## Continuous & incremental syncing
 
-## Which pagination types does Nango support?
+Syncs run hourly by default. This frequency will be configurable both from code and the CLI in the near future.
+
+Nango supports the following syncing modes:
+- **Full refresh overwrite**: sync all objects on each job and overwrite previous ones
+- **Incremental deduped history** (coming soon): only sync new/updated objects, append new objects, overwrite updated objects
+
+You can view your sync configurations in the SQL table `_nango_syncs` and your sync jobs in `_nango_jobs`.
+
+## JSON-to-SQL schema mapping
+
+### Auto mapping
+
+By default, Nango automatically maps the JSON objects returned from external APIs to SQL columns. The mapping rules are:
+- Nested fields are flattened and the path is joined with `_` into a single column name
+- Arrays are flattened into multiple columns with suffix `_[index]`
+- Null values are ignores
+- Data types are inferred among the following types: string, number, date, boolean
+
+Example: 
+
+JSON response:
+
+```JSON
+{
+  'parent': {'nested': 'string_value'},
+  'nullField': null,
+  'list': [1, 2]
+}
+```
+
+becomes in SQL: 
+
+| parentField_nestedField (string)      | list_0 (number) | list_1 (number) |
+| ----------- | ----------- | ----------- |
+| string_value      | 1       | 2       |
+
+
+
+### Custom mapping (coming soon)
+
+You will be able to specify, in code: 
+- What destination table should each sync point to
+- What fields should be extracted from the external API
+- What SQL column each field should map to
+- Optional field transformations & combinations
+
+### Raw data
+
+Nango stores all the objects, in their original JSON form, in a combined SQL table called `_nango_raw`.
+
+
+## Pagination
 Nango currently supports two types of pagination, with more in the works. Your favorite API is not compatible? [Open a github issue](https://github.com/NangoHQ/nango/issues/new) with a link to the endpoint documentation and a sample response and we are happy to make it work for you! Or reach out on our Slack community and we will do our best to help.
 
 ### Cursor based pagination
