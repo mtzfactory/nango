@@ -22,7 +22,9 @@ We recommend the following steps when you add a new Sync to Nango:
 
 ## `Nango.sync` options {#sync-options}
 
-This example shows you all the possible configuration options for a Nango Sync.
+This example shows you all the possible configuration options for a Nango Sync. 
+
+**All configuration fields are optional** (though you may need to provide the relevant ones for the external API request to succeed). 
 
 If you want to see some examples of them in action take a look at the [real world examples](real-world-examples.md) page.
 
@@ -36,7 +38,7 @@ import {Nango, NangoHttpMethod} from '@nangohq/node-client'
 
 let config = {
     // External API HTTP request related
-    method: NangoHttpMethod.Get,    // The HTTP method of the external REST API endpoint (GET, POST, etc.).
+    method: NangoHttpMethod.Get,    // The HTTP method of the external REST API endpoint (GET, POST, etc.). Default: GET.
     headers: {                      // HTTP headers to send along with every request to the external API (e.g. auth header).
         'Accept': 'application/json'
     },
@@ -48,8 +50,8 @@ let config = {
     },
 
     // To fetch results & uniquely identify records
-    response_path: 'results',       // The path to the result objects inside the external API response.
-    unique_key: 'id',               // The key in the result objects used for deduping (e.g. email, id).
+    response_path: 'data.results',       // The path to the result objects inside the external API response.
+    unique_key: 'profile.email',               // The key in the result objects used for deduping (e.g. email, id) + enables Full Refresh + Upsert syncing mode.
 
     // Providing paging information in external requests (required for paging)
     paging_cursor_request_path: 'after',   // Provide the cursor request path for fetching the next page.
@@ -59,6 +61,9 @@ let config = {
     paging_url_path: 'next',        // Alternatively, use a field in the response as URL for the next page.
     paging_cursor_object_response_path: 'id', // Alternatively, use a field of the response's last object as cursor for the next page.
     paging_header_link_rel: 'next', // Alternatively, use the Link Header to fetch the next page.
+
+    // JSON-to-SQL schema mapping
+    auto_mapping: true,             // Automatically map JSON objects returned from external APIs to SQL columns. Default: true.
     
     // Convenience
     max_total: 100                  // Limit the total number of total objects synced for testing purposes.
@@ -79,14 +84,14 @@ Nango.sync('https://api.example.com/my/endpoint?query=A+query', config);
 "url": "https://api.example.com/my/endpoint?query=A+query",
 
 // External API HTTP request related
-"method": "GET", // The HTTP method of the external REST API endpoint (GET, POST, etc.).
+"method": "GET", // The HTTP method of the external REST API endpoint (GET, POST, etc.). Default: "GET".
 "headers": { "Accept": "application/json"}, // HTTP headers to send along with every request to the external API (e.g. auth header).
 "body": { "mykey": "A great value"}, // HTTP body to send along with every request to the external API.
 "query_params": { "mykey": "A great value"}, // URL query params to send along with every request to the external API.
 
 // To fetch results & uniquely identify records
-"response_path": "results", // The path to the result objects inside the external API response.
-"unique_key": "name", // The key in the result objects used for deduping (e.g. email, id).
+"response_path": "data.results", // The path to the result objects inside the external API response.
+"unique_key": "profile.email", // The key in the result objects used for deduping (e.g. email, id) + enables Full Refresh + Upsert sync mode.
 
 // Providing paging information in external requests (required for paging)
 "paging_cursor_request_path": "after", // Provide the cursor request path for fetching the next page.
@@ -97,8 +102,11 @@ Nango.sync('https://api.example.com/my/endpoint?query=A+query', config);
 "paging_cursor_object_response_path": "id", // Alternatively, use a field of the response last object as cursor for the next page.
 "paging_header_link_rel": "next", // Alternatively, use the Link Header to fetch the next page.
 
+// JSON-to-SQL schema mapping
+"auto_mapping": true, // Automatically map JSON objects returned from external APIs to SQL columns. Default: true.
+
 // Convenience
-"max_total: 100 // Limit the total number of total objects synced for testing purposes.
+"max_total": 100 // Limit the total number of total objects synced for testing purposes.
 }'
   ```
   </TabItem>
@@ -113,19 +121,31 @@ Nango supports the following syncing modes:
 - **Full Refresh + Upsert**: on each job, read all the objects from the API, append new rows & update existing rows (see below)
 - **Incremental + Upsert** (coming soon): on each job, only read the new/updated objects from the API, append new rows & update existing rows
 
-The **Full Refresh + Overwrite** mode is used by default. To use the **Full Refresh + Upsert** mode, provide a right value for the `unique_key` field (in the [Sync config options](add-sync.md#sync-options)), the value of which will be used to dedupe rows.
+The **Full Refresh + Overwrite** mode is used by default. To use the **Full Refresh + Upsert** mode, provide a right value for the `unique_key` field in the [Sync config options](add-sync.md#sync-options), the value of which will be used to dedupe rows.
 
-You can view your sync configurations in the SQL table `_nango_syncs` and your sync jobs in `_nango_jobs`.
+You can view your Sync configurations in the SQL table `_nango_syncs` and your Sync jobs in `_nango_jobs`.
 
-## JSON-to-SQL schema mapping
+## Database Storage
 
-### Auto mapping
+Nango stores all the objects, in their original JSON form, in a SQL table called `_nango_raw`. This single table combines the raw data for all Syncs.
+
+Additionally, Nango supports optional [JSON-to-SQL mapping](add-sync.md#mapping). If enabled, each Sync will have a new SQL table containing the transformed data. The default name for Sync-specific SQL tables is `_nango_sync_[syncId]`.
+
+Nango stores both the synced data and Sync/Job configuration in a Postgres database.
+
+## JSON-to-SQL schema mapping {#mapping}
+
+### Auto Mapping
 
 By default, Nango automatically maps the JSON objects returned from external APIs to SQL columns. The mapping rules are:
 - Nested fields are flattened and the path is joined with `_` into a single column name
 - Arrays are flattened into multiple columns with suffix `_[index]`
 - Null values are ignores
 - Data types are inferred among the following types: string, number, date, boolean
+
+Nango will evolve the schema to accommodate changes in external API responses as follow: 
+- If a JSON field appears, the relevant SQL column will be created (with the right data type)
+- If a JSON field data type changes, the field will be ignored
 
 Example: 
 
@@ -147,11 +167,18 @@ becomes in SQL:
 | true | string_value      | 1       | 2       |
 
 
+You can disable the Auto Mapping by setting the `auto_mapping` field to `false` in the [Sync config options](add-sync.md#sync-options).
 
-### Custom mapping (coming soon)
+:::caution
+
+Nango does not allow unbound field names as they will result in too many SQL columns being created. We plan on implementing a cap on the number of SQL column per table.
+
+:::
+
+### Custom Mapping (coming soon)
 
 You will be able to specify, in code: 
-- What destination table should each sync point to
+- What destination table should each Sync point to
 - What fields should be extracted from the external API
 - What SQL column each field should map to
 - Optional field transformations & combinations
