@@ -127,61 +127,88 @@ You can view your Sync configurations in the SQL table `_nango_syncs` and your S
 
 ## Database Storage
 
-Nango stores all the objects, in their original JSON form, in a SQL table called `_nango_raw`. This single table combines the raw data for all Syncs.
+Nango stores both the synced data and Sync/Job configuration in a [Postgres database](https://www.postgresql.org).
 
-Additionally, Nango supports optional [JSON-to-SQL mapping](add-sync.md#mapping). If enabled, each Sync will have a new SQL table containing the transformed data. The default name for Sync-specific SQL tables is `_nango_sync_[syncId]`.
+For the synced data, Nango stores all the objects in their original JSON form in a table called `_nango_raw`. This single table contains the raw data from all Syncs combined.
 
-Nango stores both the synced data and Sync/Job configuration in a Postgres database.
+Additionally, Nango supports optional [JSON-to-SQL mapping](add-sync.md#mapping). If enabled, each Sync in Nango will have its own table in postgres containing the transformed data from that Sync. The default name for Sync-specific SQL tables is `_nango_sync_[syncId]`.
 
 ## JSON-to-SQL schema mapping {#mapping}
 
 ### Auto Mapping
 
+:::info
+Automatically inferring a schema from API responses is tricky. If you run into issues or want to understand why your schema came out the way it did we are happy to help you in the [Slack community](https://nango.dev/slack)!
+
+In the near future we will also support [custom mappings](#custommapping) which will give you full control over the destination schema of Nango's mapping.
+:::
+
+#### How Nango determines the schema
 By default, Nango automatically maps the JSON objects returned from external APIs to SQL columns. The mapping rules are:
 - Nested fields are flattened and the path is joined with `_` into a single column name
 - Arrays are flattened into multiple columns with suffix `_[index]`
-- Null values are ignores
-- Data types are inferred among the following types: string, number, date, boolean
+- Null values are ignored
+- Data types are inferred, but currently only for these supported types: string, number, date, boolean
 
-Nango will evolve the schema to accommodate changes in external API responses as follow: 
-- If a JSON field appears, the relevant SQL column will be created (with the right data type)
-- If a JSON field data type changes, the field will be ignored
+Here is an example: 
 
-Example: 
+The following JSON response:
 
-JSON response:
-
-```JSON
+```json
 {
-  'field': true,
-  'parent': {'nested': 'string_value'},
-  'nullField': null,
-  'list': [1, 2]
+  "field": true,
+  "parent": {"nested": "string_value"},
+  "nullField": null,
+  "list": [1, 2]
 }
 ```
 
-becomes in SQL: 
+turns into this SQL table: 
 
 | field (boolean) | parent_nested (string)      | list_0 (number) | list_1 (number) |
 | ----------- |----------- | ----------- | ----------- |
 | true | string_value      | 1       | 2       |
 
+#### How Nango treats data that does not align with the schema
+Once a schema with data types has been generated, Nango will only store values in the SQL table that align with the data type of the schema.
+As an example, let's assume the field `num_users` has type number and these objects get returned by the API:
+```json
+[
+  {
+    "name": "obj1",
+    "num_users": 23
+  },
+  {
+    "name": "obj2",
+    "num_users": 182
+  },
+  {
+    "name": "obj3",
+    "num_users": "nango is great"
+  }
+]
+```
+In this case Nango would store the value of `num_users` for obj1 and obj2, but not for obj3 (because the type string is not compatible with the schema's type number).
+  
+#### How Nango deals with schema changes
+Nango will also change the schema of the generated table if the schema of the API response changes.
+Currently the following transformations are supported: 
+- If a previously unseen field appears in the JSON, the relevant SQL column will be created (with the right data type)
+- If a previously seen field is not present in the JSON nothing happens (if a field is there we store it's value, if its not there we just ignore that)
+  
 
-You can disable the Auto Mapping by setting the `auto_mapping` field to `false` in the [Sync config options](add-sync.md#sync-options).
+#### How to disable Auto Mapping
+Auto mapping is on by default for new Syncs. You can disable Auto Mapping for an individual Sync by setting the `auto_mapping` field to `false` in the [Sync config options](add-sync.md#sync-options).
 
-:::caution
+### Custom Mapping (coming soon) {#custommapping}
 
-Nango does not allow unbound field names as they will result in too many SQL columns being created. We plan on implementing a cap on the number of SQL column per table.
+We plan to introduce custom mappings soon. These will allow you to specify exactly (in code) how you want the JSON mapped to a SQL-table.
+This will enable a few interesting features:
+- Stable SQL schemas that are guaranteed not to change even as the API response changes (with optional alerts for response changes)
+- The ability to map & merge several Syncs to the same SQL-table
+- The ability to specify which fields should be extracted from the JSON (and which should be ignored)
+- Optional, more complex transformations & mappings (e.g. combining data from multiple JSON-fields into one SQL column, transforming values etc.)
 
-:::
-
-### Custom Mapping (coming soon)
-
-You will be able to specify, in code: 
-- What destination table should each Sync point to
-- What fields should be extracted from the external API
-- What SQL column each field should map to
-- Optional field transformations & combinations
 
 ### Raw data
 
