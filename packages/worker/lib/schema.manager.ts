@@ -1,9 +1,12 @@
 import dataService from './services/data.service.js';
 import { logger } from '@nangohq/core';
+import { parseJSON } from 'date-fns';
+import { NangoColumnDataTypes } from './models/data.types.js';
 
 class SchemaManager {
     public async updateSyncSchemaAndFlattenObjects(objects: object[], syncId: number): Promise<object[]> {
         let flatObjects = this.flattenAllObjects(objects);
+        flatObjects = this.detectDatesAndNumbers(flatObjects);
 
         let newSchema = this.computeLatestSqlSchema(flatObjects, syncId);
         let previousSchema = await this.fetchPreviousSqlSchema(syncId);
@@ -26,11 +29,37 @@ class SchemaManager {
         return results;
     }
 
+    private detectDatesAndNumbers(flatObjects: object[]) {
+        for (var object of flatObjects) {
+            for (var key in object) {
+                if (typeof object[key] === 'string') {
+                    let dateCandidate = parseJSON(object[key]);
+
+                    if (this.isValidDate(dateCandidate)) {
+                        object[key] = dateCandidate;
+                    } else if (this.isNumeric(object[key])) {
+                        object[key] = +object[key];
+                    }
+                }
+            }
+        }
+
+        return flatObjects;
+    }
+
+    private isValidDate(date: any) {
+        return date != null && Object.prototype.toString.call(date) === '[object Date]' && !isNaN(date);
+    }
+
+    private isNumeric(str: string) {
+        return !isNaN(+str);
+    }
+
     private computeLatestSqlSchema(flatObjects: object[], syncId: number): object {
         var schema = {};
 
         for (var object of flatObjects) {
-            let individualSchema = this.detectTypes(object);
+            let individualSchema = this.getIndividualSchema(object);
             this.appendToSchema(individualSchema, schema);
         }
 
@@ -54,11 +83,19 @@ class SchemaManager {
         return result;
     }
 
-    private detectTypes(object: object): object {
+    private getIndividualSchema(object: object): object {
         let result = {};
 
         for (var key in object) {
-            result[key] = typeof object[key];
+            if (typeof object[key] === 'number') {
+                result[key] = NangoColumnDataTypes.NUMBER;
+            } else if (typeof object[key] === 'boolean') {
+                result[key] = NangoColumnDataTypes.BOOLEAN;
+            } else if (this.isValidDate(object[key])) {
+                result[key] = NangoColumnDataTypes.DATE;
+            } else {
+                result[key] = NangoColumnDataTypes.STRING;
+            }
         }
 
         return result;

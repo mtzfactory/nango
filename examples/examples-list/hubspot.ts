@@ -14,6 +14,7 @@ export let syncHubspotContacts = async (api_token: string) => {
         paging_cursor_request_path: 'after',
         paging_cursor_metadata_response_path: 'paging.next.after',
         response_path: 'results',
+        unique_key: 'id',
         max_total: 30
     };
 

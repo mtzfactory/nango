@@ -2,15 +2,7 @@ import { knexDatabase as db, logger } from '@nangohq/core';
 import type { RawObject } from '../models/raw_object.model.js';
 import type { Sync } from '@nangohq/core';
 import _ from 'lodash';
-
-enum NangoColumnDataTypes {
-    NUMBER = 'number',
-    STRING = 'string',
-    DATE = 'date',
-    JSON = 'json',
-    BOOLEAN = 'boolean',
-    UNKNOWN = 'unknown'
-}
+import { NangoColumnDataTypes } from '../models/data.types.js';
 
 class DataService {
     async upsertRawFromList(objects: RawObject[], sync: Sync): Promise<void | number[]> {
