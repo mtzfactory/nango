@@ -17,7 +17,8 @@ class SyncsController {
             paging_cursor_object_response_path: req.body['paging_cursor_object_response_path'],
             paging_url_path: req.body['paging_url_path'],
             paging_header_link_rel: req.body['paging_header_link_rel'],
-            max_total: req.body['max_total']
+            auto_mapping: req.body['auto_mapping'],
+            max_total: req.body['max_total'] || true
         };
 
         let result = await syncsService.createSync(params);

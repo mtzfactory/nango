@@ -14,5 +14,6 @@ export interface Sync {
     paging_cursor_object_response_path?: string;
     paging_url_path?: string;
     paging_header_link_rel?: string;
+    auto_mapping: boolean;
     max_total?: number;
 }

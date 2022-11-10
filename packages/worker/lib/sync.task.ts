@@ -43,13 +43,16 @@ export class SyncTask {
                 await dataService.upsertRawFromList(rawObjs, this.sync);
             }
 
-            // Update the schema of the DB for new results.
-            let flatObjects = await schemaManager.updateSyncSchemaAndFlattenObjects(
-                rawObjs.map((o) => o.data),
-                this.sync.id
-            );
-            // Insert flattened results in the DB.
-            await dataService.upsertFlatFromList(flatObjects, this.sync);
+            // Perform auto JSON-to-SQL schema mapping.
+            if (this.sync.auto_mapping) {
+                // Update the schema of the DB for new results.
+                let flatObjects = await schemaManager.updateSyncSchemaAndFlattenObjects(
+                    rawObjs.map((o) => o.data),
+                    this.sync.id
+                );
+                // Insert flattened results in the DB.
+                await dataService.upsertFlatFromList(flatObjects, this.sync);
+            }
 
             this.succeed(rawObjs.length);
         } catch (err) {
