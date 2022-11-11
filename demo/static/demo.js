@@ -1,3 +1,11 @@
+// Code editor
+const flask = new CodeFlask('#config', {
+    language: 'js',
+    tabSize: 4,
+    lineNumbers: true
+});
+
+// Business logic
 let domain = 'http://localhost:3005';
 
 refreshSyncs();
