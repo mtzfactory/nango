@@ -6,6 +6,11 @@ import { syncsQueue, db } from '@nangohq/core';
 import syncsController from './syncs.controller.js';
 import syncsMiddleware from './syncs.middleware.js';
 import scheduler from './scheduler.js';
+import * as dotenv from 'dotenv';
+
+if (process.env['NANGO_SERVER_RUN_MODE'] !== 'DOCKERIZED') {
+    dotenv.config({ path: '../../.env' });
+}
 
 const port = process.env['PORT'] || 3003;
 
@@ -30,20 +35,22 @@ app.use(
     })
 );
 
-db.migrate(process.env['NANGO_DB_MIGRATION_FOLDER'] || '../core/db/migrations')
-    .then(() => {
-        syncsQueue
-            .connect()
-            .then(() => {
-                app.listen(port, () => {
-                    scheduler.start();
-                    console.log(`✅ Nango Server is listening on port ${port}.`);
+db.knex.raw(`CREATE SCHEMA IF NOT EXISTS ${db.schema()}`).then(() => {
+    db.migrate(process.env['NANGO_DB_MIGRATION_FOLDER'] || '../core/db/migrations')
+        .then(() => {
+            syncsQueue
+                .connect()
+                .then(() => {
+                    app.listen(port, () => {
+                        scheduler.start();
+                        console.log(`✅ Nango Server is listening on port ${port}.`);
+                    });
+                })
+                .catch((error) => {
+                    console.log(`❌ Could connect to RabbitMQ: ${error}\n`);
                 });
-            })
-            .catch((error) => {
-                console.log(`❌ Could connect to RabbitMQ: ${error}\n`);
-            });
-    })
-    .catch((error) => {
-        console.log(`❌ Could connect to DB or execute schema migration: ${error}`);
-    });
+        })
+        .catch((error) => {
+            console.log(`❌ Could connect to DB or execute schema migration: ${error}`);
+        });
+});

@@ -12,6 +12,10 @@ class KnexDatabase {
     async migrate(directory: string): Promise<any> {
         return this.knex.migrate.latest({ directory: directory });
     }
+
+    schema() {
+        return process.env['NANGO_DB_SCHEMA'] || 'nango';
+    }
 }
 
 export default new KnexDatabase();

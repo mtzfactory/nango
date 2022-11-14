@@ -102,7 +102,7 @@ class DataService {
     }
 
     async updateSyncSchema(newColumns: object, syncId: number) {
-        return db.knex.schema.table(this.tableNameForSync(syncId), (t) => {
+        return db.knex.schema.withSchema(db.schema()).table(this.tableNameForSync(syncId), (t) => {
             for (var colName in newColumns) {
                 let type = newColumns[colName];
                 switch (type) {
@@ -131,11 +131,13 @@ class DataService {
     async createSyncTableIfNeeded(syncId: number) {
         return new Promise<void>((resolve, reject) => {
             db.knex.schema
+                .withSchema(db.schema())
                 .hasTable(this.tableNameForSync(syncId))
                 .then((exists) => {
                     if (!exists) {
                         logger.debug(`Table ${this.tableNameForSync(syncId)} doesn't exist, creating the new table for Sync ID: ${syncId}.`);
                         db.knex.schema
+                            .withSchema(db.schema())
                             .createTable(this.tableNameForSync(syncId), (t) => {
                                 t.increments('_nango_id').primary();
                                 t.integer('_nango_sync_id').references('id').inTable('_nango_syncs');

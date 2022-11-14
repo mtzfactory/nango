@@ -4,3 +4,4 @@ js/*
 server-files/*
 .dev-secrets
 logs/*
+.env

@@ -1,6 +1,5 @@
 FROM node:18-alpine
 
-ENV NODE_ENV=production
 ENV NANGO_SERVER_RABBIT_HOST=nango-rabbit
 ENV NANGO_SERVER_RABBIT_PORT=5672
 ENV NANGO_SERVER_ROOT_DIR=/usr/nango-worker
