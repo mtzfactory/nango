@@ -1,6 +1,6 @@
 {
     "name": "@nangohq/server",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "description": "Nango's server.",
     "type": "module",
     "main": "dist/lib/server.js",
@@ -16,7 +16,7 @@
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
-        "@nangohq/core": "^0.2.5",
+        "@nangohq/core": "^0.2.6",
         "@types/lodash": "^4.14.188",
         "amqplib": "^0.10.3",
         "cors": "^2.8.5",
