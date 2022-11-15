@@ -10,7 +10,7 @@
         "prettier-format": "prettier --config .prettierrc './**/*.ts' --write",
         "prettier-watch": "onchange './**/*.ts' -- prettier --write {{changed}}",
         "lint": "eslint . --ext .ts",
-        "docker-build": "docker build -f packages/server/Dockerfile -t nangohq/server . && docker build -f packages/worker/Dockerfile -t nangohq/worker .",
+        "docker-build": "docker build -f packages/server/Dockerfile -t nangohq/server:latest . && docker build -f packages/worker/Dockerfile -t nangohq/worker:latest .",
         "ts-build": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/server packages/worker packages/node-client packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json",
         "build": "npm run ts-build && npm run docker-build"
     },

@@ -10,7 +10,10 @@ WORKDIR /usr/nango-worker/src
 COPY packages/core/ packages/core/
 COPY packages/worker/ packages/worker/
 COPY package*.json ./
+COPY .env ./
 
 RUN npm install --omit=dev
+
+EXPOSE 3004
 
 ENTRYPOINT [ "node", "./packages/worker/dist/lib/worker.js" ]

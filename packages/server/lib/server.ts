@@ -1,3 +1,4 @@
+import './config.js';
 import express from 'express';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
@@ -6,11 +7,6 @@ import { syncsQueue, db } from '@nangohq/core';
 import syncsController from './syncs.controller.js';
 import syncsMiddleware from './syncs.middleware.js';
 import scheduler from './scheduler.js';
-import * as dotenv from 'dotenv';
-
-if (process.env['NANGO_SERVER_RUN_MODE'] !== 'DOCKERIZED') {
-    dotenv.config({ path: '../../.env' });
-}
 
 const port = process.env['PORT'] || 3003;
 

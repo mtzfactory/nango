@@ -12,7 +12,10 @@ WORKDIR /usr/nango-server/src
 COPY packages/core/ packages/core/
 COPY packages/server/ packages/server/
 COPY package*.json ./
+COPY .env ./
 
 RUN npm install --omit=dev
+
+EXPOSE 3003
 
 ENTRYPOINT [ "node", "packages/server/dist/lib/server.js" ]
