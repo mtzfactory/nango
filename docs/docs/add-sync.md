@@ -133,6 +133,36 @@ For the synced data, Nango stores all the objects in their original JSON form in
 
 Additionally, Nango supports optional [JSON-to-SQL mapping](add-sync.md#mapping). If enabled, each Sync in Nango will have its own table in postgres containing the transformed data from that Sync. The default name for Sync-specific SQL tables is `_nango_sync_[syncId]`.
 
+### Use your own Postgres database & schema
+
+By default, Nango creates a local Postgres database with credentials: 
+```
+host: localhost
+port: 5432
+user: nango
+password: nango
+database: nango
+```
+
+You can point Nango to a different database by adding the following environment variables to the `.env` file (in the root folder):
+
+```
+NANGO_DB_HOST=[your-host]
+NANGO_DB_PORT=[your-port]
+NANGO_DB_USER=[your-user]
+NANGO_DB_NAME=[your-database-name]
+NANGO_DB_PASSWORD=[your-password]
+```
+
+By default, Nango will create and use a separate Postgres schema called `nango` to cleanly separate Nango-related data from the rest of your database.
+
+You can use a different schema with the following environment variable:
+```
+NANGO_DB_SCHEMA=[your-preferred-schema]
+```
+
+
+
 ## JSON-to-SQL schema mapping {#mapping}
 
 ### Auto Mapping

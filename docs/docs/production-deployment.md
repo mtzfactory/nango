@@ -10,11 +10,11 @@ Nango is currently in an Alpha stage with big developments every week: It will b
 We look forward to hearing from you!
 
 ## Self-hosted
-Nango is very simple to self-host on a single machine with the `docker compose up` command. This command will automatically run a group of docker containers for you:
-- Nango Server docker container
-- Nango Worker docker container (1 or more)
-- A rabbitMQ instance (for queuing)
-- A postgres database to sync data to & store Syncs config (this will be separated in the future)
+Nango is very simple to self-host on a single machine with the `docker compose up` command. This command will automatically run a network of docker containers for you with:
+- The Nango Server (for the API)
+- A Nango Worker (for data syncing)
+- A rabbitMQ instance (for queuing tasks)
+- A Postgres database (for storage of synced data + Sync configurations)
 
 While we are in Alpha stage, please talk to us before using Nango for mission-critical and/or scaled production systems. We can help you make Nango more sturdy with some extra steps.
 
