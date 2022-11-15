@@ -29,6 +29,8 @@ services:
         image: nangohq/server
         container_name: nango-server
         restart: always
+        env_file:
+            - .env
         ports:
             - '3003:3003'
         depends_on:
@@ -39,6 +41,8 @@ services:
         image: nangohq/worker
         container_name: nango-worker
         restart: always
+        env_file:
+            - .env
         ports:
             - '3004:3004'
         depends_on:

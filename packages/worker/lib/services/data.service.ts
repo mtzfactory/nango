@@ -10,6 +10,7 @@ class DataService {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
             return db
                 .knex<RawObject>(`_nango_raw`)
+                .withSchema(db.schema())
                 .where('sync_id', sync.id)
                 .whereIn(
                     'unique_key',
@@ -17,16 +18,17 @@ class DataService {
                 )
                 .del()
                 .then(() => {
-                    return db.knex<RawObject>(`_nango_raw`).insert(objects);
+                    return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
                 });
         } else {
             // If no `unique_key` provided: rewrite, i.e. delete all rows for that sync, then write new rows.
             return db
                 .knex<RawObject>(`_nango_raw`)
+                .withSchema(db.schema())
                 .where('sync_id', sync.id)
                 .del()
                 .then(() => {
-                    return db.knex<RawObject>(`_nango_raw`).insert(objects);
+                    return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
                 });
         }
     }
@@ -42,6 +44,7 @@ class DataService {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
             return db
                 .knex(this.tableNameForSync(sync.id!))
+                .withSchema(db.schema())
                 .where('_nango_sync_id', sync.id)
                 .whereIn(
                     '_nango_unique_key',
@@ -49,16 +52,17 @@ class DataService {
                 )
                 .del()
                 .then(() => {
-                    return db.knex(this.tableNameForSync(sync.id!)).insert(objects);
+                    return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
                 });
         } else {
             // If no `unique_key` provided: rewrite, i.e. delete all rows for that sync, then write new rows.
             return db
                 .knex(this.tableNameForSync(sync.id!))
+                .withSchema(db.schema())
                 .where('_nango_sync_id', sync.id)
                 .del()
                 .then(() => {
-                    return db.knex(this.tableNameForSync(sync.id!)).insert(objects);
+                    return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
                 });
         }
     }
@@ -66,6 +70,7 @@ class DataService {
     async fetchColumnInfo(table: string) {
         return db
             .knex(table)
+            .withSchema(db.schema())
             .columnInfo()
             .then((tableInfo) => {
                 let schema = {};
@@ -140,7 +145,7 @@ class DataService {
                             .withSchema(db.schema())
                             .createTable(this.tableNameForSync(syncId), (t) => {
                                 t.increments('_nango_id').primary();
-                                t.integer('_nango_sync_id').references('id').inTable('_nango_syncs');
+                                t.integer('_nango_sync_id').references('id').inTable(`${db.schema()}._nango_syncs`);
                                 t.dateTime('_nango_emitted_at').notNullable();
                                 t.string('_nango_unique_key');
                             })

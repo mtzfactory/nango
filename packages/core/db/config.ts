@@ -8,7 +8,8 @@ let config: { development: Knex.Config<any>; production: Knex.Config<any> } = {
             port: process.env['NANGO_DB_PORT'] != null ? +process.env['NANGO_DB_PORT'] : 5432,
             user: process.env['NANGO_DB_USER'] || 'nango',
             database: process.env['NANGO_DB_NAME'] || 'nango',
-            password: process.env['NANGO_DB_PASSWORD'] || 'nango'
+            password: process.env['NANGO_DB_PASSWORD'] || 'nango',
+            ssl: { rejectUnauthorized: false }
         },
         migrations: {
             directory: './migrations',

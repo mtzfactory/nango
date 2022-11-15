@@ -10,7 +10,6 @@ WORKDIR /usr/nango-worker/src
 COPY packages/core/ packages/core/
 COPY packages/worker/ packages/worker/
 COPY package*.json ./
-COPY .env ./
 
 RUN npm install --omit=dev
 
