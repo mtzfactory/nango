@@ -9,7 +9,7 @@ let config: { development: Knex.Config<any>; production: Knex.Config<any> } = {
             user: process.env['NANGO_DB_USER'] || 'nango',
             database: process.env['NANGO_DB_NAME'] || 'nango',
             password: process.env['NANGO_DB_PASSWORD'] || 'nango',
-            ssl: { rejectUnauthorized: false }
+            ssl: process.env['NANGO_DB_SSL'] ? { rejectUnauthorized: false } : undefined
         },
         migrations: {
             directory: './migrations',

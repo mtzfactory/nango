@@ -23,6 +23,7 @@ export interface NangoSyncConfig {
     paging_url_path?: string;
     paging_header_link_rel?: string;
     auto_mapping?: boolean;
+    frequency?: number;
     max_total?: number;
 }
 
@@ -53,6 +54,7 @@ export class Nango {
             paging_url_path: config.paging_url_path,
             paging_header_link_rel: config.paging_header_link_rel,
             auto_mapping: config.auto_mapping,
+            frequency: config.frequency,
             max_total: config.max_total
         };
 

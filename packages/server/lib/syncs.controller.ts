@@ -17,7 +17,8 @@ class SyncsController {
             paging_cursor_object_response_path: req.body['paging_cursor_object_response_path'],
             paging_url_path: req.body['paging_url_path'],
             paging_header_link_rel: req.body['paging_header_link_rel'],
-            auto_mapping: req.body['auto_mapping'] || true,
+            auto_mapping: req.body['auto_mapping'] || true, // Default to auto mapping enabled.
+            frequency: req.body['frequency'] == null || req.body['frequency'] < 1 ? 60 : req.body['frequency'], // Default to hourly Sync jobs, min frequency is 1 minute.
             max_total: req.body['max_total']
         };
 

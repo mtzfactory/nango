@@ -21,7 +21,7 @@ class SyncsService {
             .distinct(['_nango_syncs.id'])
             .from<Sync>(`_nango_syncs`)
             .innerJoin(`_nango_jobs`, '_nango_syncs.id', '=', '_nango_jobs.sync_id')
-            .whereRaw(`NOW() - _nango_jobs.started_at < interval '60 minutes'`) // Run syncs every hour.
+            .whereRaw(`NOW() - _nango_jobs.started_at < make_interval(mins => _nango_syncs.frequency)`)
             .then((syncIds: Sync[]) => {
                 let ids = syncIds.map((o) => o.id);
                 return db.knex.withSchema(db.schema()).select('*').from<Sync>(`_nango_syncs`).whereNotIn('id', ids);

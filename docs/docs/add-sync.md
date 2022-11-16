@@ -50,8 +50,8 @@ let config = {
     },
 
     // To fetch results & uniquely identify records
-    response_path: 'data.results',       // The path to the result objects inside the external API response.
-    unique_key: 'profile.email',               // The key in the result objects used for deduping (e.g. email, id) + enables Full Refresh + Upsert syncing mode.
+    response_path: 'data.results',  // The path to the result objects inside the external API response.
+    unique_key: 'profile.email',    // The key in the result objects used for deduping (e.g. email, id) + enables Full Refresh + Upsert syncing mode.
 
     // Providing paging information in external requests (required for paging)
     paging_cursor_request_path: 'after',   // Provide the cursor request path for fetching the next page.
@@ -64,6 +64,9 @@ let config = {
 
     // JSON-to-SQL schema mapping
     auto_mapping: true,             // Automatically map JSON objects returned from external APIs to SQL columns. Default: true.
+
+    // Sync frequency
+    frequency: 15                   // In minutes
     
     // Convenience
     max_total: 100                  // Limit the total number of total objects synced for testing purposes.
@@ -105,6 +108,9 @@ Nango.sync('https://api.example.com/my/endpoint?query=A+query', config);
 // JSON-to-SQL schema mapping
 "auto_mapping": true, // Automatically map JSON objects returned from external APIs to SQL columns. Default: true.
 
+// Sync frequency
+"frequency": 15,  // In minutes
+
 // Convenience
 "max_total": 100 // Limit the total number of total objects synced for testing purposes.
 }'
@@ -112,9 +118,9 @@ Nango.sync('https://api.example.com/my/endpoint?query=A+query', config);
   </TabItem>
 </Tabs>
 
-## Syncing modes
+## Syncing modes & frequency
 
-Sync jobs run hourly by default. This frequency will be configurable both from code and the CLI in the near future.
+### Syncing modes
 
 Nango supports the following syncing modes:
 - **Full Refresh + Overwrite**: on each job, read all the objects from the API, overwrite by first deleting existing rows
@@ -124,6 +130,10 @@ Nango supports the following syncing modes:
 The **Full Refresh + Overwrite** mode is used by default. To use the **Full Refresh + Upsert** mode, provide a right value for the `unique_key` field in the [Sync config options](add-sync.md#sync-options), the value of which will be used to dedupe rows.
 
 You can view your Sync configurations in the SQL table `_nango_syncs` and your Sync jobs in `_nango_jobs`.
+
+### Syncing frequency
+
+By default, Sync jobs run hourly by default. You can configure the Sync frequency with the `frequency` parameter in the [Sync config options](add-sync.md#sync-options).
 
 ## Database Storage
 
@@ -152,6 +162,7 @@ NANGO_DB_PORT=[your-port]
 NANGO_DB_USER=[your-user]
 NANGO_DB_NAME=[your-database-name]
 NANGO_DB_PASSWORD=[your-password]
+NANGO_DB_SSL=TRUE # Set to 'TRUE' if database requires SSL connections
 ```
 
 By default, Nango will create and use a separate Postgres schema called `nango` to cleanly separate Nango-related data from the rest of your database.
