@@ -22,6 +22,8 @@ services:
         image: nangohq/server
         container_name: nango-server
         restart: always
+        environment:
+            - TEMPORAL_ADDRESS=temporal:7233
         env_file:
             - .env
         ports:
@@ -34,6 +36,8 @@ services:
         image: nangohq/worker
         container_name: nango-worker
         restart: always
+        environment:
+            - TEMPORAL_ADDRESS=temporal:7233
         env_file:
             - .env
         ports:
@@ -52,14 +56,14 @@ services:
             - POSTGRES_USER=nango
             - POSTGRES_PWD=nango
             - POSTGRES_SEEDS=nango-db
-        image: temporalio/auto-setup:${TEMPORAL_VERSION}
+        image: temporalio/auto-setup:1.18.4
         ports:
             - 7233:7233
         labels:
             kompose.volume.type: configMap
 
     temporal-ui:
-        image: temporalio/ui:${TEMPORAL_UI_VERSION}
+        image: temporalio/ui:2.8.3
         depends_on:
             - temporal
         container_name: temporal-ui

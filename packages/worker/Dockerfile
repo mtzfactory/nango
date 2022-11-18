@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-slim
 
 ENV NANGO_SERVER_RABBIT_HOST=nango-rabbit
 ENV NANGO_SERVER_RABBIT_PORT=5672
