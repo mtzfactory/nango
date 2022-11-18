@@ -22,9 +22,6 @@ Nango continuously syncs data from any API endpoint to your local database and k
     ·
     <a href="https://nango.dev/slack">Community Slack</a>
 </p>
-<p align="center">
-<a href="https://gitter.im/NangoHQ/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge"><img src="https://badges.gitter.im/NangoHQ/community.svg"></a>
-</p>
 
 ## ⭐ Can you show me an example?
 
