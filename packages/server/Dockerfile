@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-slim
 
 ENV PORT=3003
 ENV NANGO_SERVER_RABBIT_HOST=nango-rabbit

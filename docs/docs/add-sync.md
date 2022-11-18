@@ -321,6 +321,10 @@ Example response header:
 
 => Use the `paging_header_link_rel` config parameter of Nango, here set to `next`
 
+## Log, debug & manually control Syncs
+
+We use the [Temporal](https://temporal.io/) orchestrator to schedule and perform Sync jobs. You can view, debug and control Sync jobs on the Temporal UI on http://localhost:8011.
+
 ## Problems with your Sync? We are happy to help!
 
 If you run into issues, limitations or problems when setting up your Sync please reach out! We are online on our [Slack Community](https://nango.dev/slack) all day and happy to help you resolve whatever is needed to make Nango work for you and your Syncs.
