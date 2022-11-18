@@ -15,6 +15,6 @@ export interface Sync {
     paging_url_path?: string;
     paging_header_link_rel?: string;
     auto_mapping: boolean;
-    frequency?: number;
+    frequency: number;
     max_total?: number;
 }

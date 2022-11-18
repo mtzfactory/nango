@@ -1,6 +1,7 @@
 import type express from 'express';
 import type { Sync } from '@nangohq/core';
-import { syncsService, syncsQueue } from '@nangohq/core';
+import { syncsService } from '@nangohq/core';
+import syncsClient from './syncs.client.js';
 
 class SyncsController {
     async createSync(req: express.Request, res: express.Response) {
@@ -26,8 +27,8 @@ class SyncsController {
 
         if (Array.isArray(result) && result.length === 1 && result[0] != null && 'id' in result[0]) {
             let syncId = result[0]['id'];
-            syncsQueue.publish(syncId);
-            res.status(200).send({ sync_id: syncId });
+            let syncResult = syncsClient.run(syncId, params.frequency);
+            res.status(200).send({ sync_id: syncId, result: syncResult });
         } else {
             res.status(500).send({
                 error: `There was an unknown error creating your sync.`

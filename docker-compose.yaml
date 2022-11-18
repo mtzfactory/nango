@@ -1,12 +1,5 @@
 version: '3.9'
 services:
-    nango-rabbit:
-        image: rabbitmq:3-management
-        container_name: nango-rabbit
-        ports:
-            - '5672:5672'
-            - '8082:15672'
-
     nango-db:
         image: postgres
         container_name: nango-db
@@ -34,7 +27,7 @@ services:
         ports:
             - '3003:3003'
         depends_on:
-            - nango-rabbit
+            - temporal
             - nango-db
 
     nango-worker:
@@ -46,5 +39,32 @@ services:
         ports:
             - '3004:3004'
         depends_on:
-            - nango-rabbit
+            - temporal
             - nango-db
+
+    temporal:
+        container_name: temporal
+        depends_on:
+            - nango-db
+        environment:
+            - DB=postgresql
+            - DB_PORT=5432
+            - POSTGRES_USER=nango
+            - POSTGRES_PWD=nango
+            - POSTGRES_SEEDS=nango-db
+        image: temporalio/auto-setup:${TEMPORAL_VERSION}
+        ports:
+            - 7233:7233
+        labels:
+            kompose.volume.type: configMap
+
+    temporal-ui:
+        image: temporalio/ui:${TEMPORAL_UI_VERSION}
+        depends_on:
+            - temporal
+        container_name: temporal-ui
+        environment:
+            - TEMPORAL_ADDRESS=temporal:7233
+            - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+        ports:
+            - 8011:8080
