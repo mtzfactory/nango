@@ -70,8 +70,8 @@ console.log(res.data);
 ## Step 3: Inspect the synced ~~data~~ Pokémons
 
 The Sync you just created will keep your Pokémon list up-to-date forever:
-- View [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_sync_1) in your local db (password is `nango`)
-- View [the Sync's config](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=public&select=_nango_syncs) in your local db (same password)
+- View [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango&select=_nango_sync_1) in your local db (password is `nango`)
+- View [the Sync's config](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango&select=_nango_syncs) in your local db (same password)
 - View [the Sync logs](http://localhost:8011) in the Temporal orchestrator UI
 
 
