@@ -65,7 +65,7 @@ npm run start syncRedditSubredditPosts <subreddit>
 **Endpoint docs:**  
 https://api.slack.com/methods/conversations.history
 
-**Nango Sync config to sync all submissions from a subreddit to your local database:**
+**Nango Sync config to sync all posts from a Slack channel to your local database:**
 <Tabs groupId="programming-language">
   <TabItem value="node" label="Node SDK">
 
@@ -116,7 +116,7 @@ npm run start syncSlackMessages <oauth_token> <channel_id>
 **Endpoint docs:**  
 https://docs.github.com/en/rest/activity/starring#list-stargazers
 
-**Nango Sync config to sync all submissions from a subreddit to your local database:**
+**Nango Sync config to sync all stargazers from a repo to your local database:**
 <Tabs groupId="programming-language">
   <TabItem value="node" label="Node SDK">
 
