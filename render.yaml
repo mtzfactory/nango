@@ -2,7 +2,7 @@ services:
     - type: pserv
       name: nango-temporal
       env: docker
-      repo: https://github.com/NangoHQ/nango-render
+      repo: https://github.com/NangoHQ/nango
       plan: starter
       branch: main
       rootDir: ./render/temporal/
@@ -29,7 +29,7 @@ services:
     - type: web
       name: nango-server
       env: docker
-      repo: https://github.com/NangoHQ/nango-render
+      repo: https://github.com/NangoHQ/nango
       plan: starter
       branch: main
       rootDir: ./render/server/
@@ -58,7 +58,7 @@ services:
     - type: worker
       name: nango-worker
       env: docker
-      repo: https://github.com/NangoHQ/nango-render
+      repo: https://github.com/NangoHQ/nango
       plan: starter
       branch: main
       rootDir: ./render/worker/
