@@ -1,0 +1,91 @@
+services:
+    - type: web
+      name: nango-server
+      env: docker
+      repo: https://github.com/NangoHQ/nango-render
+      plan: starter
+      branch: main
+      rootDir: ./render/server/
+      envVars:
+          - key: NANGO_DB_NAME
+            fromDatabase:
+                name: nango-db
+                property: database
+          - key: NANGO_DB_PASSWORD
+            fromDatabase:
+                name: nango-db
+                property: password
+          - key: NANGO_DB_HOST
+            fromDatabase:
+                name: nango-db
+                property: host
+          - key: NANGO_DB_PORT
+            fromDatabase:
+                name: nango-db
+                property: port
+          - key: NANGO_DB_SSL
+            value: TRUE
+          - key: TEMPORAL_ADDRESS # TODO: Fetch dynamically
+            value: nango-temporal:7233
+
+    - type: worker
+      name: nango-worker
+      env: docker
+      repo: https://github.com/NangoHQ/nango-render
+      plan: starter
+      branch: main
+      rootDir: ./render/worker/
+      envVars:
+          - key: NANGO_DB_NAME
+            fromDatabase:
+                name: nango-db
+                property: database
+          - key: NANGO_DB_PASSWORD
+            fromDatabase:
+                name: nango-db
+                property: password
+          - key: NANGO_DB_HOST
+            fromDatabase:
+                name: nango-db
+                property: host
+          - key: NANGO_DB_PORT
+            fromDatabase:
+                name: nango-db
+                property: port
+          - key: NANGO_DB_SSL
+            value: TRUE
+          - key: TEMPORAL_ADDRESS # TODO: Fetch dynamically
+            value: nango-temporal:7233
+
+    - type: pserv
+      name: nango-temporal
+      env: docker
+      repo: https://github.com/NangoHQ/nango-render
+      plan: starter
+      branch: main
+      rootDir: ./render/temporal/
+      envVars:
+          - key: DB
+            value: postgresql
+          - key: POSTGRES_SEEDS
+            fromDatabase:
+                name: nango-db
+                property: host
+          - key: DB_PORT
+            fromDatabase:
+                name: nango-db
+                property: port
+          - key: POSTGRES_USER
+            fromDatabase:
+                name: nango-db
+                property: user
+          - key: POSTGRES_PWD
+            fromDatabase:
+                name: nango-db
+                property: password
+
+databases:
+    - name: nango-db
+      databaseName: nango
+      user: nango
+      plan: free

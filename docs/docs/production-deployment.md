@@ -3,22 +3,15 @@ sidebar_label: Deploying to production
 sidebar_position: 6
 ---
 
-# Deploying Nango to production
-
-Nango is currently in an Alpha stage with big developments every week: It will be production ready very soon, but currently we recommend you talk to us in the [Slack community](https://nango.dev/slack) (we are online there all day long) before deploying it in production.
-
-We look forward to hearing from you!
-
 ## Self-hosted
-Nango is very simple to self-host on a single machine with the `docker compose up` command. This command will automatically run a network of docker containers for you with:
-- The Nango Server (for the API)
-- A Nango Worker (for data syncing)
-- A rabbitMQ instance (for queuing tasks)
-- A Postgres database (for storage of synced data + Sync configurations)
+For fast experimentation, Nango is very simple to self-host on a single machine with the `docker compose up` command (cf. [Quickstart](quickstart.md)). This command will automatically run a network of docker containers powering Nango.
 
-While we are in Alpha stage, please talk to us before using Nango for mission-critical and/or scaled production systems. We can help you make Nango more sturdy with some extra steps.
+For production use-cases, please reach out on the [Slack community](https://nango.dev/slack) and we will assist you with setting up Nango in your preferred production environment.
 
 ## Nango Cloud
-If you want to benefit from super simple sync, at any scale, without the burden of self-hosting, Nango Cloud is for you: We run Nango in a production grade infrastructure for you (single tenant upon request) and you can focus on building great applications with the synchronized data.
+Nango Cloud is currently under development but will be available soon. Mark your interest on [this Github issue](https://github.com/NangoHQ/nango/issues/4) or ask about it in the [Slack community](https://nango.dev/slack).
 
-Nango Cloud is currently under development but will be available soon, mark your interest on [this Github issue](https://github.com/NangoHQ/nango/issues/4) or ask about it in the [Slack community](https://nango.dev/slack).
+Nango Cloud will provide simple syncs, at any scale, without the burden of self-hosting. It will run on production grade infrastructure, with a single tenant option upon request, so you can focus on building great applications relying on 3rd-party APIs. 
+
+## Deploy via Render
+While we develop Nango Cloud, we offer an easy way to deploy Nango via [Render](render.com) with a pre-built [Blueprint](https://render.com/docs/infrastructure-as-code). While not optimized for very-high-volume use-cases (yet), you can get started in production in a couple minutes. Please reach out in the [Slack community](https://nango.dev/slack) to get started with Nango + Render.

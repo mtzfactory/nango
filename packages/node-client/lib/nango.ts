@@ -9,8 +9,7 @@ export enum NangoHttpMethod {
 }
 
 export interface NangoSyncConfig {
-    nango_server?: string;
-    nango_port?: string;
+    base_url?: string;
     method?: NangoHttpMethod;
     headers?: Record<string, string | number | boolean>;
     body?: object;
@@ -31,10 +30,9 @@ export class Nango {
     static async sync(url: string, config?: NangoSyncConfig) {
         config = config || {};
         config.method = config.method || NangoHttpMethod.GET;
-        config.nango_server = config.nango_server || 'http://localhost';
-        config.nango_port = config.nango_port || '3003';
+        config.base_url = config.base_url || 'http://localhost:3003';
 
-        let nango_req_url = `${config.nango_server}:${config.nango_port}/v1/syncs`;
+        let nango_req_url = `${config.base_url}/v1/syncs`;
 
         let nango_req_headers = {
             'Content-Type': 'application/json'
