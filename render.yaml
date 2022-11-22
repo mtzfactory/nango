@@ -1,4 +1,31 @@
 services:
+    - type: pserv
+      name: nango-temporal
+      env: docker
+      repo: https://github.com/NangoHQ/nango-render
+      plan: starter
+      branch: main
+      rootDir: ./render/temporal/
+      envVars:
+          - key: DB
+            value: postgresql
+          - key: POSTGRES_SEEDS
+            fromDatabase:
+                name: nango-db
+                property: host
+          - key: DB_PORT
+            fromDatabase:
+                name: nango-db
+                property: port
+          - key: POSTGRES_USER
+            fromDatabase:
+                name: nango-db
+                property: user
+          - key: POSTGRES_PWD
+            fromDatabase:
+                name: nango-db
+                property: password
+
     - type: web
       name: nango-server
       env: docker
@@ -56,33 +83,6 @@ services:
             value: TRUE
           - key: TEMPORAL_ADDRESS # TODO: Fetch dynamically
             value: nango-temporal:7233
-
-    - type: pserv
-      name: nango-temporal
-      env: docker
-      repo: https://github.com/NangoHQ/nango-render
-      plan: starter
-      branch: main
-      rootDir: ./render/temporal/
-      envVars:
-          - key: DB
-            value: postgresql
-          - key: POSTGRES_SEEDS
-            fromDatabase:
-                name: nango-db
-                property: host
-          - key: DB_PORT
-            fromDatabase:
-                name: nango-db
-                property: port
-          - key: POSTGRES_USER
-            fromDatabase:
-                name: nango-db
-                property: user
-          - key: POSTGRES_PWD
-            fromDatabase:
-                name: nango-db
-                property: password
 
 databases:
     - name: nango-db
