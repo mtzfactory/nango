@@ -14,4 +14,4 @@ Nango Cloud is currently under development but will be available soon. Mark your
 Nango Cloud will provide simple syncs, at any scale, without the burden of self-hosting. It will run on production grade infrastructure, with a single tenant option upon request, so you can focus on building great applications relying on 3rd-party APIs. 
 
 ## Deploy via Render
-While we develop Nango Cloud, we offer an easy way to deploy Nango via [Render](render.com) with a pre-built [Blueprint](https://render.com/docs/infrastructure-as-code). While not optimized for very-high-volume use-cases (yet), you can get started in production in a couple minutes. Please reach out in the [Slack community](https://nango.dev/slack) to get started with Nango + Render.
+While we develop Nango Cloud, we offer an easy way to deploy Nango via [Render](https://render.com) with a pre-built [Blueprint](https://render.com/docs/infrastructure-as-code). While not optimized for very-high-volume use-cases (yet), you can get started in production in a couple minutes. Please reach out in the [Slack community](https://nango.dev/slack) to get started with Nango + Render.

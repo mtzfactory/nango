@@ -1,6 +1,6 @@
 {
     "name": "@nangohq/server",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "description": "Nango's server.",
     "type": "module",
     "main": "dist/lib/server.js",
@@ -16,7 +16,7 @@
     },
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
-        "@nangohq/core": "^0.2.7",
+        "@nangohq/core": "^0.2.8",
         "@temporalio/client": "^1.4.4",
         "@types/lodash": "^4.14.188",
         "cors": "^2.8.5",
