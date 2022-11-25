@@ -54,6 +54,8 @@ Whilst Nango supports millions of APIs, here are some of the most popular ones:
 - **Devtools** such as [Github](https://docs.nango.dev/real-world-examples#github-sync-all-stargazers-from-a-repo), Gitlab, JIRA, Trello, Figma etc.
 - ...any API endpoint that returns JSON
 
+The docs have [more examples](https://docs.nango.dev/real-world-examples) of Nango configurations for different APIs and endpoints.
+
 ## 🚀 Quickstart
 
 Let's setup your first Sync in 3 minutes!
