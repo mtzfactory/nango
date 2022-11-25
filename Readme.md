@@ -25,7 +25,7 @@ Nango continuously syncs data from any API endpoint to your database and keeps i
 
 ## ⭐ Nango at a glance
 
-Nango continuously syncs data from any API endpoint to your database.
+Nango continuously syncs data from any API endpoint (that returns JSON) to your database.
 
 Add Syncs to Nango with 1 line of code in your application:
 ```ts
@@ -46,12 +46,12 @@ Nango then takes care of:
 Nango is API agnostic: It works with any API endpoint that returns JSON (you just need to [give it a few details](https://docs.nango.dev/add-sync#sync-options) about the endpoint).
 
 Whilst Nango supports millions of APIs, here are some of the most popular ones:
-- **CRMs** such as HubSpot, Salesforce, Pipedrive, Zoho CRM, Zendesk Sell etc.
+- **CRMs** such as [HubSpot](https://docs.nango.dev/real-world-examples#hubspot-sync-all-hubspot-crm-contacts), Salesforce, Pipedrive, Zoho CRM, Zendesk Sell etc.
 - **Accounting systems** such as Quickbooks, Xero, Netsuite, Zoho Books, Freshbooks etc.
 - **Cloud providers** such as AWS, GCP, Azure, DigitalOcean, Fly.io, Heroku etc.
-- **Productivity tools** such as Gmail, Google Calendar, Slack, Outlook 365, Zoom, Google Drive etc.
+- **Productivity tools** such as Gmail, Google Calendar, [Slack](https://docs.nango.dev/real-world-examples#slack-sync-all-posts-from-a-slack-channel), Outlook 365, Zoom, Google Drive etc.
 - **Project Management tools** such as Airtable, Assana, Monday.com, ClickUp etc.
-- **Devtools** such as Github, Gitlab, JIRA, Trello, Figma etc.
+- **Devtools** such as [Github](https://docs.nango.dev/real-world-examples#github-sync-all-stargazers-from-a-repo), Gitlab, JIRA, Trello, Figma etc.
 - ...any API endpoint that returns JSON
 
 ## 🚀 Quickstart
