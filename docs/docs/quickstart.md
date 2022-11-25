@@ -1,6 +1,5 @@
 ---
 sidebar_label: 'Quickstart 🚀'
-sidebar_position: 2
 ---
 
 import Tabs from '@theme/Tabs';

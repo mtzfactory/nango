@@ -1,6 +1,5 @@
 ---
 sidebar_label: Deploying to production
-sidebar_position: 6
 ---
 
 ## Self-hosted
