@@ -27,7 +27,8 @@ const sidebars = {
     'pizzly/introduction',
     'pizzly/getting-started',
     'pizzly/production-deployment',
-    'pizzly/contribute-api'
+    'pizzly/contribute-api',
+    'pizzly/migration'
   ]
 
   // But you can create a sidebar manually
