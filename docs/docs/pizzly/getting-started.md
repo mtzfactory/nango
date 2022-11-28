@@ -32,11 +32,11 @@ If you just installed Pizzly this will print an empty list.
 To run OAuth flows from your application you need to setup each provider that you want to use. For this you will need a few things from the OAuth provider/API:
 - **Client id** and **client secret**, these identify your application towards the API that offers the OAuth. You need to get these from the API/OAuth provider, usually you will find them in their developer portal.
 - The **scopes** you want to request from the user: These will also depend on the API, you can usually find a list of all scopes an API offers in the API documentation.
-    - For the commend below your scopes must be comma separated, e.g. `read,write`
-- Finally you need to decide on a **config key**. This key will uniquely identify your configuration within Pizzly. If you only have one configuration per API we recommend you use the API's name in all lowercase, e.g. `github` for GitHub, `salesforce` for Salesforce etc.
+    - For the CLI commend below your scopes must be comma separated, e.g. `read,write`
+- Finally you need to decide on a **provider config key**. This key will uniquely identify your configuration within Pizzly. If you only have one configuration per API provider we recommend you use the API's name in all lowercase, e.g. `github` for GitHub, `salesforce` for Salesforce etc.
 
 :::info Callback URL
-When setup your application with the OAuth provider they will ask you for a callback URL.
+When you setup your application with the OAuth provider they will ask you for a callback URL.
 
 For Pizzly the callback URL is always `[PIZZLY_SERVER_URL]/oauth/callback`, so if Pizzly runs on your local machine the callback URL is `http://localhost:3004/oauth/callback`
 :::
@@ -66,17 +66,17 @@ var pizzly = new Pizzly('http://localhost:3004');
 // Trigger an OAuth flow
 // The first parameter is the config key you set up in step 1
 // The second parameter is the connection id under which this authentication should be stored
-pizzly.connect('github', '<connection-id>');
+pizzly.auth('github', '<connection-id>');
 .then((result) => { 
-    console.log(`OAuth flow succeeded for provider "${result.integrationKey}" and connection-id "${result.connectionId}"!`);
+    console.log(`OAuth flow succeeded for provider "${result.providerConfigKey}" and connection-id "${result.connectionId}"!`);
 })
 .catch((error) => {
-    console.error(`There was an error in the OAuth flow for integration "${error.integrationKey}" and connection-id "${error.connectionId}": ${error.error.type} - ${error.error.message}`);
+    console.error(`There was an error in the OAuth flow for integration "${error.providerConfigKey}" and connection-id "${error.connectionId}": ${error.error.type} - ${error.error.message}`);
 });
 ```
 
 This introduces the **connection id**:  
-The connection id is the unique identifier for this authentication. You can choose it freely, the only requirements is that the pair of config key + connection id must be unique.
+The connection id is the unique identifier for this authentication. You can choose it freely, the only requirements is that the pair of provider config key + connection id must be unique.
 
 Most of the time it makes sense to use a user id, account id or similar identifier for the connection id (so the authentication is tied to the user, account etc.). But you could choose something different if it is needed for your application.
 
@@ -95,7 +95,7 @@ Pizzly offers two ways to get a fresh access token:
 - With a **REST API**: This is the fallback option if no SDK is available for your language.
 
 In both cases you need to tell Pizzly two things to get the access token:
-- The **config key**, which identifies the OAuth provider configuration
+- The **provider config key**, which identifies the OAuth provider configuration
 - The **connection id**, which identifies the specific authentication for which you need the access token
 
 :::caution
@@ -119,23 +119,23 @@ import Pizzly from '@nangohq/pizzly-node'
 // Tell Pizzly where to find your Pizzly server
 let pizzly = new Pizzly('http://localhost:3004');
 
-let access_token = await pizzly.currentAccessToken('<config-key>', '<connection-id>');
+let access_token = await pizzly.accessToken('<config-key>', '<connection-id>');
 
-// Sometimes you need access to the raw response from the server that was sent when it sent the access token (because it contains additional metadata you need)
+// Sometimes you need access to the raw response from the server that was sent along with the access token (because it contains additional metadata you need)
 // You can access the latest response with this method
-let raw_token_response = await pizzly.rawTokenReponse('<config-key>', '<connection-id>');
+let raw_token_response = await pizzly.rawTokenResponse('<config-key>', '<connection-id>');
 ```
 
 ### Getting an access token - REST API
 If you are using a language where Pizzly does not yet have backend SDK you can directly use it's REST API to get an access token.
 
-The api endpoint is located at `[PIZZLY_SERVER_URL]/connection/<connection-id>?integration_key=<integration-key>`.  
+The api endpoint is located at `[PIZZLY_SERVER_URL]/connection/<connection-id>?provider_config_key=<config-key>`.  
 Note that you must pass in a `Content-Type: application/json` header along with your request.
 
 Here is an example curl command for Pizzly running on your local machine:
 ```bash
 curl -XGET -H "Content-type: application/json" \
-'http://localhost:3004/connection/<connection-id>?integration_key=<integration-key>'
+'http://localhost:3004/connection/<connection-id>?provider_config_key=<config-key>'
 ```
 
 This API call will return you a JSON object that contains the refreshed access token as well as additional material (example):
@@ -145,7 +145,7 @@ This API call will return you a JSON object that contains the refreshed access t
     "id": "<connection-id>",
     "created_at": "2022-11-25T15:55:07.215Z",
     "updated_at": "2022-11-25T15:55:07.215Z",
-    "integration_key": "<integration-key>",
+    "provider_config_key": "<config-key>",
     "connection_id": "1",
     "credentials": {
       "type": "OAUTH2",

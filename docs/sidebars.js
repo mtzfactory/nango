@@ -26,7 +26,6 @@ const sidebars = {
   pizzly: [
     'pizzly/introduction',
     'pizzly/getting-started',
-    'pizzly/production-deployment',
     'pizzly/contribute-api',
     'pizzly/migration'
   ]
