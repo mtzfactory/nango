@@ -13,5 +13,5 @@ export let syncGoogleCalendarEvents = async (calendar_id: string, oauth_token: s
         paging_cursor_metadata_response_path: 'nextPageToken'
     };
 
-    return Nango.sync(`https://www.googleapis.com/calendar/v3/calendars/${calendar_id}/events`, config);
+    return new Nango().sync(`https://www.googleapis.com/calendar/v3/calendars/${calendar_id}/events`, config);
 };

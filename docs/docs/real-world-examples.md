@@ -33,7 +33,7 @@ let nango_options = {
     max_total: 100
 };
 
-Nango.sync('https://www.reddit.com/r/${subreddit}/new.json', nango_options);  // Replace ${subreddit} with your subreddit
+new Nango().sync('https://www.reddit.com/r/${subreddit}/new.json', nango_options);  // Replace ${subreddit} with your subreddit
 ```
   </TabItem>
   <TabItem value="curl" label="REST API (curl)">
@@ -84,7 +84,7 @@ let nango_options = {
   }
 };
 
-Nango.sync('https://slack.com/api/conversations.history', nango_options); 
+new Nango().sync('https://slack.com/api/conversations.history', nango_options); 
 ```
   </TabItem>
   <TabItem value="curl" label="REST API (curl)">
@@ -133,7 +133,7 @@ let config = {
     paging_header_link_rel: 'next'
 };
 
-Nango.sync('https://api.github.com/repos/${owner}/${repo}/stargazers', nango_options); 
+new Nango().sync('https://api.github.com/repos/${owner}/${repo}/stargazers', nango_options); 
 ```
   </TabItem>
   <TabItem value="curl" label="REST API (curl)">
@@ -185,7 +185,7 @@ let nango_options = {
     paging_cursor_metadata_response_path: 'paging.next.after'
 };
 
-Nango.sync('https://api.hubapi.com/crm/v3/objects/contacts?limit=10&archived=false', nango_options);
+new Nango().sync('https://api.hubapi.com/crm/v3/objects/contacts?limit=10&archived=false', nango_options);
 ```
   </TabItem>
   <TabItem value="curl" label="REST API (curl)">

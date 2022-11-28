@@ -15,5 +15,5 @@ export let syncSlackMessages = async (app_token: string, channel_id: string) => 
         }
     };
 
-    return Nango.sync('https://slack.com/api/conversations.history', config);
+    return new Nango().sync('https://slack.com/api/conversations.history', config);
 };

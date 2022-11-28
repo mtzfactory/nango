@@ -66,7 +66,7 @@ app.post('/api/addSync', (req, res) => {
     let nangoConfig = JSON.parse(json);
 
     // Pull out the URL
-    let urlRegex = /Nango.sync\('(.+)',/gm;
+    let urlRegex = /new Nango().sync\('(.+)',/gm;
     let url = [...code.matchAll(urlRegex)][0][1];
 
     if (!url || !nangoConfig) {
@@ -76,7 +76,7 @@ app.post('/api/addSync', (req, res) => {
     console.log(url);
     console.log(nangoConfig);
 
-    Nango.sync(url, nangoConfig).then((nangoRes) => {
+    new Nango().sync(url, nangoConfig).then((nangoRes) => {
         res.json(nangoRes.data);
     });
 });

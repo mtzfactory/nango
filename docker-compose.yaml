@@ -10,6 +10,8 @@ services:
             POSTGRES_DB: nango
         ports:
             - '5432:5432'
+        networks:
+            - nango
 
     nango-db-admin:
         image: adminer
@@ -17,6 +19,8 @@ services:
         restart: always
         ports:
             - '8080:8080'
+        networks:
+            - nango
 
     nango-server:
         image: nangohq/server
@@ -31,6 +35,8 @@ services:
         depends_on:
             - temporal
             - nango-db
+        networks:
+            - nango
 
     nango-worker:
         image: nangohq/worker
@@ -38,6 +44,7 @@ services:
         restart: always
         environment:
             - TEMPORAL_ADDRESS=temporal:7233
+            - PIZZLY_BASE_URL=localhost:3004 # Only needed if you are using Pizzly for OAuth.
         env_file:
             - .env
         ports:
@@ -45,6 +52,8 @@ services:
         depends_on:
             - temporal
             - nango-db
+        networks:
+            - nango
 
     temporal:
         container_name: temporal
@@ -61,6 +70,8 @@ services:
             - 7233:7233
         labels:
             kompose.volume.type: configMap
+        networks:
+            - nango
 
     temporal-ui:
         image: temporalio/ui:2.8.3
@@ -72,3 +83,7 @@ services:
             - TEMPORAL_CORS_ORIGINS=http://localhost:3000
         ports:
             - 8011:8080
+        networks:
+            - nango
+networks:
+    nango:

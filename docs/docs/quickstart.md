@@ -59,7 +59,7 @@ let config = {
     paging_url_path: 'next'
 };
 
-let res = await Nango.sync('https://pokeapi.co/api/v2/pokemon', config);
+let res = await new Nango().sync('https://pokeapi.co/api/v2/pokemon', config);
 
 console.log(res.data);
 ```

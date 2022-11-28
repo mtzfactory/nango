@@ -13,7 +13,7 @@ Nango continuously syncs data from any API endpoint to your local database and k
 
 In your code you write:
 ```ts
-Nango.sync('https://api.hubspot.com/crm/v3/contacts', ...); // Start sync job for HubSpot contacts
+nango.sync('https://api.hubspot.com/crm/v3/contacts', ...); // Syncs HubSpot contacts forever
 ```
 
 Nango then takes care of:

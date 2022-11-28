@@ -16,5 +16,7 @@ export interface Sync {
     paging_header_link_rel?: string;
     auto_mapping: boolean;
     frequency: number;
+    pizzly_connection_id?: string;
+    pizzly_provider_config_key?: string;
     max_total?: number;
 }

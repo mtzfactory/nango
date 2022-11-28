@@ -13,7 +13,7 @@ export let syncGithubStargazers = async (api_token: string) => {
         paging_header_link_rel: 'next'
     };
 
-    return Nango.sync(`https://api.github.com/repos/${owner}/${repo}/stargazers`, config);
+    return new Nango().sync(`https://api.github.com/repos/${owner}/${repo}/stargazers`, config);
 };
 
 // CLI command: npm start syncGithubUserRepos [api-key]
@@ -28,5 +28,5 @@ export let syncGithubUserRepos = async (api_token: string) => {
         paging_header_link_rel: 'next'
     };
 
-    return Nango.sync(`https://api.github.com/users/${username}/repos?per_page=10`, config);
+    return new Nango().sync(`https://api.github.com/users/${username}/repos?per_page=10`, config);
 };

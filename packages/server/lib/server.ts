@@ -8,22 +8,15 @@ import syncsController from './syncs.controller.js';
 import syncsMiddleware from './syncs.middleware.js';
 import syncsClient from './syncs.client.js';
 
-const port = process.env['PORT'] || 3003;
+await db.knex.raw(`CREATE SCHEMA IF NOT EXISTS ${db.schema()}`);
+await db.migrate(process.env['NANGO_DB_MIGRATION_FOLDER'] || '../core/db/migrations');
+await syncsClient.connect();
 
+const port = process.env['PORT'] || 3003;
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-
-app.use(
-    expressWinston.logger({
-        transports: [new winston.transports.Console()],
-        format: winston.format.combine(winston.format.colorize(), winston.format.json(), winston.format.prettyPrint())
-    })
-);
-
-app.route(`/v1/syncs`).post(syncsMiddleware.validateCreateSyncRequest, syncsController.createSync);
-
 app.use(
     expressWinston.errorLogger({
         transports: [new winston.transports.Console()],
@@ -31,9 +24,7 @@ app.use(
     })
 );
 
-await db.knex.raw(`CREATE SCHEMA IF NOT EXISTS ${db.schema()}`);
-await db.migrate(process.env['NANGO_DB_MIGRATION_FOLDER'] || '../core/db/migrations');
-await syncsClient.connect();
+app.route(`/v1/syncs`).post(syncsMiddleware.validateCreateSyncRequest, syncsController.createSync);
 app.listen(port, () => {
     console.log(`✅ Nango Server is listening on port ${port}.`);
 });

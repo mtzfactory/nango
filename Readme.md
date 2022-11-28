@@ -28,7 +28,7 @@ Nango continuously syncs data from any API endpoint to your local database and k
 In your code you write:
 
 ```ts
-Nango.sync('https://api.hubspot.com/crm/v3/contacts', ...); // Starts syncing contacts forever!
+new Nango().sync('https://api.hubspot.com/crm/v3/contacts', ...); // Syncs contacts forever!
 ```
 
 Nango then takes care of:
@@ -80,7 +80,7 @@ let config = {
     paging_url_path: 'next' // The path to the next page's url in the response.
 };
 
-await Nango.sync('https://pokeapi.co/api/v2/pokemon', config);
+await new Nango().sync('https://pokeapi.co/api/v2/pokemon', config);
 ```
 
 ## 🔍 Neat, I would like to learn more

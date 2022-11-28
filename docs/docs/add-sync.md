@@ -73,7 +73,7 @@ let config = {
 };
 
 // Add the Sync
-Nango.sync('https://api.example.com/my/endpoint?query=A+query', config);
+new Nango().sync('https://api.example.com/my/endpoint?query=A+query', config);
 ```
   </TabItem>
   <TabItem value="curl" label="REST API (curl)">

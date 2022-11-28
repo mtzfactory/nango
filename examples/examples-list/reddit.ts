@@ -10,5 +10,5 @@ export let syncRedditSubredditPosts = async (subreddit: string) => {
         max_total: 100
     };
 
-    return Nango.sync(`https://www.reddit.com/r/${subreddit}/new.json`, config);
+    return new Nango().sync(`https://www.reddit.com/r/${subreddit}/new.json`, config);
 };

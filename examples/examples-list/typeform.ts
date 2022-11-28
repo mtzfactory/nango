@@ -12,5 +12,5 @@ export let syncTypeformResponses = async (api_token: string, form_id: string) =>
         }
     };
 
-    return Nango.sync(`https://api.typeform.com/forms/${form_id}/responses`, config);
+    return new Nango().sync(`https://api.typeform.com/forms/${form_id}/responses`, config);
 };

@@ -27,10 +27,16 @@ export interface NangoSyncConfig {
 }
 
 export class Nango {
-    static async sync(url: string, config?: NangoSyncConfig) {
+    serverUrl: string;
+
+    constructor(serverUrl?: string) {
+        this.serverUrl = serverUrl || 'http://localhost:3003';
+    }
+
+    async sync(url: string, config?: NangoSyncConfig) {
         config = config || {};
         config.method = config.method || NangoHttpMethod.GET;
-        config.base_url = config.base_url || 'http://localhost:3003';
+        config.base_url = this.serverUrl;
 
         let nango_req_url = `${config.base_url}/v1/syncs`;
 

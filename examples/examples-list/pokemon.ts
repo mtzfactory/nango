@@ -9,5 +9,5 @@ export let syncPokemonList = async () => {
         unique_key: 'name'
     };
 
-    return Nango.sync('https://pokeapi.co/api/v2/pokemon', config);
+    return new Nango().sync('https://pokeapi.co/api/v2/pokemon', config);
 };
