@@ -65,7 +65,11 @@ let config = {
     auto_mapping: true,             // Automatically map JSON objects returned from external APIs to SQL columns. Default: true.
 
     // Sync frequency
-    frequency: 15                   // In minutes
+    frequency: 15,                  // In minutes
+
+    // Authentication (leverages the Pizzly Oauth to automatically authenticate requests with OAuth APIs)
+    pizzly_connection_id: "user1",  // The ID of the connection registered with Pizzly
+    pizzly_provider_config_key: "hubspot",  // The key of the provider configuration registered with Pizzly
     
     // Convenience
     max_total: 100                  // Limit the total number of total objects synced for testing purposes.
@@ -109,6 +113,10 @@ new Nango().sync('https://api.example.com/my/endpoint?query=A+query', config);
 
 // Sync frequency
 "frequency": 15,  // In minutes
+
+// Authentication (leverages the Pizzly Oauth to automatically authenticate requests with OAuth APIs)
+"pizzly_connection_id": "user1",  // The ID of the connection registered with Pizzly
+"pizzly_provider_config_key": "hubspot",  // The key of the provider configuration registered with Pizzly
 
 // Convenience
 "max_total": 100 // Limit the total number of total objects synced for testing purposes.
@@ -319,6 +327,21 @@ Example response header:
 ```
 
 => Use the `paging_header_link_rel` config parameter of Nango, here set to `next`
+
+## OAuth
+
+Nango leverages our sister project [Pizzly](https://github.com/NangoHQ/Pizzly) to handle authentication with OAuth APIs. 
+
+Pizzly + Nango will let you: 
+- Initiate OAuth user authentication flows from your frontend with the Pizzly frontend SDK
+- Let Nango automatically authenticate requests, using access tokens maintained fresh by Pizzly
+
+To leverage Pizzly in Nango, you only need to set the `PIZZLY_BASE_URL` environment variable in the `.env` file at the root of Nango's folder. 
+
+Then, specify the `pizzly_connection_id` and `pizzly_provider_config_key` parameters in your [Sync config options](add-sync.md#sync-options).
+
+To use Pizzly, with or without Nango, start [here](https://github.com/NangoHQ/Pizzly).
+
 
 ## Log, debug & manually control Syncs
 
