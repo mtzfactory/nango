@@ -4,10 +4,10 @@
 
 </div>
 
-<h1 align="center">The easiest way to sync data from external APIs</h1>
+<h1 align="center">The fast & flexible way to sync data from 3rd party APIs</h1>
 
 <div align="center">
-Nango continuously syncs data from any API endpoint to your local database and keeps it fresh for you.
+Nango continuously syncs data from any API endpoint to your database and keeps it fresh for you.
 </div>
 
 <p align="center">
@@ -23,10 +23,11 @@ Nango continuously syncs data from any API endpoint to your local database and k
     <a href="https://nango.dev/slack">Community Slack</a>
 </p>
 
-## ⭐ Can you show me an example?
+## ⭐ Nango at a glance
 
-In your code you write:
+Nango continuously syncs data from any API endpoint (that returns JSON) to your database.
 
+Add Syncs to Nango with 1 line of code in your application:
 ```ts
 new Nango().sync('https://api.hubspot.com/crm/v3/contacts', ...); // Syncs contacts forever!
 ```
@@ -36,17 +37,26 @@ Nango then takes care of:
 -   Pagination & full first sync
 -   Periodic refresh with incremental syncs
 -   Deduplication of records & upserts of changed data
+-   Automatic schema mapping from JSON to table/SQL schema
 -   Detecting schema changes & alert you
 -   Automatic retries & rate-limit handling
 -   Making sure your sync is robust, so you never again have to worry about stuck/stale syncs or manual restarts
 
-## 🧑‍💻 Cool, what can I build with it?
+## 🧑‍💻 Example use cases
+Nango is API agnostic: It works with any API endpoint that returns JSON (you just need to [give it a few details](https://docs.nango.dev/add-sync#sync-options) about the endpoint).
 
--   Teams in SaaS companies use Nango to **build native in-app integrations** related to CRM contacts, payment transactions, HRIS employees, etc.
--   Some **automate their personal lives** with Nango by syncing bank transactions or saved cooking recipes for further processing
--   Nango can help you **quickly build proof of concepts** (which are easy to make production-grade) for hackathon projects, internal evaluations or to test the technical feasibility of your next big idea
+Whilst Nango supports millions of APIs, here are some of the most popular ones:
+- **CRMs** such as [HubSpot](https://docs.nango.dev/real-world-examples#hubspot-sync-all-hubspot-crm-contacts), Salesforce, Pipedrive, Zoho CRM, Zendesk Sell etc.
+- **Accounting systems** such as Quickbooks, Xero, Netsuite, Zoho Books, Freshbooks etc.
+- **Cloud providers** such as AWS, GCP, Azure, DigitalOcean, Fly.io, Heroku etc.
+- **Productivity tools** such as Gmail, Google Calendar, [Slack](https://docs.nango.dev/real-world-examples#slack-sync-all-posts-from-a-slack-channel), Outlook 365, Zoom, Google Drive etc.
+- **Project Management tools** such as Airtable, Assana, Monday.com, ClickUp etc.
+- **Devtools** such as [Github](https://docs.nango.dev/real-world-examples#github-sync-all-stargazers-from-a-repo), Gitlab, JIRA, Trello, Figma etc.
+- ...any API endpoint that returns JSON
 
-## 🚀 Interesting, how can I try it?
+The docs have [more examples](https://docs.nango.dev/real-world-examples) of Nango configurations for different APIs and endpoints.
+
+## 🚀 Quickstart
 
 Let's setup your first Sync in 3 minutes!
 
@@ -68,7 +78,7 @@ curl --request POST \
     --data '{"url": "https://pokeapi.co/api/v2/pokemon", "response_path": "results", "paging_url_path":"next"}'
 ```
 
-That's all it takes! You can check out [the list of all Pokémons in your local database](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango&select=_nango_sync_1) (password is `nango`) as well as the [Sync logs](http://localhost:8011).
+That's it! You can check out [the list of all Pokémons in your local database](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango&select=_nango_sync_1) (password is `nango`) as well as the [Sync logs](http://localhost:8011).
 
 In practice, you probably want to use one of our native SDKs to interact with Nango's API ([see docs](https://docs.nango.dev)), e.g. for Node.JS:
 
@@ -83,11 +93,18 @@ let config = {
 await new Nango().sync('https://pokeapi.co/api/v2/pokemon', config);
 ```
 
-## 🔍 Neat, I would like to learn more
+## 🔍 Learn more
 
 ⭐  Follow our development by starring us here on GitHub ⭐
 
--   Explore some [real world examples](https://docs.nango.dev)
+-   Explore more [examples of syncing data from specific endpoints](https://docs.nango.dev)
 -   Share feedback or ask questions on the [Slack community](https://nango.dev/slack)
--   [Chat with a member of the team](https://nango.dev/demo) 👋
+-   Check out [Pizzly](https://github.com/NangoHQ/Pizzly), the fast & flexible way to get OAuth tokens for 50+ APIs
 -   Check our [blog on native integrations](https://www.nango.dev/blog)
+
+## 🔑 The 3rd party API needs OAuth to authenticate?
+Nango has built-in support for OAuth through our sister project [Pizzly](https://github.com/NangoHQ/Pizzly), which makes it fast & flexible to get an OAuth token for any API.
+
+If the API your are working with needs OAuth to connect and you have not implemented it yet we recommend you take a look at Pizzly: It handles all the OAuth flow & access token refresh for you, is easy to try and a small, self-contained container in production. 
+
+Pizzly is integrated into Nango. If you use Pizzly for OAuth Nango will automatically have access to the latest access token and use it for its syncs.

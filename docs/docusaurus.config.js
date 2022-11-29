@@ -87,7 +87,12 @@ const config = {
             type: 'doc',
             docId: 'introduction',
             position: 'left',
-            label: 'Docs',
+            label: 'Nango Docs',
+          },
+          {
+            label: 'Pizzly Docs',
+            to: '/pizzly/',
+            position: 'left'
           },
           {
             label: 'Community Slack',
