@@ -1,5 +1,6 @@
 import {syncGithubStargazers, syncGithubUserRepos} from './examples-list/github.js'
 import {syncHubspotContacts} from './examples-list/hubspot.js'
+import {syncHubspotContactsWithAuth} from './examples-list/hubspot+pizzly.js'
 import {syncPokemonList} from './examples-list/pokemon.js'
 import {syncRedditSubredditPosts} from './examples-list/reddit.js'
 import {syncSlackMessages} from './examples-list/slack.js'
@@ -48,6 +49,9 @@ switch (function_name) {
         break;
     case 'syncHubspotContacts':
         syncHubspotContacts(parseArguments(1)[0]!).then(logSuccess);
+        break;
+    case 'syncHubspotContactsWithAuth':
+        syncHubspotContactsWithAuth().then(logSuccess);
         break;
     case 'syncPokemonList':
         syncPokemonList().then(logSuccess);

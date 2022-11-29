@@ -44,7 +44,7 @@ services:
         restart: always
         environment:
             - TEMPORAL_ADDRESS=temporal:7233
-            - PIZZLY_BASE_URL=localhost:3004 # Only needed if you are using Pizzly for OAuth.
+            - PIZZLY_BASE_URL=http://localhost:3004 # Only needed if you are using Pizzly for OAuth.
         env_file:
             - .env
         ports:

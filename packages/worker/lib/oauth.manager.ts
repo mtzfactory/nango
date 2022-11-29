@@ -6,36 +6,37 @@ class OAuthManager {
     pizzly: Pizzly | null;
 
     constructor() {
-        this.pizzly = process.env['PIZZLY'] == null ? null : new Pizzly(process.env['PIZZLY']);
+        this.pizzly = process.env['PIZZLY_BASE_URL'] == null ? null : new Pizzly(process.env['PIZZLY_BASE_URL']);
     }
 
     public async insertOAuthTokenIfNeeded(sync: Sync): Promise<Sync> {
-        if (sync.pizzly_connection_id == null || sync.pizzly_provider_config_key == null || this.pizzly == null) {
-            // TODO: or no environment variables (show error if some variable but no other).
-            logger.debug(`No (or incomplete) Pizzly configuration for sync ${sync.id}.`);
+        let syncCp = sync;
 
-            return sync;
+        if (syncCp.pizzly_connection_id == null || syncCp.pizzly_provider_config_key == null || this.pizzly == null) {
+            logger.debug(`No (or incomplete) Pizzly configuration for sync ${syncCp.id}.`);
+
+            return syncCp;
         }
 
-        let accessToken = await this.pizzly.accessToken(sync.pizzly_connection_id, sync.pizzly_provider_config_key);
+        let accessToken = await this.pizzly.accessToken(syncCp.pizzly_connection_id, syncCp.pizzly_provider_config_key);
 
-        logger.debug(`Authenticating request for Pizzly provider ${sync.pizzly_provider_config_key} and connection ${sync.pizzly_connection_id}.`);
+        logger.debug(`Authenticating request for Pizzly provider ${syncCp.pizzly_provider_config_key} and connection ${syncCp.pizzly_connection_id}.`);
 
-        sync.url = this.interpolateString(sync.url, { pizzlyAccessToken: accessToken });
+        syncCp.url = this.interpolateString(syncCp.url, { pizzlyAccessToken: accessToken });
 
-        if (sync.headers != null) {
-            sync.headers = this.traverseAndInsertToken(sync.headers, accessToken) as Record<string, string | number | boolean>;
+        if (syncCp.headers != null) {
+            syncCp.headers = this.traverseAndInsertToken(syncCp.headers, accessToken) as Record<string, string | number | boolean>;
         }
 
-        if (sync.body != null) {
-            sync.body = this.traverseAndInsertToken(sync.body, accessToken);
+        if (syncCp.body != null) {
+            syncCp.body = this.traverseAndInsertToken(syncCp.body, accessToken);
         }
 
-        if (sync.query_params != null) {
-            sync.query_params = this.traverseAndInsertToken(sync.query_params, accessToken) as Record<string, string>;
+        if (syncCp.query_params != null) {
+            syncCp.query_params = this.traverseAndInsertToken(syncCp.query_params, accessToken) as Record<string, string>;
         }
 
-        return sync;
+        return syncCp;
     }
 
     private traverseAndInsertToken(object: object, accessToken: string) {

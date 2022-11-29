@@ -5,6 +5,7 @@ import _ from 'lodash';
 import type { RawObject } from '../models/raw_object.model.js';
 import { logger } from '@nangohq/core';
 import parseLinksHeader from 'parse-link-header';
+import oauthManager from '../oauth.manager.js';
 
 class ExternalService {
     async getRawObjects(sync: Sync): Promise<any[]> {
@@ -19,10 +20,22 @@ class ExternalService {
         sync.body = sync.body || {};
 
         while (!done) {
-            let config: AxiosRequestConfig = { headers: sync.headers || {}, params: sync.query_params || {} };
+            // Check if Sync payload contains token variable, if so insert it.
+            let syncWithAuth = await oauthManager.insertOAuthTokenIfNeeded(sync);
+
+            let config: AxiosRequestConfig = { headers: syncWithAuth.headers || {}, params: syncWithAuth.query_params || {} };
             var res: AxiosResponse<any, any> | void;
-            let errorBlock = (err: any) => {
-                console.log(err);
+            let errorBlock = (error: any) => {
+                if (error.response) {
+                    logger.error(error.response.data);
+                    logger.error(error.response.status);
+                } else if (error.request) {
+                    logger.error(error.request);
+                } else {
+                    logger.error('Error', error.message);
+                }
+
+                throw Error('External API error.');
             };
 
             //  Fetching subsequent page with cursor.
@@ -36,40 +49,33 @@ class ExternalService {
 
             switch (sync.method) {
                 case 'get': {
-                    res = await axios.get(sync.url, config).catch(errorBlock);
+                    res = await axios.get(syncWithAuth.url, config).catch(errorBlock);
                     break;
                 }
                 case 'post': {
-                    res = await axios.post(sync.url, sync.body, config).catch(errorBlock);
+                    res = await axios.post(syncWithAuth.url, syncWithAuth.body, config).catch(errorBlock);
                     break;
                 }
                 case 'put': {
-                    res = await axios.put(sync.url, sync.body, config).catch(errorBlock);
+                    res = await axios.put(syncWithAuth.url, syncWithAuth.body, config).catch(errorBlock);
                     break;
                 }
                 case 'patch': {
-                    res = await axios.patch(sync.url, sync.body, config).catch(errorBlock);
+                    res = await axios.patch(syncWithAuth.url, syncWithAuth.body, config).catch(errorBlock);
                     break;
                 }
                 case 'delete': {
-                    res = await axios.delete(sync.url, config).catch(errorBlock);
+                    res = await axios.delete(syncWithAuth.url, config).catch(errorBlock);
                     break;
                 }
                 default: {
-                    console.log('Unknown HTTP method.');
-                    return [];
+                    throw new Error('Unknown HTTP method.');
                 }
             }
 
             if (res == null) {
-                break;
+                throw new Error('Empty response from external API.');
             }
-
-            logger.debug(`External request's data:`);
-            logger.debug(res.data);
-
-            logger.debug(`External request's headers:`);
-            logger.debug(res.headers);
 
             let newResults = sync.response_path != null ? _.get(res.data, sync.response_path) : res.data;
             results = results.concat(newResults);
