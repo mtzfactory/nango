@@ -17,7 +17,7 @@
     "license": "SEE LICENSE IN LICENSE FILE IN GIT REPOSITORY",
     "dependencies": {
         "@nangohq/core": "^0.2.8",
-        "@nangohq/pizzly-node": "^0.3.4",
+        "@nangohq/pizzly-node": "^0.3.5",
         "@temporalio/worker": "^1.4.4",
         "@types/lodash": "^4.14.188",
         "amqplib": "^0.10.3",
@@ -37,7 +37,6 @@
         "npm": ">=6.14.11"
     },
     "devDependencies": {
-        "@types/amqplib": "^0.8.2",
         "@types/cors": "^2.8.12",
         "@types/debug": "^4.1.7",
         "@types/node": "^18.7.6",

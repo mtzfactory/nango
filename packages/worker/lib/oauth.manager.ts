@@ -1,6 +1,6 @@
 import type { Sync } from '@nangohq/core';
-import { Pizzly } from '@nangohq/pizzly-node';
 import { logger } from '@nangohq/core';
+import { Pizzly } from '@nangohq/pizzly-node';
 
 class OAuthManager {
     pizzly: Pizzly | null;
