@@ -64,7 +64,7 @@ Last but not least, Pizzly's active community continuously expands & updates the
 
 ## 🚀 Get started with Pizzly
 
-Pizzly can be added to your product in just 15-20 minutes with our [getting started](gettings=-started.md) guide.
+Pizzly can be added to your product in just 15-20 minutes with our [getting started](getting-started.md) guide.
 
 Or explore more about Pizzly:
 - For a first impression check out the [Quickstart](https://github.com/NangoHQ/Pizzly#quickstart) on our GitHub repo
