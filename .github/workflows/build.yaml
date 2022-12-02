@@ -1,6 +1,7 @@
 name: Nango Build
 
 on:
+  pull_request:
   push:
     branches: [ main ]
 
