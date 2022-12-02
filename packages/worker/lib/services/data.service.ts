@@ -95,6 +95,7 @@ class DataService {
             case 'timestamp with time zone':
                 return NangoColumnDataTypes.DATE;
             case 'character varying':
+            case 'text':
                 return NangoColumnDataTypes.STRING;
             case 'json':
                 return NangoColumnDataTypes.JSON;
@@ -112,7 +113,7 @@ class DataService {
                 let type = newColumns[colName];
                 switch (type) {
                     case NangoColumnDataTypes.STRING:
-                        t.string(colName);
+                        t.text(colName);
                         break;
                     case NangoColumnDataTypes.NUMBER:
                         t.float(colName);
