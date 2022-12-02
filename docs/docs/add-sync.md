@@ -72,7 +72,9 @@ let config = {
     pizzly_provider_config_key: "hubspot",  // The key of the provider configuration registered with Pizzly
     
     // Convenience
-    max_total: 100                  // Limit the total number of total objects synced for testing purposes.
+    max_total: 100,                 // Limit the total number of total objects synced for testing purposes.
+    friendly_name: 'My Sync',       // To print prettier logs.
+    metadata: { company_id: 123 }   // Attach metadata to each synced row.
 };
 
 // Add the Sync
@@ -120,6 +122,8 @@ new Nango().sync('https://api.example.com/my/endpoint?query=A+query', config);
 
 // Convenience
 "max_total": 100 // Limit the total number of total objects synced for testing purposes.
+"friendly_name": "My Sync",  // To print prettier logs.
+"metadata": { "company_id": 123 }  // Attach metadata to each synced row.
 }'
   ```
   </TabItem>
@@ -262,6 +266,11 @@ This will enable a few interesting features:
 
 Nango stores all the objects, in their original JSON form, in a combined SQL table called `_nango_raw`.
 
+## Attach metadata
+
+You can attach arbitrary metadata to each synced row using the `metadata` field in the [Sync config options](add-sync.md#sync-options). 
+
+This is useful if you want to query the synced data based on fields from your other SQL tables (e.g. `user_id`, `company_id`, etc.).
 
 ## Pagination
 Nango currently supports two types of pagination, with more in the works. Your favorite API is not compatible? [Open a github issue](https://github.com/NangoHQ/nango/issues/new) with a link to the endpoint documentation and a sample response and we are happy to make it work for you! Or reach out on our Slack community and we will do our best to help.
