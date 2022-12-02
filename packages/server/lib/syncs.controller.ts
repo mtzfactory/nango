@@ -29,7 +29,7 @@ class SyncsController {
 
         if (Array.isArray(result) && result.length === 1 && result[0] != null && 'id' in result[0]) {
             let syncId = result[0]['id'];
-            let syncResult = syncsClient.run(syncId, params.frequency);
+            let syncResult = await syncsClient.run(syncId, params.frequency);
             res.status(200).send({ sync_id: syncId, result: syncResult });
         } else {
             res.status(500).send({

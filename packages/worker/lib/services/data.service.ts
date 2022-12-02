@@ -6,31 +6,20 @@ import { NangoColumnDataTypes } from '../models/data.types.js';
 
 class DataService {
     async upsertRawFromList(objects: RawObject[], sync: Sync): Promise<void | number[]> {
+        const query = db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).where('sync_id', sync.id);
         if (sync.unique_key != null) {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
-            return db
-                .knex<RawObject>(`_nango_raw`)
-                .withSchema(db.schema())
-                .where('sync_id', sync.id)
+            await query
                 .whereIn(
                     'unique_key',
                     objects.map((o) => o.unique_key)
                 )
-                .del()
-                .then(() => {
-                    return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
-                });
+                .del();
         } else {
             // If no `unique_key` provided: rewrite, i.e. delete all rows for that sync, then write new rows.
-            return db
-                .knex<RawObject>(`_nango_raw`)
-                .withSchema(db.schema())
-                .where('sync_id', sync.id)
-                .del()
-                .then(() => {
-                    return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
-                });
+            await query.del();
         }
+        return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
     }
 
     async upsertFlatFromList(objects: object[], sync: Sync): Promise<void | number[]> {
@@ -39,10 +28,9 @@ class DataService {
             object['_nango_emitted_at'] = new Date();
             object['_nango_unique_key'] = sync.unique_key != null ? _.get(object, sync.unique_key, undefined) : undefined;
         }
-
         if (sync.unique_key != null) {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
-            return db
+            await db
                 .knex(this.tableNameForSync(sync.id!))
                 .withSchema(db.schema())
                 .where('_nango_sync_id', sync.id)
@@ -50,21 +38,12 @@ class DataService {
                     '_nango_unique_key',
                     objects.map((o) => o['_nango_unique_key'])
                 )
-                .del()
-                .then(() => {
-                    return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
-                });
+                .del();
         } else {
             // If no `unique_key` provided: rewrite, i.e. delete all rows for that sync, then write new rows.
-            return db
-                .knex(this.tableNameForSync(sync.id!))
-                .withSchema(db.schema())
-                .where('_nango_sync_id', sync.id)
-                .del()
-                .then(() => {
-                    return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
-                });
+            await db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).where('_nango_sync_id', sync.id).del();
         }
+        return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
     }
 
     async fetchColumnInfo(table: string) {
@@ -135,35 +114,16 @@ class DataService {
     }
 
     async createSyncTableIfNeeded(syncId: number) {
-        return new Promise<void>((resolve, reject) => {
-            db.knex.schema
-                .withSchema(db.schema())
-                .hasTable(this.tableNameForSync(syncId))
-                .then((exists) => {
-                    if (!exists) {
-                        logger.debug(`Table ${this.tableNameForSync(syncId)} doesn't exist, creating the new table for Sync ID: ${syncId}.`);
-                        db.knex.schema
-                            .withSchema(db.schema())
-                            .createTable(this.tableNameForSync(syncId), (t) => {
-                                t.increments('_nango_id').primary();
-                                t.integer('_nango_sync_id').references('id').inTable(`${db.schema()}._nango_syncs`);
-                                t.dateTime('_nango_emitted_at').notNullable();
-                                t.string('_nango_unique_key');
-                            })
-                            .then(() => {
-                                resolve();
-                            })
-                            .catch((err) => {
-                                reject(err);
-                            });
-                    } else {
-                        resolve();
-                    }
-                })
-                .catch((err) => {
-                    reject(err);
-                });
-        });
+        const exists = await db.knex.schema.withSchema(db.schema()).hasTable(this.tableNameForSync(syncId));
+        if (!exists) {
+            logger.debug(`Table ${this.tableNameForSync(syncId)} doesn't exist, creating the new table for Sync ID: ${syncId}.`);
+            await db.knex.schema.withSchema(db.schema()).createTable(this.tableNameForSync(syncId), (t) => {
+                t.increments('_nango_id').primary();
+                t.integer('_nango_sync_id').references('id').inTable(`${db.schema()}._nango_syncs`);
+                t.dateTime('_nango_emitted_at').notNullable();
+                t.string('_nango_unique_key');
+            });
+        }
     }
 
     tableNameForSync(syncId: number): string {
