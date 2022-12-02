@@ -4,4 +4,5 @@ export interface RawObject {
     emitted_at: Date;
     unique_key?: string;
     data: object;
+    metadata: Record<string, string | number | boolean>;
 }

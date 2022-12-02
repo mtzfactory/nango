@@ -26,6 +26,8 @@ export interface NangoSyncConfig {
     pizzly_connection_id?: string;
     pizzly_provider_config_key?: string;
     max_total?: number;
+    friendly_name?: string;
+    metadata?: Record<string, string | number | boolean>;
 }
 
 export class Nango {
@@ -63,7 +65,9 @@ export class Nango {
             frequency: config.frequency,
             pizzly_connection_id: config.pizzly_connection_id,
             pizzly_provider_config_key: config.pizzly_provider_config_key,
-            max_total: config.max_total
+            max_total: config.max_total,
+            friendly_name: config.friendly_name,
+            metadata: config.metadata
         };
 
         return await axios.post(nango_req_url, nango_req_body, { headers: nango_req_headers });

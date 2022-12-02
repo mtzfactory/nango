@@ -4,13 +4,17 @@ import { parseJSON } from 'date-fns';
 import { NangoColumnDataTypes } from './models/data.types.js';
 
 class SchemaManager {
-    public async updateSyncSchemaAndFlattenObjects(objects: object[], syncId: number): Promise<object[]> {
+    public async updateSyncSchemaAndFlattenObjects(
+        objects: object[],
+        metadata: Record<string, string | number | boolean> | undefined,
+        syncId: number
+    ): Promise<object[]> {
         let flatObjects = this.flattenAllObjects(objects);
         flatObjects = this.detectDatesAndNumbers(flatObjects);
 
         let newSchema = this.computeLatestSqlSchema(flatObjects, syncId);
         let previousSchema = await this.fetchPreviousSqlSchema(syncId);
-        let newColumns = this.computeMissingColumns(previousSchema, newSchema, syncId);
+        let newColumns = this.computeMissingColumns(previousSchema, newSchema, metadata, syncId);
 
         await dataService.createSyncTableIfNeeded(syncId);
         await dataService.updateSyncSchema(newColumns, syncId);
@@ -126,12 +130,26 @@ class SchemaManager {
         });
     }
 
-    private computeMissingColumns(previousSchema: object, newSchema: object, syncId: number): object {
+    private computeMissingColumns(
+        previousSchema: object,
+        newSchema: object,
+        metadata: Record<string, string | number | boolean> | undefined,
+        syncId: number
+    ): object {
         let newColumns = {};
 
         for (var key in newSchema) {
             if (!previousSchema.hasOwnProperty(key)) {
                 newColumns[key] = newSchema[key];
+            }
+        }
+
+        if (metadata != null) {
+            let metadataSchema = this.getIndividualSchema(metadata);
+            for (var key in metadataSchema) {
+                if (!previousSchema.hasOwnProperty(key)) {
+                    newColumns[key] = metadataSchema[key];
+                }
             }
         }
 

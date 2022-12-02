@@ -9,51 +9,51 @@ class DataService {
         const query = db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).where('sync_id', sync.id);
         if (sync.unique_key != null) {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
-            await query.whereIn('unique_key', objects.map((o) => o.unique_key));
+            await query.whereIn(
+                'unique_key',
+                objects.map((o) => o.unique_key)
+            );
         }
 
-        return await query.del()
-            .then(() => {
-                return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
-            });
+        await query.del();
+        return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
     }
 
-    async upsertFlatFromList(objects: object[], sync: Sync): Promise<void | number[]> {
+    async upsertFlatFromList(objects: object[], metadata: Record<string, string | number | boolean> | undefined, sync: Sync): Promise<void | number[]> {
         for (var object of objects) {
             object['_nango_sync_id'] = sync.id!;
             object['_nango_emitted_at'] = new Date();
             object['_nango_unique_key'] = sync.unique_key != null ? _.get(object, sync.unique_key, undefined) : undefined;
+
+            Object.assign(object, metadata || {}); // Add the metadata to each row.
         }
 
         const query = db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).where('_nango_sync_id', sync.id);
         if (sync.unique_key != null) {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
-            await query.whereIn('_nango_unique_key', objects.map((o) => o['_nango_unique_key']))
+            await query.whereIn(
+                '_nango_unique_key',
+                objects.map((o) => o['_nango_unique_key'])
+            );
         }
 
-        return await query.del()
-            .then(() => {
-                return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
-            });
+        await query.del();
+        return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
     }
 
     async fetchColumnInfo(table: string) {
-        return db
-            .knex(table)
-            .withSchema(db.schema())
-            .columnInfo()
-            .then((tableInfo) => {
-                let schema = {};
+        let tableInfo = await db.knex(table).withSchema(db.schema()).columnInfo();
 
-                for (var columnInfo in tableInfo) {
-                    if (tableInfo[columnInfo] != null && tableInfo[columnInfo]!['type'] != null) {
-                        let dataType = this.sqlToNangoTypeMapping(tableInfo[columnInfo]!['type']);
-                        schema[columnInfo] = dataType;
-                    }
-                }
+        let schema = {};
 
-                return schema;
-            });
+        for (var columnInfo in tableInfo) {
+            if (tableInfo[columnInfo] != null && tableInfo[columnInfo]!['type'] != null) {
+                let dataType = this.sqlToNangoTypeMapping(tableInfo[columnInfo]!['type']);
+                schema[columnInfo] = dataType;
+            }
+        }
+
+        return schema;
     }
 
     sqlToNangoTypeMapping(sqlType: string) {

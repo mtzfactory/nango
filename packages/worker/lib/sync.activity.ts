@@ -25,9 +25,11 @@ export async function syncActivity(syncId: number): Promise<void> {
         // Update the schema of the DB for new results.
         let flatObjects = await schemaManager.updateSyncSchemaAndFlattenObjects(
             rawObjs.map((o) => o.data),
+            sync.metadata,
             sync.id!
         );
+
         // Insert flattened results in the DB.
-        await dataService.upsertFlatFromList(flatObjects, sync);
+        await dataService.upsertFlatFromList(flatObjects, sync.metadata, sync);
     }
 }

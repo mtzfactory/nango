@@ -1,6 +1,6 @@
 import {syncGithubStargazers, syncGithubUserRepos} from './examples-list/github.js'
 import {syncHubspotContacts} from './examples-list/hubspot.js'
-import {syncHubspotContactsWithAuth} from './examples-list/hubspot+pizzly.js'
+import {syncHubspotContactsWithAuth} from './examples-list/hubspot+oauth.js'
 import {syncPokemonList} from './examples-list/pokemon.js'
 import {syncRedditSubredditPosts} from './examples-list/reddit.js'
 import {syncSlackMessages} from './examples-list/slack.js'

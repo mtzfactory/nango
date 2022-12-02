@@ -131,7 +131,8 @@ class ExternalService {
                 sync_id: sync.id,
                 data: rawObj,
                 unique_key: sync.unique_key != null ? _.get(rawObj, sync.unique_key, undefined) : undefined,
-                emitted_at: new Date()
+                emitted_at: new Date(),
+                metadata: sync.metadata || {}
             });
         }
 

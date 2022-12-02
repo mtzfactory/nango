@@ -19,4 +19,6 @@ export interface Sync {
     pizzly_connection_id?: string;
     pizzly_provider_config_key?: string;
     max_total?: number;
+    metadata?: Record<string, string | number | boolean>;
+    friendly_name?: string;
 }
