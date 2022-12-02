@@ -17,11 +17,11 @@ class syncsClient {
 
     async run(syncId: number, frequency: number) {
         type WFType = ({ syncId, frequency }) => Promise<void>;
-        const handle = (await this.client?.start('syncParentWorkflow', {
+        const handle = await this.client?.start('syncParentWorkflow', {
             workflowId: 'sync-' + nanoid(),
             taskQueue: 'syncs',
             args: [{ syncId: syncId, frequency: frequency }]
-        })) as WorkflowStartOptions<WFType>;
+        } as WorkflowStartOptions<WFType>);
         console.log(`Started workflow ${handle?.workflowId}`);
 
         return await handle?.result();

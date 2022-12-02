@@ -9,17 +9,13 @@ class DataService {
         const query = db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).where('sync_id', sync.id);
         if (sync.unique_key != null) {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
-            await query
-                .whereIn(
-                    'unique_key',
-                    objects.map((o) => o.unique_key)
-                )
-                .del();
-        } else {
-            // If no `unique_key` provided: rewrite, i.e. delete all rows for that sync, then write new rows.
-            await query.del();
+            await query.whereIn('unique_key', objects.map((o) => o.unique_key));
         }
-        return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
+
+        return await query.del()
+            .then(() => {
+                return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
+            });
     }
 
     async upsertFlatFromList(objects: object[], sync: Sync): Promise<void | number[]> {
@@ -28,22 +24,17 @@ class DataService {
             object['_nango_emitted_at'] = new Date();
             object['_nango_unique_key'] = sync.unique_key != null ? _.get(object, sync.unique_key, undefined) : undefined;
         }
+
+        const query = db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).where('_nango_sync_id', sync.id);
         if (sync.unique_key != null) {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
-            await db
-                .knex(this.tableNameForSync(sync.id!))
-                .withSchema(db.schema())
-                .where('_nango_sync_id', sync.id)
-                .whereIn(
-                    '_nango_unique_key',
-                    objects.map((o) => o['_nango_unique_key'])
-                )
-                .del();
-        } else {
-            // If no `unique_key` provided: rewrite, i.e. delete all rows for that sync, then write new rows.
-            await db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).where('_nango_sync_id', sync.id).del();
+            await query.whereIn('_nango_unique_key', objects.map((o) => o['_nango_unique_key']))
         }
-        return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
+
+        return await query.del()
+            .then(() => {
+                return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
+            });
     }
 
     async fetchColumnInfo(table: string) {
