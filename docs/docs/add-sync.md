@@ -252,6 +252,21 @@ Currently the following transformations are supported:
 #### How to disable Auto Mapping
 Auto mapping is on by default for new Syncs. You can disable Auto Mapping for an individual Sync by setting the `auto_mapping` field to `false` in the [Sync config options](add-sync.md#sync-options).
 
+### Configure destination table
+
+You can configure the destination db table of a Sync with the `mapped_table` parameter in the [Sync config options](add-sync.md#sync-options). 
+
+You can also configure multiple Syncs to send data to the same destination  table. 
+
+If you specify a table that does not already exist, it will be automatically generated. The schema for this table will be automatically updated based on the data to insert.
+
+:::info
+Do not include the database schema name in the `mapped_table` Config parameter. 
+
+The `mapped_table` Config parameter is only taken into account if the `auto_mapping` Config parameter is `true` or omitted.
+:::
+
+
 ### Custom Mapping (coming soon) {#custommapping}
 
 We plan to introduce custom mappings soon. These will allow you to specify exactly (in code) how you want the JSON mapped to a SQL-table.
@@ -352,10 +367,44 @@ Then, specify the `pizzly_connection_id` and `pizzly_provider_config_key` parame
 To use Pizzly, with or without Nango, start [here](https://github.com/NangoHQ/Pizzly).
 
 
-## Log, debug & manually control Syncs
+## Observability, logging & debugging
 
-We use the [Temporal](https://temporal.io/) orchestrator to schedule and perform Sync jobs. You can view, debug and control Sync jobs on the Temporal UI on http://localhost:8011.
+Observability is some of the most time-consuming infrastructure to set up when building external integrations in-house. To relieve engineering teams from this burden, Nango aims at building powerful out-of-the-box tooling for observing interactions with external APIs.
 
-## Problems with your Sync? We are happy to help!
+While we will continue to make Nango more observable, there are already multiple ways that you can observe and debug Nango Syncs:
 
-If you run into issues, limitations or problems when setting up your Sync please reach out! We are online on our [Slack Community](https://nango.dev/slack) all day and happy to help you resolve whatever is needed to make Nango work for you and your Syncs.
+### Inspect Sync jobs in the DB
+
+You can access all the information about Sync job execution in Nango's destination database, in the table `_nango_jobs`. 
+
+Each jobs displays information about: 
+- Start and end time
+- Status
+- Error message (in case of failure)
+- Error stack trace (in case of failure)
+- Updated row count (in case of success)
+- Attempt number
+
+### Inspect logs (in log files or in the console)
+
+There are two log files available for you to inspect or tail: 
+- `log/combined.log` (info + error logs)
+- `log/error.log` (error-only logs)
+
+Additionally, logs of info/error-level will also print in the console (unless the env variable `NODE_ENV` is set to `production` in your root-level `.env` file). You can make console logs more verbose by setting the env variable `VERBOSE_CONSOLE_LOGS_ENABLED` to `true` in your root-level `.env` file.
+
+### Temporal Admin Panel
+
+Additionally, as Nango uses [Temporal](https://temporal.io/) to orchestrates Sync jobs, you can further debug Sync job executions by logging to the Temporal Admin Panel. 
+
+To enable the Temporal UI, you should run the `debug` Docker Compose with the following command: 
+```bash
+docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml up
+```
+
+You can now view, debug and control Temporal workflows (corresponding to Sync jobs) on the Temporal UI on http://localhost:8011.
+
+
+## Problems with your Sync? We are here to help!
+
+If you need help or run into issues, please reach out! We are online and responsive all day on the [Slack Community](https://nango.dev/slack).

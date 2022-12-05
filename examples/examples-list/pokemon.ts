@@ -9,7 +9,7 @@ export let syncPokemonList = async () => {
         paging_url_path: 'next',       // For finding pagination data in responses.
         unique_key: 'name',            // Provide response field path for deduping records.
         frequency: 1,                  // How often sync jobs run, in minutes.
-        mapped_table: 'pokemons'       // Customize the name of the destination DB table (default: _nango_sync_[sync-d])
+        mapped_table: 'pokemons'       // Customize the name of the destination DB table (default: _nango_sync_[sync-id]).
     };
 
     return new Nango().sync('https://pokeapi.co/api/v2/pokemon', config);
