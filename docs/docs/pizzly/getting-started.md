@@ -50,16 +50,17 @@ If you want to see the help for this command (and all others) run `npx pizzly he
 Now run `npx pizzly config:list` again and you should see your freshly added config 🎉
 
 ## Step 2: Trigger the OAuth flow from your frontend
-The Pizzly frontend SDK is available at `@nangohq/pizzly-frontend`, install it on your frontend with npm (or your favorite JS package manager):
 
-```bash
-npm i -S @nangohq/pizzly-frontend
+Add the following scripts to your HTML headers (or use the `@nangohq/pizzly-frontend` npm package): 
+```html
+<!-- ... -->
+<script>var exports = {};</script> <!-- Necessary hack to import Pizzly's script successfully. -->
+<script src="https://unpkg.com/@nangohq/pizzly-frontend/dist/index.js"></script>
+<!-- ... -->
 ```
 
 Once you created an instance of Pizzly (which tells the frontend where to find your Pizzly server) triggering a new OAuth flow is easy:
 ```ts
-import Pizzly from '@nangohq/pizzly-frontend'
-
 // Replace 'http://localhost:3004' with the host (and port) where your Pizzly server can be accessed
 var pizzly = new Pizzly('http://localhost:3004');
 
@@ -119,11 +120,11 @@ import Pizzly from '@nangohq/pizzly-node'
 // Tell Pizzly where to find your Pizzly server
 let pizzly = new Pizzly('http://localhost:3004');
 
-let access_token = await pizzly.accessToken('<config-key>', '<connection-id>');
+let access_token = await pizzly.accessToken('<connection-id>', '<config-key>');
 
 // Sometimes you need access to the raw response from the server that was sent along with the access token (because it contains additional metadata you need)
 // You can access the latest response with this method
-let raw_token_response = await pizzly.rawTokenResponse('<config-key>', '<connection-id>');
+let raw_token_response = await pizzly.rawTokenResponse('<connection-id>', '<config-key>');
 ```
 
 ### Getting an access token - REST API
