@@ -21,9 +21,7 @@ let parseArguments = (arg_count: number) => {
 };
 
 let logSuccess = (res) => {
-    console.log(
-        `${res.data['message']}\n\nUsing the default DB? Check out the synced data at http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango (password: nango)\n\n`
-    );
+    console.log(res.data['message']);
 };
 
 var function_name;
