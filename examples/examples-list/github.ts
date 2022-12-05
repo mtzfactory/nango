@@ -7,7 +7,7 @@ export let syncGithubStargazers = async (api_token: string) => {
     let repo = 'nango';
 
     let config = {
-        friendly_name: 'Github Stargazers',                // For pretty logs.
+        friendly_name: 'Github Stargazers',                // Give this Sync a name for prettier logs.
         headers: { authorization: `Bearer ${api_token}` }, // For auth.
         paging_header_link_rel: 'next'                     // For pagination.
     };
@@ -21,7 +21,7 @@ export let syncGithubUserRepos = async (api_token: string) => {
     let username = 'bastienbeurier';
 
     let config = {
-        friendly_name: 'Github User Repos',                // For pretty logs.
+        friendly_name: 'Github User Repos',                // Give this Sync a name for prettier logs.
         headers: { authorization: `Bearer ${api_token}` }, // For auth.
         paging_header_link_rel: 'next'                     // For pagination.
     };

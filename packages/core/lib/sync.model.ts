@@ -15,6 +15,7 @@ export interface Sync {
     paging_url_path?: string;
     paging_header_link_rel?: string;
     auto_mapping: boolean;
+    mapped_table?: string;
     frequency: number;
     pizzly_connection_id?: string;
     pizzly_provider_config_key?: string;

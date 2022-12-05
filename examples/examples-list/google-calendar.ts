@@ -4,9 +4,9 @@ import { Nango } from '@nangohq/node-client';
 // Endpoint documentation: https://developers.google.com/calendar/api/v3/reference/events/list
 export let syncGoogleCalendarEvents = async (calendar_id: string, oauth_token: string) => {
     let config = {
-        friendly_name: 'Google Cal Events',                    // For pretty logs.
+        friendly_name: 'Google Cal Events',                    // Give this Sync a name for prettier logs.
         headers: { 'Authorization': `Bearer ${oauth_token}` }, // For auht.
-        unique_key: 'id',                                      // For deduping records.
+        unique_key: 'id',                                      // Provide response field path for deduping records.
         response_path: 'items',                                // For finding records in the API response.
         paging_cursor_request_path: 'pageToken',               // For adding pagination data in requests.
         paging_cursor_metadata_response_path: 'nextPageToken'  // For finding pagination data in responses.

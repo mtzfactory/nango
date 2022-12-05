@@ -22,6 +22,7 @@ export interface NangoSyncConfig {
     paging_url_path?: string;
     paging_header_link_rel?: string;
     auto_mapping?: boolean;
+    mapped_table?: string;
     frequency?: number;
     pizzly_connection_id?: string;
     pizzly_provider_config_key?: string;
@@ -62,6 +63,7 @@ export class Nango {
             paging_url_path: config.paging_url_path,
             paging_header_link_rel: config.paging_header_link_rel,
             auto_mapping: config.auto_mapping,
+            mapped_table: config.mapped_table,
             frequency: config.frequency,
             pizzly_connection_id: config.pizzly_connection_id,
             pizzly_provider_config_key: config.pizzly_provider_config_key,

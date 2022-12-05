@@ -1,22 +1,23 @@
 import dataService from './services/data.service.js';
 import { parseJSON } from 'date-fns';
 import { NangoColumnDataTypes } from './models/data.types.js';
+import type { Sync } from '@nangohq/core';
 
 class SchemaManager {
-    public async updateSyncSchemaAndFlattenObjects(
+    public async updateSyncSchemaAndFlattenObjs(
         objects: object[],
         metadata: Record<string, string | number | boolean> | undefined,
-        syncId: number
+        sync: Sync
     ): Promise<object[]> {
         let flatObjects = this.flattenAllObjects(objects);
         flatObjects = this.detectDatesAndNumbers(flatObjects);
 
         let newSchema = this.computeLatestSqlSchema(flatObjects);
-        let previousSchema = await this.fetchPreviousSqlSchema(syncId);
+        let previousSchema = await this.fetchPreviousSqlSchema(sync);
         let newColumns = this.computeMissingColumns(previousSchema, newSchema, metadata);
 
-        await dataService.createSyncTableIfNeeded(syncId);
-        await dataService.updateSyncSchema(newColumns, syncId);
+        await dataService.createSyncTableIfNeeded(sync);
+        await dataService.updateSyncSchema(newColumns, sync);
 
         return flatObjects;
     }
@@ -121,8 +122,8 @@ class SchemaManager {
         }
     }
 
-    private async fetchPreviousSqlSchema(syncId: number) {
-        return dataService.fetchColumnInfo(dataService.tableNameForSync(syncId)).then((schema) => {
+    private async fetchPreviousSqlSchema(sync: Sync) {
+        return dataService.fetchColumnInfo(dataService.tableNameForSync(sync)).then((schema) => {
             return schema;
         });
     }

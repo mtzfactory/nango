@@ -27,14 +27,14 @@ export async function syncActivity(syncId: number): Promise<void> {
         logger.debug(`Auto-mapping enabled: mapping raw objects to SQL columns (inferring column types).`);
 
         // Update the schema of the DB for new results.
-        let flatObjects = await schemaManager.updateSyncSchemaAndFlattenObjects(
+        let flatObjs = await schemaManager.updateSyncSchemaAndFlattenObjs(
             rawObjs.map((o) => o.data),
             sync.metadata,
-            sync.id!
+            sync
         );
 
         // Insert flattened results in the DB.
-        await dataService.upsertFlatFromList(flatObjects, sync.metadata, sync);
+        await dataService.upsertFlatFromList(flatObjs, sync.metadata, sync);
     }
 
     throw new SyncActivitySuccess(rawObjs.length);

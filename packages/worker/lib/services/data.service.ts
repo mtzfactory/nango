@@ -28,7 +28,7 @@ class DataService {
             Object.assign(object, metadata || {}); // Add the metadata to each row.
         }
 
-        const query = db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).where('_nango_sync_id', sync.id);
+        const query = db.knex(this.tableNameForSync(sync)).withSchema(db.schema()).where('_nango_sync_id', sync.id);
         if (sync.unique_key != null) {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
             await query.whereIn(
@@ -38,7 +38,7 @@ class DataService {
         }
 
         await query.del();
-        return db.knex(this.tableNameForSync(sync.id!)).withSchema(db.schema()).insert(objects);
+        return db.knex(this.tableNameForSync(sync)).withSchema(db.schema()).insert(objects);
     }
 
     async fetchColumnInfo(table: string) {
@@ -64,7 +64,7 @@ class DataService {
                 nangoType = NangoDataTypeMap.PostgreSql.get(sqlType);
                 break;
             default:
-                nangoType =  NangoColumnDataTypes.UNKNOWN;
+                nangoType = NangoColumnDataTypes.UNKNOWN;
                 break;
         }
 
@@ -76,8 +76,8 @@ class DataService {
         }
     }
 
-    async updateSyncSchema(newColumns: object, syncId: number) {
-        return db.knex.schema.withSchema(db.schema()).table(this.tableNameForSync(syncId), (t) => {
+    async updateSyncSchema(newColumns: object, sync: Sync) {
+        return db.knex.schema.withSchema(db.schema()).table(this.tableNameForSync(sync), (t) => {
             for (var colName in newColumns) {
                 let type = newColumns[colName];
                 switch (type) {
@@ -97,17 +97,17 @@ class DataService {
                         t.boolean(colName);
                         break;
                     default:
-                        logger.error(`Attempting to update Sync table schema with unknown data type: ${type} (Sync ID: ${syncId})`);
+                        logger.error(`Attempting to update Sync table schema with unknown data type: ${type} (Sync ID: ${sync.id})`);
                 }
             }
         });
     }
 
-    async createSyncTableIfNeeded(syncId: number) {
-        const exists = await db.knex.schema.withSchema(db.schema()).hasTable(this.tableNameForSync(syncId));
+    async createSyncTableIfNeeded(sync: Sync) {
+        const exists = await db.knex.schema.withSchema(db.schema()).hasTable(this.tableNameForSync(sync));
         if (!exists) {
-            logger.debug(`Table ${this.tableNameForSync(syncId)} doesn't exist, creating the new table for Sync ID: ${syncId}.`);
-            await db.knex.schema.withSchema(db.schema()).createTable(this.tableNameForSync(syncId), (t) => {
+            logger.debug(`Table ${this.tableNameForSync(sync)} doesn't exist, creating the new table for Sync ID: ${sync.id}.`);
+            await db.knex.schema.withSchema(db.schema()).createTable(this.tableNameForSync(sync), (t) => {
                 t.increments('_nango_id').primary();
                 t.integer('_nango_sync_id').references('id').inTable(`${db.schema()}._nango_syncs`);
                 t.dateTime('_nango_emitted_at').notNullable();
@@ -116,8 +116,8 @@ class DataService {
         }
     }
 
-    tableNameForSync(syncId: number): string {
-        return `_nango_sync_${syncId}`;
+    tableNameForSync(sync: Sync): string {
+        return sync.mapped_table || `_nango_sync_${sync.id}`;
     }
 }
 

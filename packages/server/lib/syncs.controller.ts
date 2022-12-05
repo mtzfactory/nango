@@ -19,6 +19,7 @@ class SyncsController {
             paging_url_path: req.body['paging_url_path'],
             paging_header_link_rel: req.body['paging_header_link_rel'],
             auto_mapping: req.body['auto_mapping'] || true, // Default to auto mapping enabled.
+            mapped_table: req.body['mapped_table'],
             frequency: req.body['frequency'] == null || req.body['frequency'] < 1 ? 60 : req.body['frequency'], // Default to hourly Sync jobs, min frequency is 1 minute.
             pizzly_connection_id: req.body['pizzly_connection_id'],
             pizzly_provider_config_key: req.body['pizzly_provider_config_key'],
