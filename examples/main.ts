@@ -22,7 +22,7 @@ let parseArguments = (arg_count: number) => {
 
 let logSuccess = (res) => {
     console.log(
-        `✅ New Sync was successfully created with ID ${res.data['sync_id']}.\n\n👀 View the synced data at http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango (password: nango).`
+        `${res.data['message']}\n\nUsing the default DB? Check out the synced data at http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango (password: nango)\n\n`
     );
 };
 

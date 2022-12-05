@@ -1,0 +1,16 @@
+# Expected to be used like this:
+# docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml up
+version: '3.9'
+services:
+    temporal-ui:
+        image: temporalio/ui:2.8.3
+        depends_on:
+            - temporal
+        container_name: temporal-ui
+        environment:
+            - TEMPORAL_ADDRESS=temporal:7233
+            - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+        ports:
+            - 8011:8080
+        networks:
+            - nango

@@ -5,7 +5,7 @@ import syncsClient from './syncs.client.js';
 
 class SyncsController {
     async createSync(req: express.Request, res: express.Response) {
-        let params: Sync = {
+        let syncParams: Sync = {
             url: req.body['url'],
             method: req.body['method']?.toLowerCase() || 'get',
             headers: req.body['headers'],
@@ -27,12 +27,16 @@ class SyncsController {
             metadata: req.body['metadata']
         };
 
-        let result = await syncsService.createSync(params);
+        let result = await syncsService.createSync(syncParams);
 
         if (Array.isArray(result) && result.length === 1 && result[0] != null && 'id' in result[0]) {
             let syncId = result[0]['id'];
-            let syncResult = syncsClient.run(syncId, params.frequency);
-            res.status(200).send({ sync_id: syncId, result: syncResult });
+            syncParams.id = syncId;
+            syncsClient.run(syncParams, syncParams.frequency);
+
+            let message = `\n\n✅ Sync ${syncId} created!\n\nSync jobs will execute at the frequency you specified (default: hourly).\n\nVerify that your Sync works (or debug it) by:\n    1. checking the synced data in DB table '_nango_raw' (or '_nango_sync_[sync_id]' if using auto-mapping)\n    2. checking the latest Sync jobs in DB table '_nango_jobs'\n    3. checking the logs in 'logs/combined.log'`;
+
+            res.status(200).send({ sync_id: syncId, message: message });
         } else {
             res.status(500).send({
                 error: `There was an unknown error creating your sync.`

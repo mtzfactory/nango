@@ -1,5 +1,4 @@
 import dataService from './services/data.service.js';
-import { logger } from '@nangohq/core';
 import { parseJSON } from 'date-fns';
 import { NangoColumnDataTypes } from './models/data.types.js';
 
@@ -12,9 +11,9 @@ class SchemaManager {
         let flatObjects = this.flattenAllObjects(objects);
         flatObjects = this.detectDatesAndNumbers(flatObjects);
 
-        let newSchema = this.computeLatestSqlSchema(flatObjects, syncId);
+        let newSchema = this.computeLatestSqlSchema(flatObjects);
         let previousSchema = await this.fetchPreviousSqlSchema(syncId);
-        let newColumns = this.computeMissingColumns(previousSchema, newSchema, metadata, syncId);
+        let newColumns = this.computeMissingColumns(previousSchema, newSchema, metadata);
 
         await dataService.createSyncTableIfNeeded(syncId);
         await dataService.updateSyncSchema(newColumns, syncId);
@@ -59,7 +58,7 @@ class SchemaManager {
         return !isNaN(+str);
     }
 
-    private computeLatestSqlSchema(flatObjects: object[], syncId: number): object {
+    private computeLatestSqlSchema(flatObjects: object[]): object {
         var schema = {};
 
         for (var object of flatObjects) {
@@ -67,7 +66,6 @@ class SchemaManager {
             this.appendToSchema(individualSchema, schema);
         }
 
-        logger.debug(`New schema computed for latest Sync job (Sync ID: ${syncId}).`, { newSchema: schema });
         return schema;
     }
 
@@ -125,17 +123,11 @@ class SchemaManager {
 
     private async fetchPreviousSqlSchema(syncId: number) {
         return dataService.fetchColumnInfo(dataService.tableNameForSync(syncId)).then((schema) => {
-            logger.debug(`Previous schema fetched for latest Sync job (Sync ID: ${syncId}).`, { previousSchema: schema });
             return schema;
         });
     }
 
-    private computeMissingColumns(
-        previousSchema: object,
-        newSchema: object,
-        metadata: Record<string, string | number | boolean> | undefined,
-        syncId: number
-    ): object {
+    private computeMissingColumns(previousSchema: object, newSchema: object, metadata: Record<string, string | number | boolean> | undefined): object {
         let newColumns = {};
 
         for (var key in newSchema) {
@@ -153,7 +145,6 @@ class SchemaManager {
             }
         }
 
-        logger.debug(`Columns to add computed for latest Sync job (Sync ID: ${syncId}).`, { newColumns: newColumns });
         return newColumns;
     }
 }

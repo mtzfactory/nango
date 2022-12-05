@@ -73,17 +73,5 @@ services:
         networks:
             - nango
 
-    temporal-ui:
-        image: temporalio/ui:2.8.3
-        depends_on:
-            - temporal
-        container_name: temporal-ui
-        environment:
-            - TEMPORAL_ADDRESS=temporal:7233
-            - TEMPORAL_CORS_ORIGINS=http://localhost:3000
-        ports:
-            - 8011:8080
-        networks:
-            - nango
 networks:
     nango:

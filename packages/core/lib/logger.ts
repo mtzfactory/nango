@@ -20,7 +20,7 @@ class NangoLogger {
             this.logger.add(
                 new winston.transports.Console({
                     format: winston.format.combine(winston.format.json(), winston.format.prettyPrint(), winston.format.colorize()),
-                    level: 'info' // Set to 'debug' for more verbosity, or 'info' for less verbosity.
+                    level: process.env['VERBOSE_CONSOLE_LOGS_ENABLED'] ? 'debug' : 'info'
                 })
             );
         }

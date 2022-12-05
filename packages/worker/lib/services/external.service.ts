@@ -19,21 +19,18 @@ class ExternalService {
         let maxNumberOfRecords = sync.max_total || 10000;
         sync.body = sync.body || {};
 
+        var page = 0;
         while (!done) {
+            page++; // Increment page count.
+
             // Check if Sync payload contains token variable, if so insert it.
             let syncWithAuth = await oauthManager.insertOAuthTokenIfNeeded(sync);
 
             let config: AxiosRequestConfig = { headers: syncWithAuth.headers || {}, params: syncWithAuth.query_params || {} };
             var res: AxiosResponse<any, any> | void;
             let errorBlock = (error: any) => {
-                if (error.response) {
-                    logger.error(error.response.data);
-                    logger.error(error.response.status);
-                } else if (error.request) {
-                    logger.error(error.request);
-                } else {
-                    logger.error('Error', error.message);
-                }
+                logger.error(`Error requesting external API ${sync.url}}:\n\n ${error.message}.\n\n Check debug logs for details.`);
+                logger.debug(`External API error details: ${sync.url}`);
 
                 throw Error('External API error.');
             };
@@ -46,6 +43,12 @@ class ExternalService {
                     sync.body[sync.paging_cursor_request_path] = pageCursor; // Cursor in body params.
                 }
             }
+
+            logger.debug(
+                `Fetching page ${page} with url ${syncWithAuth.url} (method: ${JSON.stringify(sync.method)}).\n\nHeader:\n${JSON.stringify(
+                    config.headers
+                )}\n\nBody:\n${JSON.stringify(syncWithAuth.body)}\n\nQuery Params:\n${JSON.stringify(config.params)}\n\n`
+            );
 
             switch (sync.method) {
                 case 'get': {
@@ -116,6 +119,12 @@ class ExternalService {
                     continue;
                 }
             }
+
+            logger.debug(
+                page == 1
+                    ? `Single external API request performed (no or invalid pagination parameters provider).`
+                    : `Last page reached, no more external API requests.`
+            );
 
             done = true;
         }

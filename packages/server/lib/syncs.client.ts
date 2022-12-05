@@ -1,6 +1,7 @@
 import { WorkflowClient, Connection } from '@temporalio/client';
-import { nanoid } from 'nanoid';
 import type { WorkflowStartOptions } from '@temporalio/client';
+import type { Sync } from '@nangohq/core';
+import { logger } from '@nangohq/core';
 
 class syncsClient {
     client?: WorkflowClient;
@@ -15,16 +16,15 @@ class syncsClient {
         });
     }
 
-    async run(syncId: number, frequency: number) {
-        type WFType = ({ syncId, frequency }) => Promise<void>;
-        const handle = await this.client?.start('syncParentWorkflow', {
-            workflowId: 'sync-' + nanoid(),
+    async run(sync: Sync, frequency: number) {
+        type WFType = ({ syncId, frequency, friendlyName }) => Promise<void>;
+        await this.client?.start('continuousSync', {
+            workflowId: `Sync ${sync.id}${sync.friendly_name ? ' - ' + sync.friendly_name : ''}`,
             taskQueue: 'syncs',
-            args: [{ syncId: syncId, frequency: frequency }]
+            args: [{ syncId: sync.id, frequency: frequency, friendlyName: sync.friendly_name }]
         } as WorkflowStartOptions<WFType>);
-        console.log(`Started workflow ${handle?.workflowId}`);
 
-        return await handle?.result();
+        logger.info(`New Sync created (ID: ${sync.id} - ${sync.friendly_name || sync.url}).`);
     }
 }
 

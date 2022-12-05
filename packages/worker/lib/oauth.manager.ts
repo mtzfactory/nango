@@ -13,8 +13,6 @@ class OAuthManager {
         let syncCp = sync;
 
         if (syncCp.pizzly_connection_id == null || syncCp.pizzly_provider_config_key == null || this.pizzly == null) {
-            logger.debug(`No (or incomplete) Pizzly configuration for sync ${syncCp.id}.`);
-
             return syncCp;
         }
 
