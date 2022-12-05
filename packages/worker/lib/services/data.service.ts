@@ -2,7 +2,7 @@ import { knexDatabase as db, logger } from '@nangohq/core';
 import type { RawObject } from '../models/raw_object.model.js';
 import type { Sync } from '@nangohq/core';
 import _ from 'lodash';
-import { NangoColumnDataTypes } from '../models/data.types.js';
+import { NangoColumnDataTypes, NangoDatabase, NangoDataTypeMap } from '../models/data.types.js';
 
 class DataService {
     async upsertRawFromList(objects: RawObject[], sync: Sync): Promise<void | number[]> {
@@ -48,7 +48,7 @@ class DataService {
 
         for (var columnInfo in tableInfo) {
             if (tableInfo[columnInfo] != null && tableInfo[columnInfo]!['type'] != null) {
-                let dataType = this.sqlToNangoTypeMapping(tableInfo[columnInfo]!['type']);
+                let dataType = this.sqlToNangoTypeMapping(NangoDatabase.POSTGRESQL, tableInfo[columnInfo]!['type']);
                 schema[columnInfo] = dataType;
             }
         }
@@ -56,24 +56,23 @@ class DataService {
         return schema;
     }
 
-    sqlToNangoTypeMapping(sqlType: string) {
-        switch (sqlType) {
-            case 'integer':
-                return NangoColumnDataTypes.NUMBER;
-            case 'real':
-                return NangoColumnDataTypes.NUMBER;
-            case 'timestamp with time zone':
-                return NangoColumnDataTypes.DATE;
-            case 'character varying':
-            case 'text':
-                return NangoColumnDataTypes.STRING;
-            case 'json':
-                return NangoColumnDataTypes.JSON;
-            case 'boolean':
-                return NangoColumnDataTypes.BOOLEAN;
+    sqlToNangoTypeMapping(database: NangoDatabase, sqlType: string): NangoColumnDataTypes {
+        let nangoType: NangoColumnDataTypes | undefined;
+
+        switch (database) {
+            case NangoDatabase.POSTGRESQL:
+                nangoType = NangoDataTypeMap.PostgreSql.get(sqlType);
+                break;
             default:
-                logger.error(`Unkwown Postgres column type returned from schema: ${sqlType}`);
-                return NangoColumnDataTypes.UNKNOWN;
+                nangoType =  NangoColumnDataTypes.UNKNOWN;
+                break;
+        }
+
+        if (nangoType) {
+            return nangoType;
+        } else {
+            logger.error(`Unkwown Postgres column type returned from schema: ${sqlType}`);
+            return NangoColumnDataTypes.UNKNOWN;
         }
     }
 
