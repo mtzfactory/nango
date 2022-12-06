@@ -26,9 +26,9 @@ cd examples
 
 Take a look at the example file to find the function name of the example you want to run, e.g. `syncGithubStargazers`
 
-You can then run it with
+You can then run it with the following command (internal-user-id can be any value you want, e.g. the user's id in your app)
 ```bash
-npm run start syncGithubStargazers
+npm run start syncGithubStargazers <owner> <repo> <internal-user-id>
 ```
 
 Some examples take additional parameters, e.g. `syncRedditSubredditPosts` expects a subreddit to sync posts from. Just append these:

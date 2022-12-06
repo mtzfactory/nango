@@ -40,7 +40,8 @@ if (function_name == null) {
 var args: string[] = [];
 switch (function_name) {
     case 'syncGithubStargazers':
-        syncGithubStargazers(parseArguments(1)[0]!).then(logSuccess);
+        args = parseArguments(3);
+        syncGithubStargazers(args[0]!, args[1]!, args[2]!).then(logSuccess);
         break;
     case 'syncGithubUserRepos':
         syncGithubUserRepos(parseArguments(1)[0]!).then(logSuccess);
