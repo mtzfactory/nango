@@ -115,6 +115,8 @@ npm run start syncSlackMessages <oauth_token> <channel_id>
 **Endpoint docs:**  
 https://docs.github.com/en/rest/activity/starring#list-stargazers
 
+This example syncs the stargazers of multiple different repos (and users) into a single table (we use `github_stargazers` here). It also adds metadata attributes, which get attached to every synced record. This metadata makes it easy to query e.g. all stargazers of repo X, user id Y or GitHub org Z.
+
 **Nango Sync config to sync all stargazers from a repo to your local database:**
 <Tabs groupId="programming-language">
   <TabItem value="node" label="Node SDK">
@@ -122,14 +124,24 @@ https://docs.github.com/en/rest/activity/starring#list-stargazers
 ```ts
 import { Nango } from '@nangohq/node-client'
 
+let user_id = 1;        // Replace with your user id (can be any value)
 let owner = 'nangohq';  // Replace with your github account
 let repo = 'nango';     // Replace with your repo
 
 let config = {
-    headers: {
-        authorization: `Bearer ${api_token}`  // Replace with your Github API token
-    },
-    paging_header_link_rel: 'next'
+        mapped_table: 'github_stargazers',                 // Name of the destination table
+        metadata: {                                        // Metadata that will get attached to every synced row
+            user_id: user_id,                              // Our internal user id (or account id etc.)
+            github_org: owner,                             // The GitHub org
+            github_repo: repo                              // The repo name
+        },
+        unique_id: 'id',                                   // The key of the unique id in the records, for upserts
+
+        headers: {                                         // HTTP headers to be sent with every API request
+            'Accept': 'application/vnd.github+json'                    // GitHub recommends passing this for every API request
+        },
+
+        paging_header_link_rel: 'next'                     // For pagination.
 };
 
 new Nango().sync('https://api.github.com/repos/${owner}/${repo}/stargazers', nango_options); 
@@ -145,8 +157,15 @@ new Nango().sync('https://api.github.com/repos/${owner}/${repo}/stargazers', nan
  {
 "url": "https://api.github.com/repos/nangohq/nango/stargazers",
 "method": "GET",
+"mapped_table": "github_stargazers",
+"metadata": {
+  "user_id": 1,
+  "github_org": "NangoHQ",
+  "github_repo": "nango"
+},
+"unique_id": 1,
 "headers": {
-  "authorization": "Bearer <api_token>"
+  "Accept": "application/vnd.github+json"
 },
 "paging_header_link_rel": "next"
 }'
@@ -157,7 +176,7 @@ new Nango().sync('https://api.github.com/repos/${owner}/${repo}/stargazers', nan
 **Run the example ▶️**  
 You can run this example from our [repo's examples directory](https://github.com/NangoHQ/nango/tree/main/examples) with:
 ```bash
-npm run start syncGithubStargazers <api_token>
+npm run start syncGithubStargazers <owner> <repo> <user-id>
 ```
 
 
