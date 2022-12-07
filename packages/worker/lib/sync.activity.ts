@@ -24,8 +24,6 @@ export async function syncActivity(syncId: number): Promise<void> {
 
     // Perform auto JSON-to-SQL schema mapping.
     if (sync.auto_mapping == null || sync.auto_mapping) {
-        logger.debug(`Auto-mapping enabled: mapping raw objects to SQL columns (inferring column types).`);
-
         // Update the schema of the DB for new results.
         let flatObjs = await schemaManager.updateSyncSchemaAndFlattenObjs(
             rawObjs.map((o) => o.data),

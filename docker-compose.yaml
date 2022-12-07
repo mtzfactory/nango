@@ -1,7 +1,13 @@
 version: '3.9'
+x-logging: &default-logging
+    options:
+        max-size: '100m'
+        max-file: '5'
+    driver: json-file
 services:
     nango-db:
         image: postgres
+        logging: *default-logging
         container_name: nango-db
         restart: always
         environment:
@@ -15,6 +21,7 @@ services:
 
     nango-db-admin:
         image: adminer
+        logging: *default-logging
         container_name: nango-db-admin
         restart: always
         ports:
@@ -24,6 +31,7 @@ services:
 
     nango-server:
         image: nangohq/server
+        logging: *default-logging
         container_name: nango-server
         restart: always
         environment:
@@ -40,6 +48,7 @@ services:
 
     nango-worker:
         image: nangohq/worker
+        logging: *default-logging
         container_name: nango-worker
         restart: always
         environment:
@@ -57,6 +66,7 @@ services:
 
     temporal:
         container_name: temporal
+        logging: *default-logging
         depends_on:
             - nango-db
         environment:
@@ -65,6 +75,7 @@ services:
             - POSTGRES_USER=nango
             - POSTGRES_PWD=nango
             - POSTGRES_SEEDS=nango-db
+            - LOG_LEVEL=${TEMPORAL_LOG_LEVEL}
         image: temporalio/auto-setup:1.18.4
         ports:
             - 7233:7233

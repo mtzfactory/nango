@@ -49,7 +49,7 @@ export class SyncActivityInboundInterceptor implements ActivityInboundCallsInter
                 job.status = JobStatus.FAILED;
                 job.error_message = error.message;
                 job.raw_error = JSON.stringify(error, Object.getOwnPropertyNames(error));
-                logger.info(`Job ${job.id} failed (Sync ID: ${syncId}).`);
+                logger.info(`Job ${job.id} failed on attempt ${job.attempt} (Sync ID: ${syncId}).`);
             }
 
             await jobService.updateJob(job);

@@ -35,7 +35,7 @@ class SyncsController {
             syncParams.id = syncId;
             syncsClient.run(syncParams, syncParams.frequency);
 
-            let message = `\n\n✅ Sync ${syncId} created!\n\nSync jobs will execute at the frequency you specified (default: hourly).\n\nVerify that your Sync works (or debug it) by:\n    1. logging to the destination DB (default URL is http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango with password 'nango')\n    2. checking the synced data, default table is '_nango_sync_[SYNC_ID]' (check table 'pokemons' if doing the quickstart)\n    3. checking Sync job executions in table '_nango_jobs'\n    4. checking the logs in the repo at 'logs/combined.log'\n\n`;
+            let message = `\n\n✅ Sync ${syncId} created!\n\nSync jobs will execute at the frequency you specified (default: hourly).\n\nVerify that your Sync works (or debug it) by:\n    1. going to your DB (default GUI: http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango with password 'nango')\n        - the synced data should be in the destination table you specified in the Sync config (default: '_nango_sync_[SYNC_ID]')\n        - the latest Sync job should have status=succeeeded in the table '_nango_jobs'\n    2. checking the logs with command 'docker-compose logs --follow'\n\n`;
 
             res.status(200).send({ sync_id: syncId, message: message });
         } else {

@@ -29,8 +29,8 @@ class ExternalService {
             let config: AxiosRequestConfig = { headers: syncWithAuth.headers || {}, params: syncWithAuth.query_params || {} };
             var res: AxiosResponse<any, any> | void;
             let errorBlock = (error: any) => {
-                logger.error(`Error requesting external API ${sync.url}}:\n\n ${error.message}.\n\n Check debug logs for details.`);
-                logger.debug(`External API error details: ${sync.url}`);
+                logger.error(`Error requesting external API ${sync.url} (Sync ID: ${sync.id}): ${error.message} (check debug logs for details).`);
+                logger.debug(`External API error details (Sync ID: ${sync.id}): ${sync.url}`);
 
                 throw Error('External API error.');
             };
@@ -45,9 +45,9 @@ class ExternalService {
             }
 
             logger.debug(
-                `Fetching page ${page} with url ${syncWithAuth.url} (method: ${JSON.stringify(sync.method)}).\n\nHeader:\n${JSON.stringify(
+                `(Sync ID: ${sync.id}) Fetching page ${page} with url ${syncWithAuth.url} (method: ${JSON.stringify(sync.method)}). Header: ${JSON.stringify(
                     config.headers
-                )}\n\nBody:\n${JSON.stringify(syncWithAuth.body)}\n\nQuery Params:\n${JSON.stringify(config.params)}\n\n`
+                )} Body: ${JSON.stringify(syncWithAuth.body)} Query Params: ${JSON.stringify(config.params)}`
             );
 
             switch (sync.method) {
@@ -122,8 +122,8 @@ class ExternalService {
 
             logger.debug(
                 page == 1
-                    ? `Single external API request performed (no or invalid pagination parameters provider).`
-                    : `Last page reached, no more external API requests.`
+                    ? `Single external API request performed (no or invalid pagination parameters provider) (Sync ID: ${sync.id}).`
+                    : `Last page reached, no more external API requests (Sync ID: ${sync.id}).`
             );
 
             done = true;

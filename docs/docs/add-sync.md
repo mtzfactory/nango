@@ -385,13 +385,14 @@ Each jobs displays information about:
 - Updated row count (in case of success)
 - Attempt number
 
-### Inspect logs (in log files or in the console)
+### Inspect logs
 
-There are two log files available for you to inspect or tail: 
-- `log/combined.log` (info + error logs)
-- `log/error.log` (error-only logs)
+You can view the combined logs for all Nango containers, in real-time, with the command:
+```
+docker-compose logs --follow
+```
 
-Additionally, logs of info/error-level will also print in the console (unless the env variable `NODE_ENV` is set to `production` in your root-level `.env` file). You can make console logs more verbose by setting the env variable `VERBOSE_CONSOLE_LOGS_ENABLED` to `true` in your root-level `.env` file.
+By default, the logger logs info-level messages and above. You can make logs more verbose by setting `LOG_LEVEL` to `debug` (or less verbose by setting it to `error`) in the `.env` file.
 
 ### Temporal Admin Panel
 
