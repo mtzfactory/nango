@@ -2,6 +2,12 @@
 # docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml up
 version: '3.9'
 services:
+    nango-server:
+        environment:
+            - NO_TELEMETRY=true
+    nango-worker:
+        environment:
+            - NO_TELEMETRY=true
     temporal-ui:
         image: temporalio/ui:2.8.3
         depends_on:

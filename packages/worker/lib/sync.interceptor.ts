@@ -1,7 +1,7 @@
 import type { ActivityInboundCallsInterceptor, ActivityExecuteInput } from '@temporalio/worker';
 import { JobStatus, Job } from './models/job.model.js';
 import jobService from './services/job.service.js';
-import { syncsService, logger } from '@nangohq/core';
+import { syncsService, logger, analytics, Sync } from '@nangohq/core';
 import type { Context } from '@temporalio/activity';
 
 export class SyncActivityInboundInterceptor implements ActivityInboundCallsInterceptor {
@@ -19,10 +19,10 @@ export class SyncActivityInboundInterceptor implements ActivityInboundCallsInter
             started_at: new Date(),
             status: JobStatus.RUNNING
         };
+        var sync: Sync | undefined | null;
 
         try {
-            let sync = await syncsService.readById(syncId);
-
+            sync = await syncsService.readById(syncId);
             if (sync != null) {
                 job.sync_friendly_name = sync.friendly_name;
                 let result = await jobService.createJob(job);
@@ -53,6 +53,7 @@ export class SyncActivityInboundInterceptor implements ActivityInboundCallsInter
             }
 
             await jobService.updateJob(job);
+            analytics.track('job_finished', { domain: analytics.urlToRootHost(sync?.url), succeeded: job.status == JobStatus.SUCCEEDED ? true : false });
         }
     }
 }

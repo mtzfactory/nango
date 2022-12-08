@@ -1,7 +1,7 @@
 import { WorkflowClient, Connection } from '@temporalio/client';
 import type { WorkflowStartOptions } from '@temporalio/client';
 import type { Sync } from '@nangohq/core';
-import { logger } from '@nangohq/core';
+import { logger, analytics } from '@nangohq/core';
 
 class syncsClient {
     client?: WorkflowClient;
@@ -25,6 +25,7 @@ class syncsClient {
         } as WorkflowStartOptions<WFType>);
 
         logger.info(`New Sync created (ID: ${sync.id} - ${sync.friendly_name || sync.url}).`);
+        analytics.track('sync_created', { domain: analytics.urlToRootHost(sync.url) });
     }
 }
 
