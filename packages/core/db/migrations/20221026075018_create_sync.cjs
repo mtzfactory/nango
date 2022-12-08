@@ -1,6 +1,5 @@
 exports.up = function (knex, _) {
-    var schema = process.env['NANGO_DB_SCHEMA'] || 'nango';
-    return knex.schema.withSchema(schema).createTable('_nango_syncs', function (table) {
+    return knex.schema.withSchema('nango').createTable('_nango_syncs', function (table) {
         table.increments('id').primary();
         table.timestamps(true, true);
         table.string('url').notNullable();
@@ -21,6 +20,5 @@ exports.up = function (knex, _) {
 };
 
 exports.down = function (knex, _) {
-    var schema = process.env['NANGO_DB_SCHEMA'] || 'nango';
-    return knex.schema.withSchema(schema).dropTable('_nango_syncs');
+    return knex.schema.withSchema('nango').dropTable('_nango_syncs');
 };

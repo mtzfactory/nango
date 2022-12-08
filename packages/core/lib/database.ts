@@ -14,7 +14,7 @@ class KnexDatabase {
     }
 
     schema() {
-        return process.env['NANGO_DB_SCHEMA'] || 'nango';
+        return 'nango';
     }
 }
 

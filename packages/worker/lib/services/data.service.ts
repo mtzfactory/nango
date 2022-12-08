@@ -28,7 +28,7 @@ class DataService {
             Object.assign(object, metadata || {}); // Add the metadata to each row.
         }
 
-        const query = db.knex(this.tableNameForSync(sync)).withSchema(db.schema()).where('_nango_sync_id', sync.id);
+        const query = db.knex(this.tableNameForSync(sync)).where('_nango_sync_id', sync.id);
         if (sync.unique_key != null) {
             // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
             await query.whereIn(
@@ -38,11 +38,11 @@ class DataService {
         }
 
         await query.del();
-        return db.knex(this.tableNameForSync(sync)).withSchema(db.schema()).insert(objects);
+        return db.knex(this.tableNameForSync(sync)).insert(objects);
     }
 
     async fetchColumnInfo(table: string) {
-        let tableInfo = await db.knex(table).withSchema(db.schema()).columnInfo();
+        let tableInfo = await db.knex(table).columnInfo();
 
         let schema = {};
 
@@ -77,7 +77,7 @@ class DataService {
     }
 
     async updateSyncSchema(newColumns: object, sync: Sync) {
-        return db.knex.schema.withSchema(db.schema()).table(this.tableNameForSync(sync), (t) => {
+        return db.knex.schema.table(this.tableNameForSync(sync), (t) => {
             for (var colName in newColumns) {
                 let type = newColumns[colName];
                 switch (type) {
@@ -104,10 +104,10 @@ class DataService {
     }
 
     async createSyncTableIfNeeded(sync: Sync) {
-        const exists = await db.knex.schema.withSchema(db.schema()).hasTable(this.tableNameForSync(sync));
+        const exists = await db.knex.schema.hasTable(this.tableNameForSync(sync));
         if (!exists) {
             logger.debug(`Table ${this.tableNameForSync(sync)} doesn't exist, creating the new table for Sync ID: ${sync.id}.`);
-            await db.knex.schema.withSchema(db.schema()).createTable(this.tableNameForSync(sync), (t) => {
+            await db.knex.schema.createTable(this.tableNameForSync(sync), (t) => {
                 t.increments('_nango_id').primary();
                 t.integer('_nango_sync_id').references('id').inTable(`${db.schema()}._nango_syncs`);
                 t.dateTime('_nango_emitted_at').notNullable();

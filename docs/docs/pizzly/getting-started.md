@@ -115,7 +115,7 @@ npm i -S @nangohq/pizzly-node
 
 Then in your code, setup a Pizzly instance and get an access token whenever you need one:
 ```ts
-import Pizzly from '@nangohq/pizzly-node'
+import { Pizzly } from '@nangohq/pizzly-node'
 
 // Tell Pizzly where to find your Pizzly server
 let pizzly = new Pizzly('http://localhost:3004');

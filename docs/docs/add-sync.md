@@ -148,13 +148,17 @@ By default, Sync jobs run hourly by default. You can configure the Sync frequenc
 
 ## Database Storage
 
-Nango stores both the synced data and Sync/Job configuration in a [Postgres database](https://www.postgresql.org).
+Currently, Nango supports Postgres databases as destination. You can request support for more database types on this [issue](https://github.com/NangoHQ/nango/issues/68).
 
-For the synced data, Nango stores all the objects in their original JSON form in a table called `_nango_raw`. This single table contains the raw data from all Syncs combined.
+Nango stores its configuration as well as the synced data in the same destination database, but optionally in different [Postgres schemas](https://www.postgresql.org/docs/current/ddl-schemas.html).
 
-Additionally, Nango supports optional [JSON-to-SQL mapping](add-sync.md#mapping). If enabled, each Sync in Nango will have its own table in postgres containing the transformed data from that Sync. The default name for Sync-specific SQL tables is `_nango_sync_[syncId]`.
+Configuration objects necessary for Nango's execution (e.g. Syncs and jobs) are stored in the `nango` database schema.
 
-### Use your own Postgres database & schema
+The raw synced data is stored in its original JSON format in a table called `_nango_raw` in the `nango` database schema. This single table contains the raw data from all Syncs combined.
+
+The transformed synced data (using [JSON-to-SQL mapping](add-sync.md#mapping)) is stored in the [destination schema and table of your choice](add-sync.md#sync-options). Multiple Syncs can send data to the same table or different ones.
+
+### Use your own Postgres database
 
 By default, Nango creates a local Postgres database with credentials: 
 ```
@@ -178,12 +182,6 @@ NANGO_DB_SSL=TRUE # Set to 'TRUE' if database requires SSL connections
 
 By default, Nango will create and use a separate Postgres schema called `nango` to cleanly separate Nango-related data from the rest of your database.
 
-You can use a different schema with the following environment variable:
-```
-NANGO_DB_SCHEMA=[your-preferred-schema]
-```
-
-
 
 ## JSON-to-SQL schema mapping {#mapping}
 
@@ -195,7 +193,7 @@ Automatically inferring a schema from API responses is tricky. If you run into i
 In the near future we will also support [custom mappings](#custommapping) which will give you full control over the destination schema of Nango's mapping.
 :::
 
-#### How Nango determines the schema
+#### How Nango determines the data schema
 By default, Nango automatically maps the JSON objects returned from external APIs to SQL columns. The mapping rules are:
 - Nested fields are flattened and the path is joined with `_` into a single column name
 - Arrays are flattened into multiple columns with suffix `_[index]`
@@ -252,19 +250,15 @@ Currently the following transformations are supported:
 #### How to disable Auto Mapping
 Auto mapping is on by default for new Syncs. You can disable Auto Mapping for an individual Sync by setting the `auto_mapping` field to `false` in the [Sync config options](add-sync.md#sync-options).
 
-### Configure destination table
+### Configure a Sync's destination table {#destination-table}
 
-You can configure the destination db table of a Sync with the `mapped_table` parameter in the [Sync config options](add-sync.md#sync-options). 
+You can configure a Sync's destination database table with the `mapped_table` parameter in the [Sync config options](add-sync.md#sync-options). 
 
 You can also configure multiple Syncs to send data to the same destination  table. 
 
-If you specify a table that does not already exist, it will be automatically generated. The schema for this table will be automatically updated based on the data to insert.
+If you specify a table that does not already exist, it will be automatically generated. The data schema for this table will be automatically updated based on the data to insert.
 
-:::info
-Do not include the database schema name in the `mapped_table` Config parameter. 
-
-The `mapped_table` Config parameter is only taken into account if the `auto_mapping` Config parameter is `true` or omitted.
-:::
+Finally, you can also specify the [Postgres database schema](https://www.postgresql.org/docs/current/ddl-schemas.html) of your destination table, directly in the `auto_mapping` field. For example, `public.pokemons` sends the synced data to the `public` database schema and the `pokemon` table within this schema. 
 
 
 ### Custom Mapping (coming soon) {#custommapping}
@@ -272,7 +266,6 @@ The `mapped_table` Config parameter is only taken into account if the `auto_mapp
 We plan to introduce custom mappings soon. These will allow you to specify exactly (in code) how you want the JSON mapped to a SQL-table.
 This will enable a few interesting features:
 - Stable SQL schemas that are guaranteed not to change even as the API response changes (with optional alerts for response changes)
-- The ability to map & merge several Syncs to the same SQL-table
 - The ability to specify which fields should be extracted from the JSON (and which should be ignored)
 - Optional, more complex transformations & mappings (e.g. combining data from multiple JSON-fields into one SQL column, transforming values etc.)
 
