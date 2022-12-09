@@ -55,8 +55,8 @@ import { Nango } from '@nangohq/node-client';
 
 let config = {
     response_path: 'results', // For finding records in the API response.
-    paging_url_path: 'next', // For finding pagination data in responses.
-    mapped_table: 'pokemons' // Customize the name of the destination DB table.
+    paging_url_path: 'next',  // For finding pagination data in responses.
+    mapped_table: 'pokemons'  // We want the data to be synced to a table called "pokemons"
 };
 
 let res = await new Nango().sync('https://pokeapi.co/api/v2/pokemon', config);
@@ -69,19 +69,21 @@ console.log(res.data);
 
 ## Step 3: Inspect the synced ~~data~~ Pokémons
 
-The Sync you just created will keep your Pokémon list up-to-date forever. View [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango&select=pokemons) in your local db (password is `nango`).
+The Sync you just created will keep your Pokémon list up-to-date forever.  
+View [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango&select=pokemons) in your local db (password is `nango`).
 
 
 ## That's it!
 
-Congratulations, you now have a local copy of all Pokémons in your database 🎉 It's yours to keep.
+Congratulations, you now have a local copy of all Pokémons in your database 🎉  
+It's yours to keep.
 
 Whilst this is just a small toy example we hope it has shown you how Nango can create powerful syncs with a single line of code.
 
 When you are ready here are some suggestions to get the most out of Nango:
-* [Explore the Architecture](architecture.md)
+* [Explore the core concepts](nango-sync/core-concepts.md) - our recommended way to get started and learn more about Nango
 * [Join the Slack Community](https://nango.dev/slack) and give us feedback on the quickstart & Nango
 * [Explore more examples](real-world-examples.md)
-* [Open a GitHub Issue](https://github.com/NangoHQ/nango/issues/new) to tell us about problems or improvements you would like to see
+* [Explore the Architecture](architecture.md)
 * [Contribute ❤️](contributing.md)
 

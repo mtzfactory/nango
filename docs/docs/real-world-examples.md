@@ -1,10 +1,14 @@
----
-sidebar_label: 'Real World Examples'
----
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Real world examples
+# Examples of Nango Sync
+
+:::info Nango works with any API that returns JSON
+The examples on this page are just a handful of the millions of APIs Nango supports out of the box, it is far from a complete list.
+
+If you are unsure if your API is supported by Nango feel free to try it (we found that by now 80%+ of APIs work out of the box) or ask us on the [Slack community](https://nango.dev/slack): We are happy to help!
+:::
 
 A collection of cool things people have built with Nango.  
 The sidebar to the right has an index so you can directly jump to your favorite 👉

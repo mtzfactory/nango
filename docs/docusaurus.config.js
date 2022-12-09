@@ -159,6 +159,9 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} Nango`,
       },
+      colorMode: {
+        respectPrefersColorScheme: true
+      },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,

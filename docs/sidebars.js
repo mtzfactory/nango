@@ -16,11 +16,54 @@ const sidebars = {
   // By default, Docusaurus generates a sidebar from the docs folder structure
   docsSidebar: [
     'introduction',
-    'quickstart',
-    'architecture',
-    'add-sync',
-    'real-world-examples',
+    'quickstart', 
+    {
+      type: 'category',
+      label: 'Using Nango Sync',
+      items: [
+        {
+          id: 'nango-sync/core-concepts',
+          type: 'doc',
+          label: 'Core concepts'
+        },
+        {
+          id: 'nango-sync/managing-syncs',
+          type: 'doc',
+          label: 'Creating & managing Syncs'
+        },
+        {
+          id: 'nango-sync/schema-mappings',
+          type: 'doc',
+          label: 'Schema mappings'
+        },
+        {
+          id: 'nango-sync/db-config',
+          type: 'doc',
+          label: 'DB Configuration'
+        },
+        {
+          id: 'nango-sync/observability',
+          type: 'doc',
+          label: 'Observability'
+        }
+      ]
+    },
+    {
+      id: 'real-world-examples',
+      type: 'doc',
+      label: 'Examples'
+    },
     'production-deployment',
+    {
+      id: 'architecture',
+      type: 'doc',
+      label: 'Architecture & Vision'
+    },
+    {
+      id: 'license-faq',
+      type: 'doc',
+      label: 'License FAQ & Pricing'
+    },
     'contributing'
   ],
   pizzly: [

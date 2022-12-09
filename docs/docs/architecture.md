@@ -1,8 +1,4 @@
----
-sidebar_label: Architecture
----
-
-# Architecture
+# Architecture & Vision
 
 [![Nango Architecture](/img/nango-architecture.png)](/img/nango-architecture.png)
 
@@ -18,17 +14,19 @@ Once you added a Sync to Nango it takes care of all the annoying details for you
 - Nango monitors the sync jobs and automatically restarts jobs that are stuck, handles rate-limits etc.
 - Nango alerts you if something goes wrong that requires your attention, e.g. major schema changes, unfixable authentication errors etc.
 
-## Syncs: How Nango moves your data
-**Syncs** are the main objects in Nango: **They represent a continuous job for Nango to pull data from an external API and sync it to your database**.
+## Our vision: Fast & flexible integrations with 3rd party APIs
+Nango exists because we believe it should be fast and easy for every software to integrate itself with 3rd party APIs - without any compromise on what you can with the API.
 
-Here are some quick facts about Syncs:
-- You [create Syncs](add-sync.md) from your application's code using the Nango SDK or the Nango REST API
-- Syncs write the data they pull in directly to a database & table of your choosing
-- You can have as many Syncs as you want
-- You can think of Syncs as HTTP requests that are continuously run to get the latest data
-    - This means every time you change something in the request parameters you should add it as a new Sync to Nango
-    - The most common case for this are different authentication credentials (for different users)
-- Syncs are smart and can deal with paginated data, authentication etc.
-- You can manage your existing Syncs through the Nango SDK, REST API or our CLI (coming soon)
+Today writing these integrations forces engineering teams to rebuild the same infrastructure over an over again: OAuth, pagination, retries, rate-limits, fair queues, change detection, upserts, schema mappings etc.
+Many of the teams we talked to built internal frameworks to abstract these integrations away and avoid duplicate code.
 
-For a full list of a Syncs attributes and how to add one please check our [Adding a Sync](add-sync.md) guide.
+With Nango our **aim is to provide the best tooling for engineers to work with 3rd party APIs**.  
+All of our tools will follow the same philosophy:
+- API agnostic (we will never have API specific parts in the core tools that would limit which APIs they work with)
+- Focused (they solve one problem, but solve this well)
+- Easy to compose (when you want to use them together they will be natural team players)
+- Simple abstractions, powerful options (our tools are easy to reason about and get started, but offer endless possibilities for power users)
+
+We want to enable you to build deep and powerful integrations with ease that make full use of the power of the external API.
+
+Nango Sync is our first step towards this vision. But we will not stop here and look forward to expanding our palette of tools in the near future.
