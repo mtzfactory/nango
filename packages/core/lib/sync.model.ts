@@ -16,10 +16,20 @@ export interface Sync {
     paging_header_link_rel?: string;
     auto_mapping: boolean;
     mapped_table?: string;
-    frequency: number;
+    frequency?: number;
+    cron?: number;
     pizzly_connection_id?: string;
     pizzly_provider_config_key?: string;
     max_total?: number;
     metadata?: Record<string, string | number | boolean>;
     friendly_name?: string;
+    status: SyncStatus;
+}
+
+// Unfortunately, the following enum is duplicated with workflows.ts.
+// But Temporal discourages importing modules in workflows (in this case 'core') to ensure determinism.
+export enum SyncStatus {
+    RUNNING = 'RUNNING',
+    PAUSED = 'PAUSED',
+    STOPPED = 'STOPPED'
 }

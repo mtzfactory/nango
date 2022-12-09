@@ -37,40 +37,42 @@ if (function_name == null) {
     console.log("Pass in a function name as argument (from the 'examples-list/*.ts' files), e.g. 'npm run start syncPokemonList'.");
     process.exit(1);
 }
+
 var args: string[] = [];
 switch (function_name) {
     case 'syncGithubStargazers':
         args = parseArguments(3);
-        syncGithubStargazers(args[0]!, args[1]!, args[2]!).then(logSuccess);
+        await syncGithubStargazers(args[0]!, args[1]!, args[2]!).then(logSuccess);
         break;
     case 'syncGithubUserRepos':
-        syncGithubUserRepos(parseArguments(1)[0]!).then(logSuccess);
+        await syncGithubUserRepos(parseArguments(1)[0]!).then(logSuccess);
         break;
     case 'syncHubspotContacts':
-        syncHubspotContacts(parseArguments(1)[0]!).then(logSuccess);
+        await syncHubspotContacts(parseArguments(1)[0]!).then(logSuccess);
         break;
     case 'syncHubspotContactsWithAuth':
-        syncHubspotContactsWithAuth().then(logSuccess);
+        await syncHubspotContactsWithAuth().then(logSuccess);
         break;
     case 'syncPokemonList':
-        syncPokemonList().then(logSuccess);
+        await syncPokemonList().then(logSuccess);
         break;
     case 'syncRedditSubredditPosts':
         args = parseArguments(1);
-        syncRedditSubredditPosts(args[0]!).then(logSuccess);
+        await syncRedditSubredditPosts(args[0]!).then(logSuccess);
         break;
     case 'syncSlackMessages':
         args = parseArguments(2);
-        syncSlackMessages(args[0]!, args[1]!).then(logSuccess);
+        await syncSlackMessages(args[0]!, args[1]!).then(logSuccess);
         break;
     case 'syncTypeformResponses':
         args = parseArguments(2);
-        syncTypeformResponses(args[0]!, args[1]!).then(logSuccess);
+        await syncTypeformResponses(args[0]!, args[1]!).then(logSuccess);
         break;
     case 'syncGoogleCalendarEvents':
         args = parseArguments(2);
-        syncGoogleCalendarEvents(args[0]!, args[1]!).then(logSuccess);
+        await syncGoogleCalendarEvents(args[0]!, args[1]!).then(logSuccess);
         break;
     default:
         console.log("Unknown function name, please pick a function name from the 'examples-list/*.ts' files.'");
 }
+

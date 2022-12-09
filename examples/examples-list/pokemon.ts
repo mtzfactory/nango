@@ -8,7 +8,7 @@ export let syncPokemonList = async () => {
         response_path: 'results',      // For finding records in the API response.
         paging_url_path: 'next',       // For finding pagination data in responses.
         unique_key: 'name',            // Provide response field path for deduping records.
-        frequency: 1,                  // How often sync jobs run, in minutes.
+        frequency: '2 minutes',        // How often sync jobs run in natural language.
         mapped_table: 'pokemons'       // Customize the name of the destination DB table (default: _nango_sync_[sync-id]).
     };
 

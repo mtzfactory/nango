@@ -14,7 +14,8 @@ const worker = await Worker.create({
     workflowsPath: createRequire(import.meta.url).resolve('./workflows.js'),
     activities,
     taskQueue: 'syncs',
-    interceptors: { activityInbound: [(ctx) => new SyncActivityInboundInterceptor(ctx)] }
+    interceptors: { activityInbound: [(ctx) => new SyncActivityInboundInterceptor(ctx)] },
+    bundlerOptions: { ignoreModules: ['fs'] }
 });
 
 await worker.run();

@@ -9,7 +9,6 @@ export enum NangoHttpMethod {
 }
 
 export interface NangoSyncConfig {
-    base_url?: string;
     method?: NangoHttpMethod;
     headers?: Record<string, string | number | boolean>;
     body?: object;
@@ -23,7 +22,8 @@ export interface NangoSyncConfig {
     paging_header_link_rel?: string;
     auto_mapping?: boolean;
     mapped_table?: string;
-    frequency?: number;
+    frequency?: string;
+    cron?: string;
     pizzly_connection_id?: string;
     pizzly_provider_config_key?: string;
     max_total?: number;
@@ -40,18 +40,10 @@ export class Nango {
 
     async sync(url: string, config?: NangoSyncConfig) {
         config = config || {};
-        config.method = config.method || NangoHttpMethod.GET;
-        config.base_url = this.serverUrl;
 
-        let nango_req_url = `${config.base_url}/v1/syncs`;
-
-        let nango_req_headers = {
-            'Content-Type': 'application/json'
-        };
-
-        let nango_req_body = {
+        let body = {
             url: url,
-            method: config.method,
+            method: config.method || NangoHttpMethod.GET,
             headers: config.headers,
             body: config.body,
             query_params: config.query_params,
@@ -65,6 +57,7 @@ export class Nango {
             auto_mapping: config.auto_mapping,
             mapped_table: config.mapped_table,
             frequency: config.frequency,
+            cron: config.cron,
             pizzly_connection_id: config.pizzly_connection_id,
             pizzly_provider_config_key: config.pizzly_provider_config_key,
             max_total: config.max_total,
@@ -72,6 +65,36 @@ export class Nango {
             metadata: config.metadata
         };
 
-        return await axios.post(nango_req_url, nango_req_body, { headers: nango_req_headers });
+        return await axios.post(`${this.serverUrl}/v1/syncs`, body, { headers: this.headers() }).catch((error: any) => {
+            throw Error(error?.response?.data?.error || error.message);
+        });
+    }
+
+    async pause(syncId: number) {
+        return await axios.put(`${this.serverUrl}/v1/syncs`, { action: 'pause', sync_id: syncId }, { headers: this.headers() }).catch((error: any) => {
+            throw Error(error?.response?.data?.error || error.message);
+        });
+    }
+
+    async cancel(syncId: number) {
+        return await axios.put(`${this.serverUrl}/v1/syncs`, { action: 'cancel', sync_id: syncId }, { headers: this.headers() }).catch((error: any) => {
+            throw Error(error?.response?.data?.error || error.message);
+        });
+    }
+
+    async resume(syncId: number) {
+        return await axios.put(`${this.serverUrl}/v1/syncs`, { action: 'resume', sync_id: syncId }, { headers: this.headers() }).catch((error: any) => {
+            throw Error(error?.response?.data?.error || error.message);
+        });
+    }
+
+    async trigger(syncId: number) {
+        return await axios.put(`${this.serverUrl}/v1/syncs`, { action: 'trigger', sync_id: syncId }, { headers: this.headers() }).catch((error: any) => {
+            throw Error(error?.response?.data?.error || error.message);
+        });
+    }
+
+    headers() {
+        return { 'Content-Type': 'application/json' };
     }
 }
