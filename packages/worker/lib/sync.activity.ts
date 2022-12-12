@@ -20,7 +20,7 @@ export async function syncActivity(syncId: number): Promise<void> {
     }
 
     // Insert row results in the DB.
-    await dataService.upsertRawFromList(rawObjs, sync);
+    let updatedRowCount = await dataService.upsertRawFromList(rawObjs, sync);
 
     // Perform auto JSON-to-SQL schema mapping.
     if (sync.auto_mapping == null || sync.auto_mapping) {
@@ -35,15 +35,19 @@ export async function syncActivity(syncId: number): Promise<void> {
         await dataService.upsertFlatFromList(flatObjs, sync.metadata, sync);
     }
 
-    throw new SyncActivitySuccess(rawObjs.length);
+    throw new SyncActivitySuccess(rawObjs.length, rawObjs.length - updatedRowCount, updatedRowCount);
 }
 
-class SyncActivitySuccess extends Error {
+export class SyncActivitySuccess extends Error {
+    totalObjectsFetched: number;
+    newRecordCount: number;
     updatedRecordCount: number;
 
-    constructor(updatedRecordCount: number) {
+    constructor(totalObjectsFetched: number, newRecordCount: number, updatedRecordCount: number) {
         super('Sync activity succeded');
         this.name = 'SyncActivitySuccess';
+        this.totalObjectsFetched = totalObjectsFetched;
+        this.newRecordCount = newRecordCount;
         this.updatedRecordCount = updatedRecordCount;
     }
 }

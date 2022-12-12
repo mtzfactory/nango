@@ -6,6 +6,7 @@ import type { RawObject } from '../models/raw_object.model.js';
 import { logger } from '@nangohq/core';
 import parseLinksHeader from 'parse-link-header';
 import oauthManager from '../oauth.manager.js';
+import dataService from './data.service.js';
 
 class ExternalService {
     async getRawObjects(sync: Sync): Promise<any[]> {
@@ -139,7 +140,7 @@ class ExternalService {
             rawObjs.push({
                 sync_id: sync.id,
                 data: rawObj,
-                unique_key: sync.unique_key != null ? _.get(rawObj, sync.unique_key, undefined) : undefined,
+                unique_key: sync.unique_key != null ? _.get(rawObj, sync.unique_key, dataService.defaultUniqueKey()) : dataService.defaultUniqueKey(),
                 emitted_at: new Date(),
                 metadata: sync.metadata || {}
             });

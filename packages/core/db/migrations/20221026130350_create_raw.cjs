@@ -5,6 +5,7 @@ exports.up = function (knex, _) {
         table.dateTime('emitted_at').notNullable();
         table.string('unique_key');
         table.json('data').notNullable();
+        table.unique(['sync_id', 'unique_key']);
     });
 };
 

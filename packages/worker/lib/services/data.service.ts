@@ -3,42 +3,60 @@ import type { RawObject } from '../models/raw_object.model.js';
 import type { Sync } from '@nangohq/core';
 import _ from 'lodash';
 import { NangoColumnDataTypes, NangoDatabase, NangoDataTypeMap } from '../models/data.types.js';
+import { v4 as uuidv4 } from 'uuid';
 
 class DataService {
-    async upsertRawFromList(objects: RawObject[], sync: Sync): Promise<void | number[]> {
-        const query = db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).where('sync_id', sync.id);
+    async upsertRawFromList(objects: RawObject[], sync: Sync): Promise<number> {
+        var updatedRowCount: number = 0;
+
         if (sync.unique_key != null) {
-            // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
-            await query.whereIn(
-                'unique_key',
-                objects.map((o) => o.unique_key)
-            );
+            try {
+                // Compute the updated row count for observability.
+                let updatedRowCountQueryResult = (
+                    await db
+                        .knex<RawObject>(`_nango_raw`)
+                        .withSchema(db.schema())
+                        .count<Record<string, number>>('id')
+                        .where('sync_id', sync.id)
+                        .whereIn(
+                            'unique_key',
+                            objects.map((o) => o.unique_key)
+                        )
+                )[0];
+                updatedRowCount = +updatedRowCountQueryResult!['count']!;
+            } catch (err) {
+                updatedRowCount = 0;
+                logger.error(`Could not compute updated row count for job with Sync ${sync.id}): ${JSON.stringify(err)}`);
+            }
+
+            // 'unique_key' provided: upsert.
+            await db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects).onConflict(['sync_id', 'unique_key']).merge();
+        } else {
+            // No 'unique_key' provided: delete all and insert.
+            await db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).where('sync_id', sync.id).del();
+            await db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
         }
 
-        await query.del();
-        return db.knex<RawObject>(`_nango_raw`).withSchema(db.schema()).insert(objects);
+        return updatedRowCount;
     }
 
     async upsertFlatFromList(objects: object[], metadata: Record<string, string | number | boolean> | undefined, sync: Sync): Promise<void | number[]> {
         for (var object of objects) {
             object['_nango_sync_id'] = sync.id!;
             object['_nango_emitted_at'] = new Date();
-            object['_nango_unique_key'] = sync.unique_key != null ? _.get(object, sync.unique_key, undefined) : undefined;
+            object['_nango_unique_key'] = sync.unique_key != null ? _.get(object, sync.unique_key, this.defaultUniqueKey()) : this.defaultUniqueKey();
 
             Object.assign(object, metadata || {}); // Add the metadata to each row.
         }
 
-        const query = db.knex(this.tableNameForSync(sync)).where('_nango_sync_id', sync.id);
         if (sync.unique_key != null) {
-            // If there is a `unique_key` for deduping rows: upsert, i.e. delete conflicting rows, then write new rows.
-            await query.whereIn(
-                '_nango_unique_key',
-                objects.map((o) => o['_nango_unique_key'])
-            );
+            // 'unique_key' provided: upsert.
+            return await db.knex<RawObject>(this.tableNameForSync(sync)).insert(objects).onConflict(['_nango_sync_id', '_nango_unique_key']).merge();
+        } else {
+            // No 'unique_key' provided: delete all and insert.
+            await db.knex<RawObject>(this.tableNameForSync(sync)).where('_nango_sync_id', sync.id).del();
+            return await db.knex<RawObject>(this.tableNameForSync(sync)).insert(objects);
         }
-
-        await query.del();
-        return db.knex(this.tableNameForSync(sync)).insert(objects);
     }
 
     async fetchColumnInfo(table: string) {
@@ -112,12 +130,20 @@ class DataService {
                 t.integer('_nango_sync_id').references('id').inTable(`${db.schema()}._nango_syncs`);
                 t.dateTime('_nango_emitted_at').notNullable();
                 t.string('_nango_unique_key');
+
+                if (sync.unique_key != null) {
+                    t.unique(['_nango_sync_id', '_nango_unique_key']);
+                }
             });
         }
     }
 
     tableNameForSync(sync: Sync): string {
         return sync.mapped_table || `_nango_sync_${sync.id}`;
+    }
+
+    defaultUniqueKey() {
+        return 'no-unique-key-' + uuidv4();
     }
 }
 

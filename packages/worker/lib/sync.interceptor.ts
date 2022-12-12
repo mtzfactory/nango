@@ -3,6 +3,7 @@ import { JobStatus, Job } from './models/job.model.js';
 import jobService from './services/job.service.js';
 import { syncsService, logger, analytics, Sync } from '@nangohq/core';
 import type { Context } from '@temporalio/activity';
+import type { SyncActivitySuccess } from './sync.activity.js';
 
 export class SyncActivityInboundInterceptor implements ActivityInboundCallsInterceptor {
     ctx: Context;
@@ -36,19 +37,29 @@ export class SyncActivityInboundInterceptor implements ActivityInboundCallsInter
             error = err;
 
             if (typeof error !== 'object' || error == null || error.name !== 'SyncActivitySuccess') {
+                logger.error(`Job ${job.id} (Sync ID: ${syncId}) error: ${JSON.stringify(err)}`);
                 throw err;
             }
         } finally {
             job.ended_at = new Date();
             job.attempt = this.ctx.info.attempt;
             if (typeof error === 'object' && error != null && error.name === 'SyncActivitySuccess') {
+                let successObj: SyncActivitySuccess = error;
+                let newRows = successObj.newRecordCount;
+                let updatedRows = successObj.updatedRecordCount;
+                let totalRows = successObj.totalObjectsFetched;
+
                 job.status = JobStatus.SUCCEEDED;
-                job.updated_row_count = error.updatedRecordCount;
-                logger.info(`Job ${job.id} succeeded with ${error.updatedRecordCount} updated/inserted rows (Sync ID: ${syncId}).`);
+                job.new_row_count = newRows;
+                job.updated_row_count = updatedRows;
+                job.total_row_count = totalRows;
+
+                logger.info(`Job ${job.id} succeeded: ${newRows} new rows, ${updatedRows} updated rows, ${totalRows} total (Sync ID: ${syncId}).`);
             } else {
                 job.status = JobStatus.FAILED;
                 job.error_message = error.message;
                 job.raw_error = JSON.stringify(error, Object.getOwnPropertyNames(error));
+
                 logger.info(`Job ${job.id} failed on attempt ${job.attempt} (Sync ID: ${syncId}).`);
             }
 
