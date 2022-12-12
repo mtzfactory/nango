@@ -18,6 +18,7 @@
     "dependencies": {
         "@nangohq/core": "^0.2.11",
         "@temporalio/client": "^1.4.4",
+        "@temporalio/workflow": "^1.4.4",
         "@types/lodash": "^4.14.188",
         "cors": "^2.8.5",
         "cron-parser": "^4.7.0",
@@ -27,6 +28,7 @@
         "express-winston": "^4.2.0",
         "knex": "^2.3.0",
         "lodash": "^4.17.21",
+        "ms": "^2.1.3",
         "pg": "^8.8.0",
         "ts-node": "^10.9.1",
         "winston": "^3.8.2"
