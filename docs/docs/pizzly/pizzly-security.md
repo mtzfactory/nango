@@ -29,11 +29,11 @@ let pizzly = new Pizzly('http://localhost:3004', apiKey);
 
 ### REST API
 
-Add an `Authorization` header to your requests with value: `[YOUR-SECRET-API-KEY-IN-BASE64-ENCODING]` + `:`
+Add an `Authorization` header to your requests with value: `encode_base_64([YOUR-SECRET-API-KEY]:)`
 
 ## Publishable key for frontend OAuth flow
 
-Additionally, you can use a publishable key to initiate the OAuth flow from Nango's frontend client. This key is not secret as it is embedded in your frontend. Using this publishable key is just a precaution measure measure.
+Additionally, you can use a publishable key to initiate the OAuth flow from Pizzly's frontend client. This key is not secret as it is embedded in your frontend, it is just a precaution measure.
 
 Generate another API key (e.g. [here](https://codepen.io/corenominal/pen/rxOmMJ)) and add it to the `PIZZLY_PUBLISHABLE_KEY` environment variable (in the `.env` file at the root of the Pizzly folder).
 
