@@ -38,7 +38,7 @@ To do this run the following CURL command in the terminal (we use Nango's REST A
   curl --request POST \
     --url http://localhost:3003/v1/syncs \
     --header "Content-type: application/json" \
-    --data '{"url": "https://pokeapi.co/api/v2/pokemon", "response_path": "results", "paging_url_path":"next", "mapped_table":"pokemons"}'
+    --data '{"url": "https://pokeapi.co/api/v2/pokemon", "response_path": "results", "paging_url_path":"next", "mapped_table":"pokemons", "frequency":"1 minute"}'
 ```
 
 That's it! You have just created your 1st Sync :)
@@ -56,7 +56,8 @@ import { Nango } from '@nangohq/node-client';
 let config = {
     response_path: 'results', // For finding records in the API response.
     paging_url_path: 'next',  // For finding pagination data in responses.
-    mapped_table: 'pokemons'  // We want the data to be synced to a table called "pokemons"
+    mapped_table: 'pokemons',  // We want the data to be synced to a table called "pokemons"
+    frequency: '1 minute' // How often the data is refreshed from the external API.
 };
 
 let res = await new Nango().sync('https://pokeapi.co/api/v2/pokemon', config);

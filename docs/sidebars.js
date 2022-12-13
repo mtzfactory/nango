@@ -106,6 +106,27 @@ const sidebars = {
   pizzly: [
     'pizzly/introduction',
     'pizzly/getting-started',
+    {
+      type: 'category',
+      label: 'Deploying Pizzly',
+      items: [
+        {
+          id: 'pizzly/pizzly-security',
+          type: 'doc',
+          label: 'Securing Your Instance'
+        },
+        {
+          id: 'pizzly/pizzly-storage',
+          type: 'doc',
+          label: 'Storage & Logs'
+        },
+        {
+          id: 'pizzly/pizzly-configuration',
+          type: 'doc',
+          label: 'Other Configuration'
+        }
+      ]
+    },
     'pizzly/contribute-api',
     'pizzly/migration'
   ]

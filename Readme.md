@@ -78,7 +78,7 @@ cd nango && docker compose up
 curl --request POST \
     --url http://localhost:3003/v1/syncs \
     --header "Content-type: application/json" \
-    --data '{"url": "https://pokeapi.co/api/v2/pokemon", "response_path": "results", "paging_url_path":"next", "mapped_table":"pokemons"}'
+    --data '{"url": "https://pokeapi.co/api/v2/pokemon", "response_path": "results", "paging_url_path":"next", "mapped_table":"pokemons", "frequency":"1 minute"}'
 ```
 
 That's it! You can check out [the list of all Pokémons](http://localhost:8080/?pgsql=nango-db&username=nango&db=nango&ns=nango&select=pokemons) in your local db (password is `nango`).
@@ -91,7 +91,8 @@ import { Nango } from '@nangohq/node-client';
 let config = {
     response_path: 'results', // For finding records in the API response.
     paging_url_path: 'next', // For finding pagination data in responses.
-    mapped_table: 'pokemons' // Customize the name of the destination DB table.
+    mapped_table: 'pokemons', // Customize the name of the destination DB table.
+    frequency: '1 minute' // How often the data is refreshed from the external API.
 };
 
 await new Nango().sync('https://pokeapi.co/api/v2/pokemon', config);

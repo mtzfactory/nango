@@ -81,13 +81,14 @@ export async function continuousSync(
     });
 
     try {
+        await spawnChild(args.syncId, nextTime.toString(), invocations);
+
         await sleepUntil(nextTime);
 
         if (scheduleWorkflowState === SyncStatus.PAUSED) {
             await wf.condition(() => scheduleWorkflowState === SyncStatus.RUNNING);
         }
 
-        await spawnChild(args.syncId, nextTime.toString(), invocations);
         await wf.continueAsNew<typeof continuousSync>(args, invocations + 1);
     } catch (err) {
         if (wf.isCancellation(err)) scheduleWorkflowState = SyncStatus.STOPPED;

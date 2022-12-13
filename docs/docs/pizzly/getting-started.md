@@ -105,7 +105,7 @@ It is important that you always get the latest access token from Pizzly just bef
 If you cache access tokens in your code you might have API calls fail because the access token has expired.
 :::
 
-### Getting an access token - Node SDK
+### Getting an access token - Node SDK {#node-sdk}
 If you are using Node you can use our node SDK which is available at `@nangohq/pizzly-node`.
 
 Install it with
@@ -127,7 +127,7 @@ let access_token = await pizzly.accessToken('<connection-id>', '<config-key>');
 let raw_token_response = await pizzly.rawTokenResponse('<connection-id>', '<config-key>');
 ```
 
-### Getting an access token - REST API
+### Getting an access token - REST API {#rest-api}
 If you are using a language where Pizzly does not yet have backend SDK you can directly use it's REST API to get an access token.
 
 The api endpoint is located at `[PIZZLY_SERVER_URL]/connection/<connection-id>?provider_config_key=<config-key>`.  
