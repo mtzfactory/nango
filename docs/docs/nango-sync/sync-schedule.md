@@ -9,7 +9,7 @@ You can set Syncs to run at a fixed time by using the cron notation, with the `c
 
 ### Unaligned frequency
 
-Alternatively, you can configure a Sync's frequency with the `frequency` parameter in the [Sync config options](sync-all-options.md).
+Alternatively, you can configure a Sync's frequency with the `frequency` parameter in the [Sync config options](sync-all-options.md). For a full list of supported formats check the [examples here](https://github.com/vercel/ms#readme).
 
 :::tip
 If no scheduling is specified for a Sync, it will run with a 1-hour frequency by default.
