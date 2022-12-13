@@ -139,7 +139,7 @@ let config = {
             github_org: owner,                             // The GitHub org
             github_repo: repo                              // The repo name
         },
-        unique_id: 'id',                                   // The key of the unique id in the records, for upserts
+        unique_key: 'id',                                   // The key of the unique id in the records, for upserts
 
         headers: {                                         // HTTP headers to be sent with every API request
             'Accept': 'application/vnd.github+json'                    // GitHub recommends passing this for every API request
@@ -167,7 +167,7 @@ new Nango().sync('https://api.github.com/repos/${owner}/${repo}/stargazers', nan
   "github_org": "NangoHQ",
   "github_repo": "nango"
 },
-"unique_id": 1,
+"unique_key": id,
 "headers": {
   "Accept": "application/vnd.github+json"
 },

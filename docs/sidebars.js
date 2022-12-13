@@ -21,15 +21,52 @@ const sidebars = {
       type: 'category',
       label: 'Using Nango Sync',
       items: [
+        
         {
           id: 'nango-sync/core-concepts',
           type: 'doc',
           label: 'Core concepts'
         },
         {
-          id: 'nango-sync/managing-syncs',
+          type: 'category',
+          label: 'Create Syncs',
+          items: [
+            {
+              id: 'nango-sync/sync-all-options',
+              type: 'doc',
+              label: 'All Options'
+            },
+            {
+              id: 'nango-sync/sync-modes',
+              type: 'doc',
+              label: 'Modes'
+            },
+            {
+              id: 'nango-sync/sync-schedule',
+              type: 'doc',
+              label: 'Scheduling'
+            },
+            {
+              id: 'nango-sync/sync-metadata',
+              type: 'doc',
+              label: 'Metadata'
+            },
+            {
+              id: 'nango-sync/sync-pagination',
+              type: 'doc',
+              label: 'Pagination'
+            },
+            {
+              id: 'nango-sync/sync-auth',
+              type: 'doc',
+              label: 'Authentication'
+            },
+          ]
+        },
+        {
+          id: 'nango-sync/manage-syncs',
           type: 'doc',
-          label: 'Creating & managing Syncs'
+          label: 'Manage Syncs'
         },
         {
           id: 'nango-sync/schema-mappings',

@@ -68,11 +68,11 @@ Currently the following transformations are supported:
   
 
 ### How to disable Auto Mapping
-Auto mapping is on by default for new Syncs. You can disable Auto Mapping for an individual Sync by setting the `auto_mapping` field to `false` in the [Sync config options](managing-syncs.md#sync-options).
+Auto mapping is on by default for new Syncs. You can disable Auto Mapping for an individual Sync by setting the `auto_mapping` field to `false` in the [Sync config options](sync-all-options.md).
 
 ## Configuring a Sync's destination table {#destination-table}
 
-You can configure a Sync's destination database table with the `mapped_table` parameter in the [Sync config options](managing-syncs.md#sync-options). 
+You can configure a Sync's destination database table with the `mapped_table` parameter in the [Sync config options](sync-all-options.md). 
 
 You can also configure multiple Syncs to send data to the same destination table, for this just pass the same value to the `mapped_table` parameter for these Syncs.
 
