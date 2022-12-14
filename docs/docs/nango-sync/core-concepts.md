@@ -24,7 +24,7 @@ The fastest way to understand Syncs is with some quick facts:
 - Syncs periodically write the data they fetch to a database & table of your choosing (more on this below)
 - Syncs automatically deal with paginated data, OAuth token refreshes etc.
 
-Learn more about [creating & managing Syncs](sync-all-options.md).
+Learn more about [creating & managing Syncs](sync-all-options.md) or look at the [full example of a Sync](#exampleSync) below.
 
 ## Storing & accessing the synced data
 
@@ -32,17 +32,17 @@ Accessing the data synced by Nango is easy: Just read it from your database.
 
 Every record contains a timestamp of when it was last updated, so fetching changes is also easy. Nango can tell your application every time a sync refresh (called a "sync job" in Nango) has finished and how many records have been inserted/updated.
 
-Nango also handles the data transformation from JSON to SQL (additionally to storing the raw data):
+Nango also handles the data transformation from JSON to SQL (in addition to storing the raw data):
 - Nango automatically transforms the synced data from [JSON to SQL](schema-mappings.md)
 - You can [attach Metadata](sync-metadata.md) to every record Nango syncs in (e.g. user id, account id)
-- You decide the destination table(s) Nango syncs the data to
+- You decide the destination table(s), for each Sync, Nango syncs the data to
 
 
 This means that you can **tell Nango to write the data from many Syncs to the same database table**, so your application only has a single table to query (e.g. fetch HubSpot contacts, GitHub repos, Google Calendar events etc). And thanks to the attached metadata it is easy to know which records belong to which user, company or anything else that matters to your application.
 
 The easiest way to see this all is with a simple example.
 
-## Full example of a Nango Sync
+## Full example of a Nango Sync {#exampleSync}
 
 Let's assume we have a SaaS application where users can signup and import all the Stargazers of their GitHub repos, so we can let them filter them, show them in the UI etc.
 
