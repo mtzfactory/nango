@@ -9,7 +9,7 @@ class Analytics {
     constructor() {
         this.distinctId = uuidv4();
 
-        if (process.env['NO_TELEMETRY']?.toLowerCase() != 'true' && process.env['NANGO_SERVER_RUN_MODE'] === 'DOCKERIZED') {
+        if (process.env['TELEMETRY']?.toLowerCase() != 'true' && process.env['SERVER_RUN_MODE'] === 'DOCKERIZED') {
             this.client = new PostHog(this.caesar(this.id, -5), { host: 'https://app.posthog.com' });
         }
     }

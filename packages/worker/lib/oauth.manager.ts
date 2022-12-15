@@ -1,12 +1,13 @@
 import type { Sync } from '@nangohq/core';
 import { logger } from '@nangohq/core';
 import { Pizzly } from '@nangohq/pizzly-node';
+import { getServerBaseUrl } from '@nangohq/core';
 
 class OAuthManager {
     pizzly: Pizzly | null;
 
     constructor() {
-        this.pizzly = process.env['PIZZLY_BASE_URL'] == null ? null : new Pizzly(process.env['PIZZLY_BASE_URL']);
+        this.pizzly = new Pizzly(getServerBaseUrl()); // The Pizzly server is embedded in the Nango server.
     }
 
     public async insertOAuthTokenIfNeeded(sync: Sync): Promise<Sync> {

@@ -1,8 +1,7 @@
 FROM node:18-slim
 
-ENV PORT=3003
 ENV NANGO_SERVER_ROOT_DIR=/usr/nango-server
-ENV NANGO_SERVER_RUN_MODE=DOCKERIZED
+ENV SERVER_RUN_MODE=DOCKERIZED
 ENV NANGO_DB_MIGRATION_FOLDER=./packages/core/db/migrations
 
 WORKDIR /usr/nango-server/src
@@ -12,7 +11,5 @@ COPY packages/server/ packages/server/
 COPY package*.json ./
 
 RUN npm install --omit=dev
-
-EXPOSE 3003
 
 ENTRYPOINT [ "node", "packages/server/dist/lib/server.js" ]
