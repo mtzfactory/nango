@@ -27,7 +27,8 @@ class SyncsController {
             max_total: req.body['max_total'],
             friendly_name: req.body['friendly_name'],
             metadata: req.body['metadata'],
-            status: SyncStatus.RUNNING
+            status: SyncStatus.RUNNING,
+            soft_delete: req.body['soft_delete'] || false // Default to hard delete.
         };
 
         let result = await syncsService.createSync(syncParams);

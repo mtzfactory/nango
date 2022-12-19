@@ -14,7 +14,9 @@
         "docker-build": "docker build -f packages/server/Dockerfile -t nangohq/server:latest . && docker build -f packages/worker/Dockerfile -t nangohq/worker:latest .",
         "ts-build": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/server packages/worker packages/node-client packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json",
         "build": "npm run ts-build && npm run docker-build",
-        "up": "docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml up"
+        "up": "docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml up",
+        "cli": "node ./examples/dist/bin/scripts.js",
+        "test": "node ./examples/dist/bin/test.js"
     },
     "devDependencies": {
         "@tsconfig/node18-strictest-esm": "^1.0.0",

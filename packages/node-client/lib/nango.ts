@@ -29,6 +29,7 @@ export interface NangoSyncConfig {
     max_total?: number;
     friendly_name?: string;
     metadata?: Record<string, string | number | boolean>;
+    soft_delete?: boolean;
 }
 
 export class Nango {
@@ -62,7 +63,8 @@ export class Nango {
             pizzly_provider_config_key: config.pizzly_provider_config_key,
             max_total: config.max_total,
             friendly_name: config.friendly_name,
-            metadata: config.metadata
+            metadata: config.metadata,
+            soft_delete: config.soft_delete
         };
 
         return await axios.post(`${this.serverUrl}/v1/syncs`, body, { headers: this.headers() }).catch((error: any) => {

@@ -24,6 +24,7 @@ export interface Sync {
     metadata?: Record<string, string | number | boolean>;
     friendly_name?: string;
     status: SyncStatus;
+    soft_delete: boolean;
 }
 
 // Unfortunately, the following enum is duplicated with workflows.ts.

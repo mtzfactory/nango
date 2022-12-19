@@ -64,7 +64,7 @@ class SchemaManager {
 
         for (var object of flatObjects) {
             let individualSchema = this.getIndividualSchema(object);
-            this.appendToSchema(individualSchema, schema);
+            schema = this.appendToSchema(individualSchema, schema);
         }
 
         return schema;
@@ -116,10 +116,12 @@ class SchemaManager {
             }
 
             // If type conflict (within the new objects), default to string type.
-            if (typeof schema[key] !== typeof object[key]) {
+            if (schema[key] !== object[key]) {
                 schema[key] = 'string';
             }
         }
+
+        return schema;
     }
 
     private async fetchPreviousSqlSchema(sync: Sync) {

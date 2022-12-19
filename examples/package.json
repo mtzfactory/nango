@@ -7,7 +7,11 @@
     "typings": "dist/main.d.ts",
     "scripts": {
         "start": "tsc && node dist/main.js",
-        "debug": "export DEBUG=* && npm run start"
+        "debug": "export DEBUG=* && npm run start",
+        "pause": "node dist/scripts.js pause",
+        "resume": "node dist/scripts.js resume",
+        "cancel": "node dist/scripts.js cancel",
+        "trigger": "node dist/scripts.js trigger"
     },
     "keywords": [],
     "repository": {

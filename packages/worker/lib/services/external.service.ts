@@ -1,4 +1,4 @@
-import type { Sync } from '@nangohq/core';
+import { Sync, isValidHttpUrl } from '@nangohq/core';
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import _ from 'lodash';
@@ -7,6 +7,7 @@ import { logger } from '@nangohq/core';
 import parseLinksHeader from 'parse-link-header';
 import oauthManager from '../oauth.manager.js';
 import dataService from './data.service.js';
+import md5 from 'md5';
 
 class ExternalService {
     async getRawObjects(sync: Sync): Promise<any[]> {
@@ -31,7 +32,7 @@ class ExternalService {
             var res: AxiosResponse<any, any> | void;
             let errorBlock = (error: any) => {
                 logger.error(`Error requesting external API ${sync.url} (Sync ID: ${sync.id}): ${error.message} (check debug logs for details).`);
-                logger.debug(`External API error details (Sync ID: ${sync.id}): ${sync.url}`);
+                logger.debug(`External API error details (Sync ID: ${sync.id}): ${error?.response?.data}`);
 
                 throw Error('External API error.');
             };
@@ -105,7 +106,7 @@ class ExternalService {
             }
 
             // URL-based pagination (with URL field in the metadata of the response).
-            if (sync.paging_url_path != null && this.isValidHttpUrl(_.get(res.data, sync.paging_url_path)) && results.length < maxNumberOfRecords) {
+            if (sync.paging_url_path != null && isValidHttpUrl(_.get(res.data, sync.paging_url_path)) && results.length < maxNumberOfRecords) {
                 sync.url = _.get(res.data, sync.paging_url_path);
                 continue;
             }
@@ -114,7 +115,7 @@ class ExternalService {
             if (sync.paging_header_link_rel != null && res.headers['link'] != null) {
                 let linkHeader = parseLinksHeader(res.headers['link']);
 
-                if (linkHeader != null && sync.paging_header_link_rel in linkHeader && this.isValidHttpUrl(linkHeader[sync.paging_header_link_rel]['url'])) {
+                if (linkHeader != null && sync.paging_header_link_rel in linkHeader && isValidHttpUrl(linkHeader[sync.paging_header_link_rel]['url'])) {
                     let nextPageUrl = linkHeader[sync.paging_header_link_rel]['url'];
                     sync.url = nextPageUrl;
                     continue;
@@ -137,29 +138,22 @@ class ExternalService {
         let rawObjs: RawObject[] = [];
 
         for (var rawObj of results) {
+            if (rawObj == null) {
+                continue;
+            }
+
             rawObjs.push({
                 sync_id: sync.id,
                 data: rawObj,
                 unique_key: sync.unique_key != null ? _.get(rawObj, sync.unique_key, dataService.defaultUniqueKey()) : dataService.defaultUniqueKey(),
                 emitted_at: new Date(),
-                metadata: sync.metadata || {}
+                metadata: sync.metadata || {},
+                data_hash: md5(JSON.stringify(rawObj)),
+                deleted_at: null
             });
         }
 
-        return rawObjs;
-    }
-
-    isValidHttpUrl(str: string) {
-        var pattern = new RegExp(
-            '^(https?:\\/\\/)?' + // protocol
-                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-                '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-                '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-                '(\\#[-a-z\\d_]*)?$',
-            'i'
-        ); // fragment locator
-        return !!pattern.test(str);
+        return [rawObjs, page];
     }
 }
 

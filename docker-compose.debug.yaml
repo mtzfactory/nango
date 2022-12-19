@@ -9,7 +9,7 @@ services:
         environment:
             - TELEMETRY=FALSE
     temporal-ui:
-        image: temporalio/ui:2.8.3
+        image: temporalio/ui:latest
         depends_on:
             - temporal
         container_name: temporal-ui

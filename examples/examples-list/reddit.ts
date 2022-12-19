@@ -9,7 +9,7 @@ export let syncRedditSubredditPosts = async (subreddit: string) => {
         paging_cursor_object_response_path: 'data.name', // For finding pagination data in responses.
         paging_cursor_request_path: 'after',             // For adding pagination data in requests.
         max_total: 100,                                  // For fetching limited records while testing.
-        frequency: '5 minutes'                           // How often sync jobs run in natural language.
+        frequency: '1 minute'                            // How often sync jobs run in natural language.
     };
 
     return new Nango().sync(`https://www.reddit.com/r/${subreddit}/new.json`, config);

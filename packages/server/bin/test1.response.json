@@ -1,0 +1,28 @@
+{
+    "results": [
+        {
+            "unique_key": "unique_key1",
+            "string_field": "string1",
+            "number_field": 1,
+            "json_field": { "string_field": "nested_string1" },
+            "date_field": "19/12/2022 09:54",
+            "boolean_field": true
+        },
+        {
+            "unique_key": "unique_key2",
+            "string_field": "string2",
+            "number_field": 2,
+            "json_field": { "string_field": "nested_string2" },
+            "date_field": "19/12/2022 09:55",
+            "boolean_field": false
+        },
+        {
+            "unique_key": "unique_key3",
+            "string_field": "string3",
+            "number_field": 3,
+            "json_field": { "string_field": "nested_string3" },
+            "date_field": "19/12/2022 09:56",
+            "boolean_field": true
+        }
+    ]
+}
