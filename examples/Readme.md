@@ -11,6 +11,7 @@ Before you run examples from this directory install the dependencies:
 git clone https://github.com/NangoHQ/nango.git
 cd nango
 npm i
+npm run ts-build
 ```
 
 Then make sure Nango is running:
