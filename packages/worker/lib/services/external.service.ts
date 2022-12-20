@@ -82,6 +82,8 @@ class ExternalService {
                 throw new Error('Empty response from external API.');
             }
 
+            logger.debug(`External API response (Sync ${sync.id}): ${JSON.stringify(res.data)}`);
+
             let newResults = sync.response_path != null ? _.get(res.data, sync.response_path) : res.data;
             results = results.concat(newResults);
 

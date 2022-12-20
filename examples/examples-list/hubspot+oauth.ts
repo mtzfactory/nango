@@ -1,10 +1,11 @@
 import { Nango, NangoHttpMethod } from '@nangohq/node-client';
 
-// CLI command: npm start syncHubspotContactsWithAuth
+// Test from the 'nango' folder root with command: npm run example syncHubspotContactsWithAuth
 // Endpoint docs: https://developers.hubspot.com/docs/api/crm/contacts
 export let syncHubspotContactsWithAuth = async () => {
     let config = {
         friendly_name: 'Hubspot Contacts With Auth',               // Give this Sync a name for prettier logs.
+        mapped_table: 'hubspot_contacts',                          // Name of the destination SQL table
         method: NangoHttpMethod.POST,                              // Required info to query the right endpoint.
         headers: { authorization: "Bearer ${pizzlyAccessToken}" }, // For auth, using Pizzly Oauth (cf. github.com/NangoHQ/Pizzly).
         body: { limit: 10 },                                       // Specifying each page's size

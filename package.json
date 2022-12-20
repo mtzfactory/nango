@@ -12,11 +12,12 @@
         "prettier-watch": "onchange './**/*.ts' -- prettier --write {{changed}}",
         "lint": "eslint . --ext .ts",
         "docker-build": "docker build -f packages/server/Dockerfile -t nangohq/server:latest . && docker build -f packages/worker/Dockerfile -t nangohq/worker:latest .",
-        "ts-build": "./node_modules/typescript/bin/tsc -b --clean packages/core packages/server packages/worker packages/node-client packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json",
+        "ts-build": "./node_modules/typescript/bin/tsc -b --clean examples packages/core packages/server packages/worker packages/node-client packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json",
         "build": "npm run ts-build && npm run docker-build",
         "up": "docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml up",
-        "cli": "node ./examples/dist/bin/scripts.js",
-        "test": "node ./examples/dist/bin/test.js"
+        "cli": "npm run ts-build && node ./examples/dist/bin/scripts.js",
+        "test": "npm run ts-build && node ./examples/dist/bin/test.js",
+        "example": "npm run ts-build && node ./examples/dist/main.js"
     },
     "devDependencies": {
         "@tsconfig/node18-strictest-esm": "^1.0.0",

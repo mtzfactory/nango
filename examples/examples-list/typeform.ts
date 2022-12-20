@@ -1,6 +1,6 @@
 import { Nango } from '@nangohq/node-client';
 
-// CLI command: npm start syncTypeformResponses [api-token] [form-id]
+// Test from the 'nango' folder root with command: npm run example syncTypeformResponses [api-token] [form-id]
 // Endpoint docs: https://developer.typeform.com/responses/reference/retrieve-responses/
 export let syncTypeformResponses = async (api_token: string, form_id: string) => {
     let config = {

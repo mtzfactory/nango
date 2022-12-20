@@ -1,9 +1,3 @@
-// Import environment variables (if running server locally).
-import * as dotenv from 'dotenv';
-if (process.env['SERVER_RUN_MODE'] !== 'DOCKERIZED') {
-    dotenv.config({ path: '../../.env' });
-}
-
 import express from 'express';
 import cors from 'cors';
 import { db } from '@nangohq/core';

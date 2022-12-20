@@ -5,8 +5,7 @@
     "type": "module",
     "main": "dist/lib/worker.js",
     "scripts": {
-        "start": "tsc && node dist/lib/worker.js",
-        "debug": "export DEBUG=* && npm run start"
+        "start": "tsc && node -r dotenv/config dist/lib/worker.js dotenv_config_path=./../../.env"
     },
     "keywords": [],
     "repository": {

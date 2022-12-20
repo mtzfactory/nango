@@ -5,8 +5,7 @@
     "type": "module",
     "main": "dist/lib/server.js",
     "scripts": {
-        "start": "tsc && node dist/lib/server.js",
-        "debug": "export DEBUG=* && npm run start"
+        "start": "tsc && node -r dotenv/config dist/lib/server.js dotenv_config_path=./../../.env"
     },
     "keywords": [],
     "repository": {

@@ -1,6 +1,6 @@
 import { Nango } from '@nangohq/node-client';
 
-// CLI command: npm start syncGoogleCalendarEvents [CalendarID] [OAuth token]
+// Test from the 'nango' folder root with command: npm run example syncGoogleCalendarEvents [CalendarID] [OAuth token]
 // Endpoint documentation: https://developers.google.com/calendar/api/v3/reference/events/list
 export let syncGoogleCalendarEvents = async (calendar_id: string, oauth_token: string) => {
     let config = {
