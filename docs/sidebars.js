@@ -69,6 +69,11 @@ const sidebars = {
           label: 'Manage Syncs'
         },
         {
+          id: 'nango-sync/sync-notifications',
+          type: 'doc',
+          label: 'Sync Notifications'
+        },
+        {
           id: 'nango-sync/schema-mappings',
           type: 'doc',
           label: 'Schema mappings'

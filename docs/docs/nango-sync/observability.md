@@ -14,7 +14,8 @@ Each jobs displays information about:
 - Status
 - Error message (in case of failure)
 - Error stack trace (in case of failure)
-- Created & updated row counts (in case of success)
+- Added/updated/deleted/unchanged row counts (in case of success)
+- Page count
 - Attempts
 
 ## Inspect logs

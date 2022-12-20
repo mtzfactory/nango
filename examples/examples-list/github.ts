@@ -13,11 +13,9 @@ export let syncGithubStargazers = async (owner: string, repo: string, user_id: s
             github_repo: repo                              // The repo name
         },
         unique_key: 'id',                                  // The key of the unique id in the records, for upserts
-
         headers: {                                         // HTTP headers to be sent with every API request
             'Accept': 'application/vnd.github+json'        // GitHub recommends passing this for every API request
         },
-
         paging_header_link_rel: 'next',                    // For pagination.
     };
 

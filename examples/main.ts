@@ -29,12 +29,12 @@ var function_name;
 try {
     function_name = process.argv.slice(2)[0];
 } catch (e) {
-    console.log("Pass in a function name as argument (from the 'examples-list/*.ts' files), e.g. 'npm run start syncPokemonList'.");
+    console.log("Pass in a function name as argument (from the 'examples-list/*.ts' files), e.g. 'npm run example syncPokemonList'.");
     process.exit(1);
 }
 
 if (function_name == null) {
-    console.log("Pass in a function name as argument (from the 'examples-list/*.ts' files), e.g. 'npm run start syncPokemonList'.");
+    console.log("Pass in a function name as argument (from the 'examples-list/*.ts' files), e.g. 'npm run example syncPokemonList'.");
     process.exit(1);
 }
 

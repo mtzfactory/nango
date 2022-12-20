@@ -11,7 +11,8 @@
         "pause": "node dist/scripts.js pause",
         "resume": "node dist/scripts.js resume",
         "cancel": "node dist/scripts.js cancel",
-        "trigger": "node dist/scripts.js trigger"
+        "trigger": "node dist/scripts.js trigger",
+        "example": "../node_modules/typescript/bin/tsc -b ../tsconfig.build.json && node ./dist/main.js"
     },
     "keywords": [],
     "repository": {

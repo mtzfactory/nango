@@ -3,7 +3,7 @@ slug: '/pizzly/'
 sidebar_label: Introduction
 ---
 
-# Pizzly: The fast & flexible way to get OAuth tokens for 50+ APIs
+# Get OAuth tokens for external APIs, fast
 
 Pizzly takes care of the OAuth dance for you and makes sure your access tokens always stay fresh.
 
@@ -45,9 +45,9 @@ More than 50 APIs are preconfigured to work out-of-the-box. Including:
 - **Accounting**: Xero, Sellsy, Zoho Books, etc.
 - **Productivity**: Asana, Airtable, Google Drive, Google Calendar, Trello, Google sheets etc.
 - **Social**: Twitter, LinkedIn, Reddit, Facebook etc.
-- [and more...](https://github.com/NangoHQ/Pizzly/blob/master/packages/server/templates.yaml)
+- [and more...](https://nango.dev/oauth-providers)
 
-If your favorite API is missing [open a GitHub issue](https://github.com/NangoHQ/Pizzly/issues/new) or [contribute it right away](contribute-api.md): The API configurations are just simple [entries in a YAML file](https://github.com/NangoHQ/Pizzly/blob/master/packages/server/templates.yaml).
+If your favorite API is missing [open a GitHub issue](https://github.com/NangoHQ/Pizzly/issues/new) or [contribute it right away](contribute-api.md): The API configurations are just simple [entries in a YAML file](https://nango.dev/oauth-providers).
 
 ## 🛡️ Small, self-contained & ready for production
 
@@ -68,6 +68,6 @@ Pizzly can be added to your product in just 15-20 minutes with our [getting star
 
 Or explore more about Pizzly:
 - For a first impression check out the [Quickstart](https://github.com/NangoHQ/Pizzly#quickstart) on our GitHub repo
-- Explore [the full list of supported APIs](https://github.com/NangoHQ/Pizzly/blob/master/packages/server/templates.yaml)
+- Explore [the full list of supported APIs](https://nango.dev/oauth-providers)
 - [Contribute a new API](contribute-api.md)
 - Share feedback or ask questions on the [Slack community](https://nango.dev/slack)

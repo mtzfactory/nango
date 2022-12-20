@@ -47,11 +47,16 @@ let config = {
     // Fetching records & uniquely identifying them
     //==================
     response_path: 'data.results',  // The path to the result objects inside the external API response.
-    unique_key: 'profile.email',    // The key in the result objects used for deduping (e.g. email, id) + enables Full Refresh + Upsert syncing mode.
+    unique_key: 'profile.email',    // The key in the result objects used for deduping (e.g. email, id) + enables Upsert syncing mode.
     metadata: {                     // Will be attached to every synced record. 1 column per key.
         user_id: 123,
         company: 'supercorp'
     }
+
+    //==================
+    // Deletion modes
+    //==================
+    soft_delete: false,             // Defaults to false. Soft Delete Mode will keep deleted records in the db and add the deletion date in a 'deleted_at' column.
 
     //==================
     // Pagination

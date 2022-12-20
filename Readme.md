@@ -4,7 +4,7 @@
 
 </div>
 
-<h1 align="center">The fast & flexible way to sync data from 3rd party APIs</h1>
+<h1 align="center">Sync external APIs to your DB, fast.</h1>
 
 <div align="center">
 Nango continuously syncs data from any API endpoint to your database and keeps it fresh for you.

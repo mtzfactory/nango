@@ -12,7 +12,7 @@ If you find a bug with one of the existing APIs feel free to use these steps to 
 
 Support for the OAuth flow of different APIs in Pizzly is implemented with templates: A small config that tells Pizzly how to perform the OAuth flow for the specific API.
 
-All templates of Pizzly live in a single file called [templates.yaml](https://github.com/NangoHQ/Pizzly/blob/master/packages/server/templates.yaml) in the server package. [More about YAML here](https://yaml.org/).
+All templates of Pizzly live in a single file called [providers.yaml](https://nango.dev/oauth-providers) in the server package. [More about YAML here](https://yaml.org/).
 
 Most templates only need to make use of 2-3 configuration keys, but in some cases you might need more.
 For a full list of configuration options please check the [type definitions here](https://github.com/NangoHQ/Pizzly/blob/master/packages/server/lib/models.ts).
@@ -35,9 +35,9 @@ provider_slug:                                              # Shorthand for the 
     scope_separator: ','                                    # String to use to separate scopes. Defaults to ' ' (1 space) if not provided
 ```
 
-## Step 1: Add your new API to `templates.yaml`
+## Step 1: Add your new API to `providers.yaml`
 
-Fork the repo and edit the `templates.yaml` file as explained above to add support for the new API. The API documentation should contain all the details you need on the OAuth flow to complete this step.
+Fork the repo and edit the `packages/auth/providers.yaml` file as explained above to add support for the new API. The API documentation should contain all the details you need on the OAuth flow to complete this step.
 
 [We are here](#where-to-get-help) if you need help with this.
 
