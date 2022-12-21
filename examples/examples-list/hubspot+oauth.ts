@@ -1,8 +1,8 @@
 import { Nango, NangoHttpMethod } from '@nangohq/node-client';
 
-// Test from the 'nango' folder root with command: npm run example syncHubspotContactsWithAuth
+// Test from the 'nango' folder root with command: npm run example syncHubspotContactsWithAuth [PIZZLY-PROVIDER-CONFIG-KEY] [PIZZLY-CONNECTION-ID] 
 // Endpoint docs: https://developers.hubspot.com/docs/api/crm/contacts
-export let syncHubspotContactsWithAuth = async () => {
+export let syncHubspotContactsWithAuth = async (pizzlyProviderConfigKey: string, pizzlyConnectionId: string) => {
     let config = {
         friendly_name: 'Hubspot Contacts With Auth',               // Give this Sync a name for prettier logs.
         mapped_table: 'hubspot_contacts',                          // Name of the destination SQL table
@@ -15,8 +15,8 @@ export let syncHubspotContactsWithAuth = async () => {
         unique_key: 'id',                                          // Provide response field path for deduping records.
         max_total: 30,                                             // For fetching limited records while testing.
         frequency: '1 minute',                                     // How often sync jobs run in natural language.
-        pizzly_connection_id: '1',                                 // Pre-configured Pizzly connection ID (cf. github.com/NangoHQ/Pizzly).
-        pizzly_provider_config_key: 'hubspot'                      // Pre-configured Pizzly provider configuration (cf. github.com/NangoHQ/Pizzly).
+        pizzly_connection_id: pizzlyConnectionId,                                 // Pre-configured Pizzly connection ID (cf. github.com/NangoHQ/Pizzly).
+        pizzly_provider_config_key: pizzlyProviderConfigKey                      // Pre-configured Pizzly provider configuration (cf. github.com/NangoHQ/Pizzly).
     };
 
     return new Nango().sync('https://api.hubapi.com/crm/v3/objects/contacts/search', config);

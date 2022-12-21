@@ -52,7 +52,8 @@ switch (function_name) {
         await syncHubspotContacts(parseArguments(1)[0]!).then(logSuccess);
         break;
     case 'syncHubspotContactsWithAuth':
-        await syncHubspotContactsWithAuth().then(logSuccess);
+        args = parseArguments(2);
+        await syncHubspotContactsWithAuth(args[0]!, args[1]!).then(logSuccess);
         break;
     case 'syncPokemonList':
         await syncPokemonList().then(logSuccess);
@@ -70,8 +71,8 @@ switch (function_name) {
         await syncTypeformResponses(args[0]!, args[1]!).then(logSuccess);
         break;
     case 'syncGmailEmails':
-        args = parseArguments(1);
-        await syncGmailEmails(args[0]!).then(logSuccess);
+        args = parseArguments(3);
+        await syncGmailEmails(args[0]!, args[1]!, args[2]!).then(logSuccess);
         break;
     case 'syncGoogleCalendarEvents':
         args = parseArguments(2);
