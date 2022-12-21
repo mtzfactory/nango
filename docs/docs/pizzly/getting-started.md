@@ -120,11 +120,11 @@ import { Pizzly } from '@nangohq/pizzly-node'
 // Tell Pizzly where to find your Pizzly server
 let pizzly = new Pizzly('http://localhost:3004');
 
-let access_token = await pizzly.accessToken('<connection-id>', '<config-key>');
+let access_token = await pizzly.accessToken('<config-key>', '<connection-id>');
 
 // Sometimes you need access to the raw response from the server that was sent along with the access token (because it contains additional metadata you need)
 // You can access the latest response with this method
-let raw_token_response = await pizzly.rawTokenResponse('<connection-id>', '<config-key>');
+let raw_token_response = await pizzly.rawTokenResponse('<config-key>', '<connection-id>');
 ```
 
 ### Getting an access token - REST API {#rest-api}

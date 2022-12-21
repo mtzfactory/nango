@@ -17,7 +17,12 @@ class OAuthManager {
             return syncCp;
         }
 
-        let accessToken = await this.pizzly.accessToken(syncCp.pizzly_connection_id, syncCp.pizzly_provider_config_key);
+        let accessToken = await this.pizzly.accessToken(syncCp.pizzly_provider_config_key, syncCp.pizzly_connection_id).catch((err) => {
+            // Invert params
+            throw new Error(
+                `Access token request to Pizzly failed: ${err?.response?.data?.error != null ? JSON.stringify(err.response.data.error) : JSON.stringify(err)}`
+            );
+        });
 
         logger.debug(`Authenticating request for Pizzly provider ${syncCp.pizzly_provider_config_key} and connection ${syncCp.pizzly_connection_id}.`);
 

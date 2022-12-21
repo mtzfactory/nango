@@ -6,6 +6,7 @@ import {syncRedditSubredditPosts} from './examples-list/reddit.js'
 import {syncSlackMessages} from './examples-list/slack.js'
 import {syncTypeformResponses} from './examples-list/typeform.js'
 import {syncGoogleCalendarEvents} from './examples-list/google-calendar.js'
+import {syncGmailEmails} from './examples-list/gmail+oauth.js';
 
 let parseArguments = (arg_count: number) => {
     const args = process.argv.slice(3);
@@ -67,6 +68,10 @@ switch (function_name) {
     case 'syncTypeformResponses':
         args = parseArguments(2);
         await syncTypeformResponses(args[0]!, args[1]!).then(logSuccess);
+        break;
+    case 'syncGmailEmails':
+        args = parseArguments(1);
+        await syncGmailEmails(args[0]!).then(logSuccess);
         break;
     case 'syncGoogleCalendarEvents':
         args = parseArguments(2);

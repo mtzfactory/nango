@@ -14,6 +14,7 @@ export let syncHubspotContactsWithAuth = async () => {
         response_path: 'results',                                  // For finding records in the API response.
         unique_key: 'id',                                          // Provide response field path for deduping records.
         max_total: 30,                                             // For fetching limited records while testing.
+        frequency: '1 minute',                                     // How often sync jobs run in natural language.
         pizzly_connection_id: '1',                                 // Pre-configured Pizzly connection ID (cf. github.com/NangoHQ/Pizzly).
         pizzly_provider_config_key: 'hubspot'                      // Pre-configured Pizzly provider configuration (cf. github.com/NangoHQ/Pizzly).
     };
