@@ -110,11 +110,11 @@ class Tests {
         }
     }
 
-    async checkResults(syncId: number, delay) {
+    async checkResults(syncId: number, delay: number) {
         let sync: Sync = (await db.knex.withSchema('nango').select('*').from<Sync>(`_nango_syncs`).where({ id: syncId }))[0]!;
         let job = (await db.knex.withSchema('nango').select('*').from(`_nango_jobs`).where({ sync_id: syncId }).limit(1).orderBy('started_at', 'desc'))[0]!;
 
-        if (new Date().getTime() - job.started_at > delay + 1000) {
+        if (job == null || new Date().getTime() - job.started_at > delay + 1000) {
             throw Error(`❌ Test failed: No recent job.`);
         }
 
@@ -160,11 +160,28 @@ class Tests {
             { providerKey: process.env['NANGO_TEST_GMAIL_PROVIDER']!, refreshToken: process.env['NANGO_TEST_GMAIL_REFRESH_TOKEN']! }
         ];
 
+        let providerConfigs: { unique_key: string; provider: string; oauth_client_id: string; oauth_client_secret: string; oauth_scopes: string }[] = [
+            {
+                unique_key: process.env['NANGO_TEST_HUBSPOT_PROVIDER']!,
+                provider: process.env['NANGO_TEST_HUBSPOT_PROVIDER']!,
+                oauth_client_id: process.env['NANGO_TEST_HUBPOST_CLIENT']!,
+                oauth_client_secret: process.env['NANGO_TEST_HUBPOST_SECRET']!,
+                oauth_scopes: process.env['NANGO_TEST_HUBPOST_SCOPES']!
+            },
+            {
+                unique_key: process.env['NANGO_TEST_GMAIL_PROVIDER']!,
+                provider: process.env['NANGO_TEST_GMAIL_PROVIDER']!,
+                oauth_client_id: process.env['NANGO_TEST_GMAIL_CLIENT']!,
+                oauth_client_secret: process.env['NANGO_TEST_GMAIL_SECRET']!,
+                oauth_scopes: process.env['NANGO_TEST_GMAIL_SCOPES']!
+            }
+        ];
+
         await db.knex(`pizzly._pizzly_connections`).del();
-        await db.knex(`pizzly._pizzly_connections`).insert(
-            allCredParams.map((o) => this.getOAuth2Creds(o)),
-            ['id']
-        );
+        await db.knex(`pizzly._pizzly_connections`).insert(allCredParams.map((o) => this.getOAuth2Creds(o)));
+
+        await db.knex(`pizzly._pizzly_configs`).del();
+        await db.knex(`pizzly._pizzly_configs`).insert(providerConfigs);
     }
 
     getOAuth2Creds(credParams: { providerKey: string; refreshToken: string }) {
@@ -173,9 +190,9 @@ class Tests {
             connection_id: '1',
             credentials: {
                 type: 'OAUTH2',
-                accessToken: '',
-                refreshToken: credParams.refreshToken,
-                expiresAt: '2020-12-22T10:00:22.884Z'
+                access_token: '',
+                refresh_token: credParams.refreshToken,
+                expires_at: '2020-12-22T10:00:22.884Z'
             }
         };
     }

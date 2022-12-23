@@ -23,7 +23,7 @@ Pizzly is easy to try in 5 minutes and can be deployed in 10.
 Start a **new OAuth flow with 2 lines of code in your frontend**:
 
 ```ts
-var pizzly = new Pizzly('https://localhost:3004')
+var pizzly = new Pizzly('https://localhost:3003')
 
 // Trigger an OAuth flow for the user to authenticate with Slack
 let result = await pizzly.auth('slack', '<user-id>')

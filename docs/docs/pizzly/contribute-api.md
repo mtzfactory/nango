@@ -35,6 +35,8 @@ provider_slug:                                              # Shorthand for the 
     scope_separator: ','                                    # String to use to separate scopes. Defaults to ' ' (1 space) if not provided
 ```
 
+Templates support [string interpolation for dynamic URLs](./pizzly-configuration.md#connection-config). 
+
 ## Step 1: Add your new API to `providers.yaml`
 
 Fork the repo and edit the `packages/auth/providers.yaml` file as explained above to add support for the new API. The API documentation should contain all the details you need on the OAuth flow to complete this step.
@@ -71,7 +73,7 @@ cd packages/server
 npm run start
 ```
 
-After a short while you should see a message that the server is running an listening on port 3004.
+After a short while you should see a message that the server is running an listening on port 3003.
 
 ## Step 3: Submit your PR
 

@@ -129,6 +129,11 @@ const sidebars = {
           id: 'pizzly/pizzly-configuration',
           type: 'doc',
           label: 'Other Configuration'
+        },
+        {
+          id: 'pizzly/pizzly-cli',
+          type: 'doc',
+          label: 'CLI'
         }
       ]
     },

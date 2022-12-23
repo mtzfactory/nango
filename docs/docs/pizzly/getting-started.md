@@ -16,8 +16,8 @@ The first step is to start the Pizzly server locally or deploy to a cloud provid
 
 For this guide we will stick to a local deployment:
 ```bash
-git clone https://github.com/NangoHQ/Pizzly.git
-cd Pizzly
+git clone https://github.com/NangoHQ/Pizzly.git && cd Pizzly 
+# If using Nango with OAuth, replace previous command by 'git clone https://github.com/NangoHQ/nango.git && cd nango'.
 docker compose up
 ```
 
@@ -38,7 +38,7 @@ To run OAuth flows from your application you need to setup each provider that yo
 :::info Callback URL
 When you setup your application with the OAuth provider they will ask you for a callback URL.
 
-For Pizzly the callback URL is always `[PIZZLY_SERVER_URL]/oauth/callback`, so if Pizzly runs on your local machine the callback URL is `http://localhost:3004/oauth/callback`
+For Pizzly the callback URL is always `[PIZZLY_SERVER_URL]/oauth/callback`, so if Pizzly runs on your local machine the callback URL is `http://localhost:3003/oauth/callback`
 :::
 
 With this information you are now ready to configure & enable your first OAuth provider. Here we setup a GitHub config as an example:
@@ -47,7 +47,7 @@ npx pizzly config:create github github <client-id> <client-secret> "<scopes>"
 ```
 If you want to see the help for this command (and all others) run `npx pizzly help` and it will print the help for you.
 
-Now run `npx pizzly config:list` again and you should see your freshly added config 🎉
+Now run `npx pizzly config:list` again and you should see your freshly added config 🎉 (and run `npx pizzly` to see the list of all available CLI commands).
 
 ## Step 2: Trigger the OAuth flow from your frontend
 
@@ -61,8 +61,8 @@ Add the following scripts to your HTML headers (or use the `@nangohq/pizzly-fron
 
 Once you created an instance of Pizzly (which tells the frontend where to find your Pizzly server) triggering a new OAuth flow is easy:
 ```ts
-// Replace 'http://localhost:3004' with the host (and port) where your Pizzly server can be accessed
-var pizzly = new Pizzly('http://localhost:3004');
+// Replace 'http://localhost:3003' with the host (and port) where your Pizzly server can be accessed
+var pizzly = new Pizzly('http://localhost:3003');
 
 // Trigger an OAuth flow
 // The first parameter is the config key you set up in step 1
@@ -118,13 +118,13 @@ Then in your code, setup a Pizzly instance and get an access token whenever you 
 import { Pizzly } from '@nangohq/pizzly-node'
 
 // Tell Pizzly where to find your Pizzly server
-let pizzly = new Pizzly('http://localhost:3004');
+let pizzly = new Pizzly('http://localhost:3003');
 
-let access_token = await pizzly.accessToken('<config-key>', '<connection-id>');
+let accessToken = await pizzly.accessToken('<config-key>', '<connection-id>');
 
 // Sometimes you need access to the raw response from the server that was sent along with the access token (because it contains additional metadata you need)
 // You can access the latest response with this method
-let raw_token_response = await pizzly.rawTokenResponse('<config-key>', '<connection-id>');
+let rawTokenResponse = await pizzly.rawTokenResponse('<config-key>', '<connection-id>');
 ```
 
 ### Getting an access token - REST API {#rest-api}
@@ -136,33 +136,25 @@ Note that you must pass in a `Content-Type: application/json` header along with 
 Here is an example curl command for Pizzly running on your local machine:
 ```bash
 curl -XGET -H "Content-type: application/json" \
-'http://localhost:3004/connection/<connection-id>?provider_config_key=<config-key>'
+'http://localhost:3003/connection/<connection-id>?provider_config_key=<config-key>'
 ```
 
 This API call will return you a JSON object that contains the refreshed access token as well as additional material (example):
 ```json
 {
-  "connection": {
-    "id": "<connection-id>",
-    "created_at": "2022-11-25T15:55:07.215Z",
-    "updated_at": "2022-11-25T15:55:07.215Z",
-    "provider_config_key": "<config-key>",
-    "connection_id": "1",
-    "credentials": {
-      "type": "OAUTH2",
-      "accessToken": "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", // <--- Use this access token for API requests
-      "raw": {                                                   // <--- If you need access to the raw token response from the server, use this
-        "access_token": "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",
-        "token_type": "bearer",
-        "scope": "public_repo,user"
-      }
-    },
-    "raw_response": {
-      "access_token": "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",
-      "token_type": "bearer",
-      "scope": "public_repo,user"
-    }
-  }
+  "id": "<internal-pizzly-id-to-ignore>",
+  "created_at": "2022-11-25T15:55:07.215Z",
+  "updated_at": "2022-11-25T15:55:07.215Z",
+  "provider_config_key": "<config-key>",
+  "connection_id": "<connection-id>",
+  "credentials": {
+    "type": "OAUTH2",
+    "access_token": "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", // <--- Use this access token for API requests
+    "refresh_token": "gho_aalskdjfnlaisdhfliuhlaienflinsaldir", 
+    "expires_at":"2022-12-22T15:52:30.453Z",
+    "raw": {...}                                                
+  },
+  "connection_config": {...}
 }
 ```
 

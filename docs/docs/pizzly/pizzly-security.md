@@ -24,12 +24,20 @@ When initializing the `Pizzly` object, pass in the API key in the `secretKey` pa
 import { Pizzly } from '@nangohq/pizzly-node'
 
 // Tell Pizzly where to find your Pizzly server + the secret API key.
-let pizzly = new Pizzly('http://localhost:3004', apiKey);
+let pizzly = new Pizzly('http://localhost:3003', apiKey);
 ```
 
 ### REST API
 
-Add an `Authorization` header to your requests with value: `encode_base_64([YOUR-SECRET-API-KEY]:)`
+Add a Basic `Authorization` header to your requests. To generate the header value: 
+1. Append the character `:` to your secret API key
+2. Encode this (`[SECRET-API-KEY] + ':'`) in Base 64
+3. The final header value should be `Basic [ENCODED-VALUE]`
+
+In Javascript, setting the authorization header looks like this: 
+```javascript
+headers['Authorization'] = 'Basic ' + Buffer.from(process.env['PIZZLY_SECRET_KEY'] + ':').toString('base64');
+```
 
 ## Publishable key for frontend OAuth flow
 
@@ -42,6 +50,6 @@ Once you redeploy Pizzly, it will expect this publishable key for initiating OAu
 In your frontend code, you should now initiate the `Pizzly` object with the publishable key as additional parameter: 
 
 ```ts
-var pizzly = new Pizzly('http://localhost:3004', publishableKey);
+var pizzly = new Pizzly('http://localhost:3003', publishableKey);
 ```
 
