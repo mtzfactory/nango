@@ -3,4 +3,3 @@ coverages
 dist
 node_modules
 docs/*
-examples/*

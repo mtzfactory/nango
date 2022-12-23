@@ -16,7 +16,8 @@
         "build": "npm run ts-build && npm run docker-build",
         "up": "docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml up",
         "cli": "npm run ts-build && node ./examples/dist/bin/scripts.js",
-        "test": "npm run ts-build && node ./examples/dist/bin/test.js",
+        "test:local": "npm run ts-build && node ./examples/dist/tests/test.js",
+        "test:docker": "npm run ts-build && node ./examples/dist/tests/test.js docker",
         "example": "npm run ts-build && node ./examples/dist/main.js"
     },
     "devDependencies": {

@@ -27,6 +27,6 @@
         "rootDir": ".",
         "outDir": "dist"
     },
-    "references": [{ "path": "../packages/node-client" }],
+    "references": [{ "path": "../packages/node-client" }, { "path": "../packages/core" }],
     "include": ["./**/*"]
 }

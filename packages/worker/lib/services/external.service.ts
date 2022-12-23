@@ -31,10 +31,8 @@ class ExternalService {
             let config: AxiosRequestConfig = { headers: syncWithAuth.headers || {}, params: syncWithAuth.query_params || {} };
             var res: AxiosResponse<any, any> | void;
             let errorBlock = (error: any) => {
-                logger.error(`Error requesting external API ${sync.url} (Sync ID: ${sync.id}): ${error.message} (check debug logs for details).`);
-                logger.debug(`External API error details (Sync ID: ${sync.id}): ${error?.response?.data}`);
-
-                throw Error('External API error.');
+                let errDesc = error?.response?.data != null ? JSON.stringify(error?.response?.data) : error.message;
+                throw Error(`External API error (URL: ${sync.url} - Sync ID: ${sync.id}): ${errDesc}`);
             };
 
             //  Fetching subsequent page with cursor.

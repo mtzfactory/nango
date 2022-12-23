@@ -93,7 +93,7 @@ export async function syncActivity(syncId: number): Promise<void> {
         webhookService.notifyError(sync, job);
 
         logger.info(`Job ${job.id} failed on attempt ${job.attempt} (Sync ID: ${syncId}).`);
-        logger.error(`Job ${job.id} (Sync ID: ${syncId}) detailed error: ${JSON.stringify(err, Object.getOwnPropertyNames(err))}`);
+        logger.error(`Job ${job.id} (Sync ID: ${syncId}) detailed error: ${err.message}`);
 
         trackJobFinished(sync, job);
 

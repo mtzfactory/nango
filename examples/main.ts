@@ -5,7 +5,7 @@ import {syncPokemonList} from './examples-list/pokemon.js'
 import {syncRedditSubredditPosts} from './examples-list/reddit.js'
 import {syncSlackMessages} from './examples-list/slack.js'
 import {syncTypeformResponses} from './examples-list/typeform.js'
-import {syncGoogleCalendarEvents} from './examples-list/google-calendar.js'
+import {syncGoogleCalendarEvents} from './examples-list/gcal+oauth.js'
 import {syncGmailEmails} from './examples-list/gmail+oauth.js';
 
 let parseArguments = (arg_count: number) => {
@@ -42,11 +42,12 @@ if (function_name == null) {
 var args: string[] = [];
 switch (function_name) {
     case 'syncGithubStargazers':
-        args = parseArguments(3);
-        await syncGithubStargazers(args[0]!, args[1]!, args[2]!).then(logSuccess);
+        args = parseArguments(2);
+        await syncGithubStargazers(args[0]!, args[1]!).then(logSuccess);
         break;
     case 'syncGithubUserRepos':
-        await syncGithubUserRepos(parseArguments(1)[0]!).then(logSuccess);
+        args = parseArguments(2);
+        await syncGithubUserRepos(args[0]!, args[1]!).then(logSuccess);
         break;
     case 'syncHubspotContacts':
         await syncHubspotContacts(parseArguments(1)[0]!).then(logSuccess);
@@ -75,8 +76,8 @@ switch (function_name) {
         await syncGmailEmails(args[0]!, args[1]!, args[2]!).then(logSuccess);
         break;
     case 'syncGoogleCalendarEvents':
-        args = parseArguments(2);
-        await syncGoogleCalendarEvents(args[0]!, args[1]!).then(logSuccess);
+        args = parseArguments(3);
+        await syncGoogleCalendarEvents(args[0]!, args[1]!, args[2]!).then(logSuccess);
         break;
     default:
         console.log("Unknown function name, please pick a function name from the 'examples-list/*.ts' files.'");

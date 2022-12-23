@@ -19,10 +19,7 @@ app.use(cors());
 
 app.route(`/v1/syncs`).put(syncsController.editSync);
 app.route(`/v1/syncs`).post(syncsMiddleware.validateCreateSyncRequest, syncsController.createSync);
-
-if (process.env['SERVER_RUN_MODE'] !== 'DOCKERIZED') {
-    app.route(`/test`).get(testController.test.bind(testController));
-}
+app.route(`/test`).get(testController.test.bind(testController));
 
 authServer.setup(app);
 
