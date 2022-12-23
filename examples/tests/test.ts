@@ -170,7 +170,7 @@ class Tests {
             },
             {
                 unique_key: process.env['NANGO_TEST_GMAIL_PROVIDER']!,
-                provider: process.env['NANGO_TEST_GMAIL_PROVIDER']!,
+                provider: process.env['NANGO_TEST_GMAIL_TEMPLATE']!,
                 oauth_client_id: process.env['NANGO_TEST_GMAIL_CLIENT']!,
                 oauth_client_secret: process.env['NANGO_TEST_GMAIL_SECRET']!,
                 oauth_scopes: process.env['NANGO_TEST_GMAIL_SCOPES']!
