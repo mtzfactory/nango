@@ -1,0 +1,77 @@
+version: '3.9'
+x-logging: &default-logging
+    options:
+        max-size: '100m'
+        max-file: '5'
+    driver: json-file
+services:
+    nango-db:
+        image: postgres
+        logging: *default-logging
+        container_name: nango-db
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: nango
+            POSTGRES_USER: nango
+            POSTGRES_DB: nango
+        ports:
+            - '5432:5432'
+        networks:
+            - nango
+
+    nango-server:
+        image: nango.docker.scarf.sh/nangohq/server
+        logging: *default-logging
+        container_name: nango-server
+        restart: always
+        environment:
+            - TEMPORAL_ADDRESS=temporal:7233
+        env_file:
+            - .env
+        ports:
+            - '80:3003'
+        depends_on:
+            - temporal
+            - nango-db
+        networks:
+            - nango
+
+    nango-worker:
+        image: nango.docker.scarf.sh/nangohq/worker
+        logging: *default-logging
+        container_name: nango-worker
+        restart: always
+        environment:
+            - TEMPORAL_ADDRESS=temporal:7233
+        env_file:
+            - .env
+        ports:
+            - '3004:3004'
+        depends_on:
+            - temporal
+            - nango-db
+        networks:
+            - nango
+
+    temporal:
+        container_name: temporal
+        logging: *default-logging
+        depends_on:
+            - nango-db
+        environment:
+            - DB=postgresql
+            - DB_PORT=5432
+            - POSTGRES_USER=nango
+            - POSTGRES_PWD=nango
+            - POSTGRES_SEEDS=nango-db
+            - LOG_LEVEL=${TEMPORAL_LOG_LEVEL}
+        image: temporalio/auto-setup:1.18.4
+        ports:
+            - 7233:7233
+        labels:
+            kompose.volume.type: configMap
+        networks:
+            - nango
+
+networks:
+    nango:
