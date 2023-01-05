@@ -58,6 +58,7 @@ You need the latest stable node version as well as a recent version of npm (or n
 In the root of the repo run:
 ```bash
 npm i
+npm run ts-build
 ```
 
 Then start the Postgresql docker container. The easiest way to do this is to run docker compose and then stop the Pizzly server (but keep the DB running):
