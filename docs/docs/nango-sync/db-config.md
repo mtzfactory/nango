@@ -22,7 +22,7 @@ When you add a Sync to Nango you can [tell it where to store the data](schema-ma
 
 This parameter is optional, in the (rare) case where you do not specify it Nango will create a new table called `_nango_sync_[SYNC-ID]` (`[SYNC-ID]` is the nango internal id of your sync, e.g. 1638) in the default schema of your postgres database.
 
-## Specifying the Postgres database
+## Specifying the Postgres database {#custom-database}
 
 By default, Nango assumes there is a local Postgres database available with the following options (the default `docker compose` setup provides this one): 
 ```

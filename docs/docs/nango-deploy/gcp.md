@@ -4,7 +4,7 @@ Deploy Nango on GCP in less than 5 minutes.
 
 ## Create a VM {#create-vm}
 
-Go to the [Compute Engine service](https://console.cloud.google.com/compute/instances) and click CREATE INSTANCE. Create an instance with default settings except: 
+Go to the [Compute Engine service](https://console.cloud.google.com/compute/instances) and click *CREATE INSTANCE*. Create an instance with default settings except: 
 - `e2-medium` for testing, `e2-standard-2` for production
 - Enable *Allow HTTP traffic* and *Allow HTTPS traffic*
 
@@ -60,7 +60,7 @@ docker-compose logs -f
 Console logs should show that jobs are running successfully (1st job should fetch 1000+ Pokémon, subsequent jobs should check that no new Pokémon was added).
 
 :::info
-This tutorial uses a local DB on the VM. Your should now connect Nango to your own database (cf. [docs](nango-sync/db-config#specifying-the-postgres-database)).
+This tutorial uses a local DB on the VM. Your should now connect Nango to your own database (cf. [docs](nango-sync/db-config.md#custom-database)).
 :::
 
 ## Update Nango

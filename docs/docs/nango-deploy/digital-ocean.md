@@ -4,7 +4,7 @@ Deploy Nango on Digital Ocean in less than 5 minutes.
 
 ## Create a VM {#create-vm}
 
-Go to [DigitalOcean](https://cloud.digitalocean.com/)  and click *CREATE > Droplets*. Create a default VM instance with options: 
+Go to [DigitalOcean](https://cloud.digitalocean.com/) and click *CREATE > Droplets*. Create a default VM instance with options: 
 - $20/month for testing, $40/month for production
 
 On the [instance list page](https://cloud.digitalocean.com/droplets), note the *IP Address* address somewhere (referred below as INSTANCE_IP).
@@ -59,7 +59,7 @@ docker-compose logs -f
 Console logs should show that jobs are running successfully (1st job should fetch 1000+ Pokémon, subsequent jobs should check that no new Pokémon was added).
 
 :::info
-This tutorial uses a local DB on the VM. Your should now connect Nango to your own database (cf. [docs](nango-sync/db-config#specifying-the-postgres-database)).
+This tutorial uses a local DB on the VM. Your should now connect Nango to your own database (cf. [docs](nango-sync/db-config.md#custom-database)).
 :::
 
 ## Update Nango

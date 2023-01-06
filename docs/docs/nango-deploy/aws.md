@@ -4,7 +4,7 @@ Deploy Nango on AWS in less than 5 minutes.
 
 ## Create a VM {#create-vm}
 
-Go to the [EC2 service](https://console.aws.amazon.com/ec2/v2/home) and click Launch Instance. Create an instance with default settings except: 
+Go to the [EC2 service](https://console.aws.amazon.com/ec2/v2/home) and click *Launch Instance*. Create an instance with default settings except: 
 - `t2.medium` for testing, `t2.large` for production
 - Enable *Allow HTTPS traffic from the internet* and *Allow HTTP traffic from the internet*
 
@@ -55,7 +55,7 @@ docker-compose logs -f
 Console logs should show that jobs are running successfully (1st job should fetch 1000+ Pokémon, subsequent jobs should check that no new Pokémon was added).
 
 :::info
-This tutorial uses a local DB on the VM. Your should now connect Nango to your own database (cf. [docs](nango-sync/db-config#specifying-the-postgres-database)).
+This tutorial uses a local DB on the VM. Your should now connect Nango to your own database (cf. [docs](nango-sync/db-config.md#custom-database)).
 :::
 
 ## Update Nango
