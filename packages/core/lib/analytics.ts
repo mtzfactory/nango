@@ -4,13 +4,13 @@ import { v4 as uuidv4 } from 'uuid';
 class Analytics {
     client: PostHog | undefined;
     distinctId: string;
-    id = 'umhdRwJLNjgUGyU}]|s<]F:Wq\\8{JX5<:^fiySJiXZO>W';
 
     constructor() {
         this.distinctId = uuidv4();
 
         if (process.env['TELEMETRY']?.toLowerCase() === 'true' && process.env['SERVER_RUN_MODE'] === 'DOCKERIZED') {
-            this.client = new PostHog(this.caesar(this.id, -5), { host: 'https://app.posthog.com' });
+            this.client = new PostHog('phc_4S2pWFTyPYT1i7zwC8YYQqABvGgSAzNHubUkdEFvcTl', { host: 'https://app.posthog.com', flushAt: 1, flushInterval: 0 });
+            this.client.enable();
         }
     }
 
@@ -19,13 +19,11 @@ class Analytics {
             return;
         }
 
-        let event: any = {
+        this.client.capture({
             event: name,
             distinctId: `${this.distinctId}`,
-            properties: properties
-        };
-
-        this.client.capture(event);
+            properties: properties || {}
+        });
     }
 
     public urlToRootHost(url: string | undefined): string {
@@ -40,18 +38,6 @@ class Analytics {
         } catch {
             return '';
         }
-    }
-
-    caesar(str: string, num: number): string {
-        var result = '';
-        var charcode = 0;
-
-        for (var i = 0; i < str.length; i++) {
-            charcode = str.charCodeAt(i) + num;
-            result += String.fromCharCode(charcode);
-        }
-
-        return result;
     }
 }
 

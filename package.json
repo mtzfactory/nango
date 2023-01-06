@@ -15,7 +15,7 @@
         "ts-build": "./node_modules/typescript/bin/tsc -b --clean examples packages/core packages/server packages/worker packages/node-client packages/cli && ./node_modules/typescript/bin/tsc -b tsconfig.build.json",
         "build": "npm run ts-build && npm run docker-build",
         "up": "docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml up",
-        "cli": "npm run ts-build && node ./examples/dist/bin/scripts.js",
+        "cli": "npm run ts-build && node ./examples/dist/scripts.js",
         "test:local": "npm run ts-build && node ./examples/dist/tests/test.js",
         "test:docker": "npm run ts-build && node ./examples/dist/tests/test.js docker",
         "example": "npm run ts-build && node ./examples/dist/main.js"
