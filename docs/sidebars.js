@@ -1,27 +1,14 @@
-/**
- * Creating a sidebar enables you to:
- - create an ordered group of docs
- - render a sidebar for each doc of that group
- - provide next/previous navigation
-
- The sidebars can be generated from the filesystem, or explicitly defined here.
-
- Create as many sidebars as you want.
- */
-
 // @ts-check
 
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
-  // By default, Docusaurus generates a sidebar from the docs folder structure
   docsSidebar: [
     'introduction',
     'quickstart', 
     {
       type: 'category',
-      label: 'Using Nango Sync',
+      label: 'Use Nango',
       items: [
-        
         {
           id: 'nango-sync/core-concepts',
           type: 'doc',
@@ -95,7 +82,39 @@ const sidebars = {
       type: 'doc',
       label: 'Examples'
     },
-    'production-deployment',
+    {
+      type: 'category',
+      label: 'Deploy Nango Open Source',
+      link: {
+        type: 'generated-index',
+        title: 'Deploy Nango Open Source',
+        description: 'Nango is easy to self-host on a single machine using Docker. Here are tutorials (<5mins each) to deploy Nango in various environments:',
+        slug: '/category/deploy-nango-open-source'
+      },
+      items: [
+        {
+          id: 'nango-deploy/local',
+          type: 'doc',
+          label: 'On your local machine'
+        },
+        {
+          id: 'nango-deploy/aws',
+          type: 'doc',
+          label: 'On AWS'
+        },
+        {
+          id: 'nango-deploy/gcp',
+          type: 'doc',
+          label: 'On GCP'
+        },
+        {
+          id: 'nango-deploy/digital-ocean',
+          type: 'doc',
+          label: 'On Digital Ocean'
+        },
+      ]
+    },
+    'cloud',
     {
       id: 'architecture',
       type: 'doc',
