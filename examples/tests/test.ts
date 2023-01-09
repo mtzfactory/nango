@@ -1,7 +1,6 @@
 import { Nango } from '@nangohq/node-client';
 // import { syncGithubStargazers, syncGithubUserRepos } from '../examples-list/github.js';
 import { syncGithubUserRepos } from '../examples-list/github.js';
-import { syncHubspotContacts } from '../examples-list/hubspot.js';
 import { syncHubspotContactsWithAuth } from '../examples-list/hubspot+oauth.js';
 import { syncPokemonList } from '../examples-list/pokemon.js';
 import { syncRedditSubredditPosts } from '../examples-list/reddit.js';
@@ -29,7 +28,6 @@ class Tests {
 
         // await test(await syncGithubStargazers(process.env['NANGO_TEST_GH_OWNER']!, process.env['NANGO_TEST_GH_REPO']!));
         await this.test(await syncGithubUserRepos(process.env['NANGO_TEST_GH_USERNAME']!, process.env['NANGO_TEST_GH_API_TOKEN']!));
-        await this.test(await syncHubspotContacts(process.env['NANGO_TEST_HUBPOST_API_TOKEN']!));
         await this.test(await syncHubspotContactsWithAuth(process.env['NANGO_TEST_HUBSPOT_PROVIDER']!, process.env['NANGO_TEST_HUBSPOT_CONNECTION']!));
         await this.test(await syncPokemonList(), 10000);
         await this.test(await syncRedditSubredditPosts(process.env['NANGO_TEST_REDDIT_SUBREDDIT']!));
