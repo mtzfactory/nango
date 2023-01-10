@@ -1,12 +1,13 @@
-import {syncGithubStargazers, syncGithubUserRepos} from './examples-list/github.js'
-import {syncHubspotContacts} from './examples-list/hubspot.js'
-import {syncHubspotContactsWithAuth} from './examples-list/hubspot+oauth.js'
-import {syncPokemonList} from './examples-list/pokemon.js'
-import {syncRedditSubredditPosts} from './examples-list/reddit.js'
-import {syncSlackMessages} from './examples-list/slack.js'
-import {syncTypeformResponses} from './examples-list/typeform.js'
-import {syncGoogleCalendarEvents} from './examples-list/gcal+oauth.js'
-import {syncGmailEmails} from './examples-list/gmail+oauth.js';
+import { syncFairingQuestions } from './examples-list/fairing.js';
+import { syncGithubStargazers, syncGithubUserRepos } from './examples-list/github.js';
+import { syncHubspotContacts } from './examples-list/hubspot.js';
+import { syncHubspotContactsWithAuth } from './examples-list/hubspot+oauth.js';
+import { syncPokemonList } from './examples-list/pokemon.js';
+import { syncRedditSubredditPosts } from './examples-list/reddit.js';
+import { syncSlackMessages } from './examples-list/slack.js';
+import { syncTypeformResponses } from './examples-list/typeform.js';
+import { syncGoogleCalendarEvents } from './examples-list/gcal+oauth.js';
+import { syncGmailEmails } from './examples-list/gmail+oauth.js';
 
 let parseArguments = (arg_count: number) => {
     const args = process.argv.slice(3);
@@ -41,6 +42,9 @@ if (function_name == null) {
 
 var args: string[] = [];
 switch (function_name) {
+    case 'syncFairingQuestions':
+        await syncFairingQuestions(parseArguments(1)[0]!).then(logSuccess);
+        break;
     case 'syncGithubStargazers':
         args = parseArguments(2);
         await syncGithubStargazers(args[0]!, args[1]!).then(logSuccess);
@@ -82,4 +86,3 @@ switch (function_name) {
     default:
         console.log("Unknown function name, please pick a function name from the 'examples-list/*.ts' files.'");
 }
-
