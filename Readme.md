@@ -45,7 +45,7 @@ Nango then takes care of:
 
 ## 🧑‍💻 Example use cases
 
-Nango is API agnostic: It works with any API endpoint that returns JSON (you just need to [give it a few details](https://docs.nango.dev/add-sync#sync-options) about the endpoint).
+Nango is API agnostic: It works with any API endpoint that returns JSON (you just need to [give it a few details](https://docs.nango.dev/nango-sync/sync-all-options) about the endpoint).
 
 Whilst Nango supports millions of APIs, here are some of the most popular ones:
 
@@ -102,7 +102,7 @@ await new Nango().sync('https://pokeapi.co/api/v2/pokemon', config);
 
 ⭐  Follow our development by starring us here on GitHub ⭐
 
--   Explore more [examples of syncing data from specific endpoints](https://docs.nango.dev)
+-   Explore more [examples of syncing data from specific endpoints](https://docs.nango.dev/real-world-examples)
 -   Share feedback or ask questions on the [Slack community](https://nango.dev/slack)
 -   Check out [Pizzly](https://github.com/NangoHQ/Pizzly), the fast & flexible way to get OAuth tokens for 50+ APIs
 -   Check our [blog on native integrations](https://www.nango.dev/blog)
