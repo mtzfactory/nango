@@ -3,7 +3,7 @@ services:
       name: nango-temporal
       env: docker
       repo: https://github.com/NangoHQ/nango
-      plan: starter
+      plan: free
       branch: main
       rootDir: ./render/temporal/
       envVars:
@@ -59,7 +59,7 @@ services:
       name: nango-worker
       env: docker
       repo: https://github.com/NangoHQ/nango
-      plan: starter
+      plan: free
       branch: main
       rootDir: ./render/worker/
       envVars:
